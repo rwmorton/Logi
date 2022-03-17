@@ -1,14 +1,19 @@
 #ifndef __LOGI_INSTRUCTION_SET_H__
 #define __LOGI_INSTRUCTION_SET_H__
 
+//std includes
 #include <vector>
 #include <string>
+#include <ostream>
 
 namespace Logi
 {
 
 class InstructionSet
 {
+    public:
+        InstructionSet();
+        ~InstructionSet();
     private:
         static const std::vector<std::string> _InstructionSetStrings;
 };

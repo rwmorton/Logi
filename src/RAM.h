@@ -12,10 +12,12 @@ namespace Logi
 
 class RAM
 {
+    friend class Stream;
     public:
         RAM();
+        ~RAM();
     private:
-        std::unique_ptr<U1> _ram;
+        U1* _ram;
 };
 
 } //namespace Logi

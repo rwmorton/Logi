@@ -1,12 +1,33 @@
 //Logi includes
 #include "VirtualMachine.h"
 
+//std includes
+#include <iostream>
+
 namespace Logi
 {
 
-const Registers VirtualMachine::registers {};
+VirtualMachine::VirtualMachine() : registers{},ram{nullptr}
+{
+    //
+}
 
-VirtualMachine::VirtualMachine()
+VirtualMachine::~VirtualMachine()
+{
+    if(ram != nullptr) delete ram;
+}
+
+void VirtualMachine::init()
+{
+    //
+}
+
+void VirtualMachine::run()
+{
+    //
+}
+
+void VirtualMachine::shutdown()
 {
     //
 }

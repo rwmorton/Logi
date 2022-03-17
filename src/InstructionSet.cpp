@@ -4,6 +4,9 @@
 namespace Logi
 {
 
+InstructionSet::InstructionSet() {}
+InstructionSet::~InstructionSet() {}
+
 const std::vector<std::string> InstructionSet::_InstructionSetStrings
 {
     //data transfer

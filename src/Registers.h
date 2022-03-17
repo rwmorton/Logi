@@ -14,7 +14,11 @@ namespace Logi
 
 class Registers
 {
+    friend class Stream;
     public:
+        const std::string& R_str(unsigned int i) const;
+        const std::string& RF_str(unsigned int i) const;
+        const std::string& RD_str(unsigned int i) const;
     private:
         U8 R[32];        //integer registers - 64 bit in size
         F4 RF[10];       //single-precision float registers - 32 bit in size

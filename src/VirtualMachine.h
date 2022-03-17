@@ -5,19 +5,21 @@
 #include "Registers.h"
 #include "RAM.h"
 
-//std includes
-#include <memory>
-
 namespace Logi
 {
 
 class VirtualMachine
 {
+    friend class Stream;
     public:
         VirtualMachine();
+        ~VirtualMachine();
+        void init();
+        void run();
+        void shutdown();
     private:
-        static const Registers registers;
-        std::unique_ptr<RAM> ram;
+        Registers registers;
+        RAM* ram;
 };
 
 } //namespace Logi
