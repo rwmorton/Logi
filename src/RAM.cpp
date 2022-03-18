@@ -1,5 +1,6 @@
 //Logi includes
 #include "RAM.h"
+#include "Stream.h"
 
 //std includes
 #include <ostream>
@@ -47,6 +48,16 @@ U1& RAM::operator()(unsigned int index)
 {
     if(index >= _bytes) throw std::out_of_range("RAM index out of bounds.");
     return *(&_ram[index]);
+}
+
+//dump RAM info to stream
+void RAM::dump() const
+{
+    const Stream* stream = Stream::getInstance();
+    stream->string("---------------").endl();
+    stream->string("RAM dump").endl();
+    stream->string("---------------").endl();
+    stream->bytes(begin(),size()).endl();
 }
 
 } //namespace Logi

@@ -1,6 +1,7 @@
 //Logi includes
 #include "Bytecode.h"
 #include "VirtualMachine.h"
+#include "Stream.h"
 
 //std includes
 #include <iostream>
@@ -28,25 +29,24 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     std::ifstream in(bytecodeFile,std::ios::in | std::ios::binary);
     if(!in.is_open())
     {
-        throw std::runtime_error("Could not load bytecode file."); //could not read file
+        throw std::runtime_error("Could not load bytecode file.");
     }
 
     //read in header
     in.read((char*)&magic,2);
-    if(magic != (U2)Bytecode::MAGIC_NUMBER) throw std::runtime_error("Could not read valid magic number from the bytecode."); //not a valid magic number
+    if(magic != (U2)Bytecode::MAGIC_NUMBER) throw std::runtime_error("Could not read valid magic number from the bytecode.");
     in.read((char*)&symbolTableSize,8);
     in.read((char*)&stringTableSize,8);
     in.read((char*)&bytecodeSize,8);
-    if(bytecodeSize == 0) throw std::runtime_error("No bytecode to execute."); //no bytecode to execute
+    if(bytecodeSize == 0) throw std::runtime_error("No bytecode to execute.");
 
     //header looks good, continue.
     //set total size of the bytecode executable in bytes
     totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
 
     //get bytecode addresses
-    U8 bytecodeStart = Bytecode::HEADER_SIZE + symbolTableSize + stringTableSize;
-    U8 bytecodeEnd = (bytecodeStart + bytecodeSize) - 1;
-    U8 bytecodeAddress = (bytecodeEnd - bytecodeStart) + 1;
+    bytecodeStartAddress = Bytecode::HEADER_SIZE + symbolTableSize + stringTableSize;
+    bytecodeEndAddress = (bytecodeStartAddress + bytecodeSize) - 1;
     //
     //U8 freeBytes = getAvailableMemory();
     //
@@ -72,30 +72,27 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     while(!in.eof())
     {
         byte = in.get();
-        std::cout << std::showbase << std::hex << +byte << std::dec << ' ';
         (*vm.ram)(i++) = byte;
         in.peek(); //make sure we don't go past EOF
     }
-    std::cout << std::dec << std::endl;
 
     //close the file stream
     in.close();
+}
 
-    //test
-    std::cout << "stack size = " << stackSize << std::endl;
-    std::cout << "heap size = " << heapSize << std::endl;
-    std::cout << "bytecode size = " << bytecodeSize << std::endl;
-    std::cout << "bytecode file = " << bytecodeFile << std::endl;
-    std::cout << "total bytes allocated = " << totalSize << std::endl;
-    std::cout << "number of bytes from bytecode allocated into ram = " << i << std::endl;
-    std::cout << "bytecodeStart = " << bytecodeStart << std::endl;
-    std::cout << "bytecodeEnd = " << bytecodeEnd << std::endl;
-    std::cout << std::endl;
-    //print the bytecode
-    for(i=0; i<bytecodeSize; i++)
-    {
-        std::cout << std::showbase << std::hex << static_cast<U8>((*vm.ram)(i)) << ' ';
-    }
+//dump bytecode info to stream
+void Bytecode::dump() const
+{
+    const Stream* stream = Stream::getInstance();
+    stream->string("-------------").endl();
+    stream->string("BYTECODE DUMP").endl();
+    stream->string("-------------").endl();
+    stream->string("BC: stack size = ").U8(stackSize).endl();
+    stream->string("BC: heap size = ").U8(heapSize).endl();
+    stream->string("BC: bytecode size = ").U8(bytecodeSize).endl();
+    stream->string("BC: total bytes allocated = ").U8(totalSize).endl();
+    stream->string("BC: bytecode start address = ").U8(bytecodeStartAddress).endl();
+    stream->string("BC: bytecode end address = ").U8(bytecodeEndAddress).endl();
 }
 
 //parse the command line args

@@ -94,25 +94,14 @@ int main(int argc,char *argv[])
     ////////////////////////////////////////////////////////
 
     cout << "Testing Virtual Machine" << endl;
+    cout << "-----------------------" << endl;
 
     try
     {
         Logi::VirtualMachine vm;
-        Logi::Bytecode bc;
-        bc.load(argc,argv,vm);
-
-        const Logi::RAM* ramPtr = vm.RAM();
-        stream->bytes
-        (
-            ramPtr->begin(),
-            ramPtr->size()
-        );
-
-        cout << endl;
-        stream->basicRegisters(vm);
-        stream->generalRegisters(vm);
-        stream->floatRegisters(vm);
-        stream->doubleRegisters(vm);
+        vm.init(argc,argv);
+        vm.run();
+        vm.shutdown();
     }
     catch(const std::exception& e)
     {

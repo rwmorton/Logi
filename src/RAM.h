@@ -19,6 +19,7 @@ class RAM
         const U1* end() const;
         void allocate(const U8 bytes);
         U1& operator()(unsigned int index);
+        void dump() const;
     private:
         U1* _ram;       //the RAM itself
         U8 _bytes;      //number of bytes in RAM

@@ -97,6 +97,8 @@ class Registers
         const std::string& R_str(unsigned int code) const;
         const std::string& RF_str(unsigned int code) const;
         const std::string& RD_str(unsigned int code) const;
+        //dump to stream
+        void dump() const;
     private:
         U8 _R[NUM_REGISTERS];               //integer registers - 64 bit in size
         F4 _RF[NUM_FLOAT_REGISTERS];        //single-precision float registers - 32 bit in size

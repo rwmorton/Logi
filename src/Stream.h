@@ -21,32 +21,29 @@ class Stream
     public:
         static Stream* getInstance();
         void set(const std::ostream* out);
-        //stream methods
-        void U_REG(const std::string& regStr,U8 reg) const;
-        void S_REG(const std::string& regStr,U8 reg) const;
-        void F_REG(const std::string& regStr,U8 reg) const;
-        void D_REG(const std::string& regStr,U8 reg) const;
-        //
-        void U1(U1 byte) const;
-        void U2(U2 word) const;
-        void U4(U4 dword) const;
-        void U8(U8 qword) const;
-        //
-        void S1(S1 byte) const;
-        void S2(S2 word) const;
-        void S4(S4 dword) const;
-        void S8(S8 qword) const;
-        //RAM stream methods
-        void mem(const RAM* ram,Logi::U8 index) const;
-        void bytes(const Logi::U1 bytes[],unsigned int length) const;
-        //
-        //VM stream methods
-        void memSection(const VirtualMachine& vm,Logi::U8 address,Logi::U8 bytes) const;
-        void allRAM(const VirtualMachine& vm) const;
-        void basicRegisters(const VirtualMachine& vm) const;
-        void generalRegisters(const VirtualMachine& vm) const;
-        void floatRegisters(const VirtualMachine& vm) const;
-        void doubleRegisters(const VirtualMachine& vm) const;
+        //general stream methods
+        const Stream& string(const std::string& str) const;
+        const Stream& endl() const;
+        //registers
+        const Stream& U_REG(const std::string& regStr,U8 reg) const;
+        const Stream& S_REG(const std::string& regStr,U8 reg) const;
+        const Stream& F_REG(const std::string& regStr,U8 reg) const;
+        const Stream& D_REG(const std::string& regStr,U8 reg) const;
+        //unsigned types
+        const Stream& U1(U1 byte) const;
+        const Stream& U2(U2 word) const;
+        const Stream& U4(U4 dword) const;
+        const Stream& U8(U8 qword) const;
+        //signed types
+        const Stream& S1(S1 byte) const;
+        const Stream& S2(S2 word) const;
+        const Stream& S4(S4 dword) const;
+        const Stream& S8(S8 qword) const;
+        //floating point types
+        const Stream& F4(F4 float_) const;
+        const Stream& F8(F8 double_) const;
+        //stream bytes
+        const Stream& bytes(const Logi::U1 bytes[],unsigned int length) const;
     private:
         Stream();
         static Stream* instance;

@@ -1,8 +1,6 @@
 //Logi includes
 #include "Registers.h"
-
-#include <iostream>
-using namespace std;
+#include "Stream.h"
 
 namespace Logi
 {
@@ -81,6 +79,48 @@ const std::string& Registers::RD_str(unsigned int code) const
 {
     if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _DoubleRegisterStrings.at(code);
+}
+
+//dump register information to stream
+void Registers::dump() const
+{
+    const Stream* stream = Stream::getInstance();
+
+    const std::string& hdr {"-----------------"};
+    const std::string& dmp {"REGISTER DUMP"};
+    const std::string& bsc {"BASIC"};
+    const std::string& gnl {"GENERAL"};
+    const std::string& flt {"FLOAT"};
+    const std::string& dbl {"DOUBLE"};
+
+    stream->string(hdr).endl().string(dmp).endl().string(hdr).endl();
+
+    stream->string(bsc).endl().string(hdr).endl();
+    int i{0};
+    for(i=0; i<8; i++)
+    {
+        stream->U_REG(R_str(i),R(i)).endl();
+    }
+
+    stream->string(hdr).endl().string(gnl).endl().string(hdr).endl();
+    for(; i<NUM_REGISTERS; i++)
+    {
+        stream->S_REG(R_str(i),R(i)).endl();
+    }
+
+    stream->string(hdr).endl().string(flt).endl().string(hdr).endl();
+    for(i=0; i<NUM_FLOAT_REGISTERS; i++)
+    {
+        stream->F_REG(RF_str(i),RF(i)).endl();
+    }
+
+    stream->string(hdr).endl().string(dbl).endl().string(hdr).endl();
+    for(i=0; i<NUM_DOUBLE_REGISTERS; i++)
+    {
+        stream->D_REG(RD_str(i),RD(i)).endl();
+    }
+
+    stream->string(hdr).endl();
 }
 
 } //namespace Logi

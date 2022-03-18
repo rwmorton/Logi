@@ -54,6 +54,8 @@ STACK SEGMENT
 --------------------------------
 */
 
+class Stream;
+
 class VirtualMachine
 {
     friend class Stream;
@@ -62,13 +64,14 @@ class VirtualMachine
         VirtualMachine();
         ~VirtualMachine();
         const Logi::RAM* RAM() const;
-        void init();
+        void init(int argc,char* argv[]);
         void run();
         void shutdown();
     private:
         Bytecode executable;
         Registers registers;
         Logi::RAM* ram;
+        const Stream* stream;
 };
 
 } //namespace Logi

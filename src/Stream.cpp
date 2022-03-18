@@ -23,76 +23,107 @@ void Stream::set(const std::ostream* out)
     out = &(*out);
 }
 
-void Stream::U_REG(const std::string& regStr,Logi::U8 reg) const
+const Stream& Stream::string(const std::string& str) const
+{
+    out << str;
+    return *this;
+}
+
+const Stream& Stream::endl() const
+{
+    out << std::endl;
+    return *this;
+}
+
+const Stream& Stream::U_REG(const std::string& regStr,Logi::U8 reg) const
 {
     out << regStr << " = " << std::showbase << std::hex << reg;
     std::dec;
+    return *this;
 }
 
-void Stream::S_REG(const std::string& regStr,Logi::U8 reg) const
+const Stream& Stream::S_REG(const std::string& regStr,Logi::U8 reg) const
 {
     out << regStr << " = " << std::showbase << std::hex << reg;
     std::dec;
+    return *this;
 }
 
-void Stream::F_REG(const std::string& regStr,Logi::U8 reg) const
+const Stream& Stream::F_REG(const std::string& regStr,Logi::U8 reg) const
 {
     out << regStr << " = " << std::showbase << std::hex << reg;
     std::dec;
+    return *this;
 }
 
-void Stream::D_REG(const std::string& regStr,Logi::U8 reg) const
+const Stream& Stream::D_REG(const std::string& regStr,Logi::U8 reg) const
 {
     out << regStr << " = " << std::showbase << std::hex << reg;
     std::dec;
+    return *this;
 }
 
-void Stream::U1(Logi::U1 byte) const
+const Stream& Stream::U1(Logi::U1 byte) const
 {
     out << std::hex << byte << std::dec;
+    return *this;
 }
 
-void Stream::U2(Logi::U2 word) const
+const Stream& Stream::U2(Logi::U2 word) const
 {
     out << std::hex << word << std::dec;
+    return *this;
 }
 
-void Stream::U4(Logi::U4 dword) const
+const Stream& Stream::U4(Logi::U4 dword) const
 {
     out << std::hex << dword << std::dec;
+    return *this;
 }
 
-void Stream::U8(Logi::U8 qword) const
+const Stream& Stream::U8(Logi::U8 qword) const
 {
     out << std::hex << qword << std::dec;
+    return *this;
 }
 
-void Stream::S1(Logi::S1 byte) const
+const Stream& Stream::S1(Logi::S1 byte) const
 {
     out << std::hex << byte << std::dec;
+    return *this;
 }
 
-void Stream::S2(Logi::S2 word) const
+const Stream& Stream::S2(Logi::S2 word) const
 {
     out << std::hex << word << std::dec;
+    return *this;
 }
 
-void Stream::S4(Logi::S4 dword) const
+const Stream& Stream::S4(Logi::S4 dword) const
 {
     out << std::hex << dword << std::dec;
+    return *this;
 }
 
-void Stream::S8(Logi::S8 qword) const
+const Stream& Stream::S8(Logi::S8 qword) const
 {
     out << std::hex << qword << std::dec;
+    return *this;
 }
 
-void Stream::mem(const RAM* ram,Logi::U8 index) const
+const Stream& Stream::F4(Logi::F4 float_) const
 {
-    out << "RAM[" << index << "] = " << std::hex << (*ram)._ram[index] << std::dec;
+    out << std::hex << float_ << std::dec;
+    return *this;
 }
 
-void Stream::bytes(const Logi::U1 bytes[],unsigned int length) const
+const Stream& Stream::F8(Logi::F8 double_) const
+{
+    out << std::hex << double_ << std::dec;
+    return *this;
+}
+
+const Stream& Stream::bytes(const Logi::U1 bytes[],unsigned int length) const
 {
     for(int i=0; i<length; i++)
     {
@@ -100,87 +131,7 @@ void Stream::bytes(const Logi::U1 bytes[],unsigned int length) const
         if(i < length-1) out << ' ';
     }
     out << std::dec;
-}
-
-void Stream::memSection(const VirtualMachine& vm,Logi::U8 address,Logi::U8 bytes) const
-{
-    Logi::U8 index;
-    for(index=address; index<address+bytes; index++)
-    {
-        if(index > vm.registers.R($TOP))
-        {
-            out << "memSection: address ";
-            U8(index);
-            out << " is out of bounds." << std::endl;
-        }
-        else
-        {
-            mem(vm.ram,index);
-            out << std::endl;
-        }
-    }
-}
-
-void Stream::allRAM(const VirtualMachine& vm) const
-{
-    Logi::U8 index;
-    for(index = 0; index<(Logi::U8)vm.registers.R($TOP); index++)
-    {
-        mem(vm.ram,index);
-        out << std::endl;
-    }
-}
-
-void Stream::basicRegisters(const VirtualMachine& vm) const
-{
-    out << "-----------------" << std::endl;
-    out << "BASIC REGISTERS" << std::endl;
-    out << "---------------" << std::endl;
-    for(int i=0; i<8; i++)
-    {
-        U_REG(vm.registers.R_str(i),vm.registers.R(i));
-        out << std::endl;
-    }
-    out << "---------------" << std::endl;
-}
-
-void Stream::generalRegisters(const VirtualMachine& vm) const
-{
-    out << "-----------------" << std::endl;
-    out << "GENERAL REGISTERS" << std::endl;
-    out << "-----------------" << std::endl;
-    for(int i=8; i<32; i++)
-    {
-        S_REG(vm.registers.R_str(i),vm.registers.R(i));
-        out << std::endl;
-    }
-    out << "-----------------" << std::endl;
-}
-
-void Stream::floatRegisters(const VirtualMachine& vm) const
-{
-    out << "-----------------" << std::endl;
-    out << "FLOAT REGISTERS" << std::endl;
-    out << "---------------" << std::endl;
-    for(int i=0; i<10; i++)
-    {
-        F_REG(vm.registers.R_str(i),vm.registers.R(i));
-        out << std::endl;
-    }
-    out << "---------------" << std::endl;
-}
-
-void Stream::doubleRegisters(const VirtualMachine& vm) const
-{
-    out << "-----------------" << std::endl;
-    out << "DOUBLE REGISTERS" << std::endl;
-    out << "----------------" << std::endl;
-    for(int i=0; i<10; i++)
-    {
-        D_REG(vm.registers.R_str(i),vm.registers.R(i));
-        out << std::endl;
-    }
-    out << "----------------" << std::endl;
+    return *this;
 }
 
 //prevent copies - singleton
