@@ -7,6 +7,12 @@ namespace Logi
 InstructionSet::InstructionSet() {}
 InstructionSet::~InstructionSet() {}
 
+const std::string& InstructionSet::I_str(unsigned int i) const
+{
+    if(i >= 73) throw std::exception(); //out of bounds
+    return _InstructionSetStrings.at(i);
+}
+
 const std::vector<std::string> InstructionSet::_InstructionSetStrings
 {
     //data transfer

@@ -26,19 +26,19 @@ const std::vector<std::string> Registers::_DoubleRegisterStrings
 
 const std::string& Registers::R_str(unsigned int i) const
 {
-    if(i >= 24) throw std::exception();
+    if(i >= 24) throw std::exception(); //out of bounds
     return _RegisterStrings.at(i);
 }
 
 const std::string& Registers::RF_str(unsigned int i) const
 {
-    if(i >= 10) throw std::exception();
+    if(i >= 10) throw std::exception(); //out of bounds
     return _FloatRegisterStrings.at(i);
 }
 
 const std::string& Registers::RD_str(unsigned int i) const
 {
-    if(i >= 10) throw std::exception();
+    if(i >= 10) throw std::exception(); //out of bounds
     return _DoubleRegisterStrings.at(i);
 }
 

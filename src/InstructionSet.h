@@ -14,6 +14,7 @@ class InstructionSet
     public:
         InstructionSet();
         ~InstructionSet();
+        const std::string& I_str(unsigned int i) const;
     private:
         static const std::vector<std::string> _InstructionSetStrings;
 };

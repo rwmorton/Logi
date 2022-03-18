@@ -3,9 +3,7 @@
 using namespace std;
 
 //Logi includes
-#include "VirtualMachine.h"
-#include "Stream.h"
-#include "Types.h"
+#include "Logi.h"
 
 int main(int argc,char *argv[])
 {
@@ -18,6 +16,9 @@ int main(int argc,char *argv[])
     cout << endl;
     stream->U4(42);
     cout << endl;
+
+    Logi::Bytecode bc;
+    bc.load(argc,argv);
 
     return 0;
 }
