@@ -4,20 +4,24 @@
 //Logi includes
 #include "Types.h"
 
-//std includes
-#include <memory>
-
 namespace Logi
 {
 
 class RAM
 {
     friend class Stream;
+    friend class Bytecode;
     public:
         RAM();
         ~RAM();
+        const U8 size() const;
+        const U1* begin() const;
+        const U1* end() const;
+        void allocate(const U8 bytes);
+        U1& operator()(unsigned int index);
     private:
-        U1* _ram;
+        U1* _ram;       //the RAM itself
+        U8 _bytes;      //number of bytes in RAM
 };
 
 } //namespace Logi

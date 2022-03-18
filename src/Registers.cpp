@@ -1,8 +1,13 @@
 //Logi includes
 #include "Registers.h"
 
+#include <iostream>
+using namespace std;
+
 namespace Logi
 {
+
+const std::string REG_CODE_OUT_OF_BOUNDS {"register code out of bounds"};
 
 const std::vector<std::string> Registers::_RegisterStrings
 {
@@ -24,22 +29,58 @@ const std::vector<std::string> Registers::_DoubleRegisterStrings
     "$D6","$D7","$D8","$D9","$D10"
 };
 
-const std::string& Registers::R_str(unsigned int i) const
+U8& Registers::R(unsigned int code)
 {
-    if(i >= 24) throw std::exception(); //out of bounds
-    return _RegisterStrings.at(i);
+    if(code >= 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _R[code];
 }
 
-const std::string& Registers::RF_str(unsigned int i) const
+F4& Registers::RF(unsigned int code)
 {
-    if(i >= 10) throw std::exception(); //out of bounds
-    return _FloatRegisterStrings.at(i);
+    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _RF[code];
 }
 
-const std::string& Registers::RD_str(unsigned int i) const
+F8& Registers::RD(unsigned int code)
 {
-    if(i >= 10) throw std::exception(); //out of bounds
-    return _DoubleRegisterStrings.at(i);
+    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _RD[code];
+}
+
+const U8 Registers::R(unsigned int code) const
+{
+    if(code >= 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _R[code];
+}
+
+const F4 Registers::RF(unsigned int code) const
+{
+    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _RF[code];
+}
+
+const F8 Registers::RD(unsigned int code) const
+{
+    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _RD[code];
+}
+
+const std::string& Registers::R_str(unsigned int code) const
+{
+    if(code >= 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _RegisterStrings.at(code);
+}
+
+const std::string& Registers::RF_str(unsigned int code) const
+{
+    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _FloatRegisterStrings.at(code);
+}
+
+const std::string& Registers::RD_str(unsigned int code) const
+{
+    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _DoubleRegisterStrings.at(code);
 }
 
 } //namespace Logi

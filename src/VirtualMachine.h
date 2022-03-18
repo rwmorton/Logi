@@ -2,9 +2,9 @@
 #define __LOGI_VIRTUAL_MACHINE_H__
 
 //Logi includes
+#include "Bytecode.h"
 #include "Registers.h"
 #include "RAM.h"
-#include "Bytecode.h"
 
 namespace Logi
 {
@@ -57,16 +57,18 @@ STACK SEGMENT
 class VirtualMachine
 {
     friend class Stream;
+    friend class Bytecode;
     public:
         VirtualMachine();
         ~VirtualMachine();
+        const Logi::RAM* RAM() const;
         void init();
         void run();
         void shutdown();
     private:
         Bytecode executable;
         Registers registers;
-        RAM* ram;
+        Logi::RAM* ram;
 };
 
 } //namespace Logi

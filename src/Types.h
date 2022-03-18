@@ -6,12 +6,12 @@ namespace Logi
 
 typedef signed char S1;
 typedef signed short S2;
-typedef signed long S4;
+typedef signed int S4;
 typedef signed long long S8;
 
 typedef unsigned char U1;
 typedef unsigned short U2;
-typedef unsigned long U4;
+typedef unsigned int U4;
 typedef unsigned long long U8;
 
 typedef float F4;

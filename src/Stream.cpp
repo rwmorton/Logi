@@ -9,7 +9,7 @@ namespace Logi
 
 Stream* Stream::instance {nullptr};
 
-const Stream* Stream::getInstance()
+Stream* Stream::getInstance()
 {
     if(Stream::instance == nullptr)
     {
@@ -92,13 +92,14 @@ void Stream::mem(const RAM* ram,Logi::U8 index) const
     out << "RAM[" << index << "] = " << std::hex << (*ram)._ram[index] << std::dec;
 }
 
-void Stream::bytes(Logi::U1 bytes[],unsigned int length) const
+void Stream::bytes(const Logi::U1 bytes[],unsigned int length) const
 {
     for(int i=0; i<length; i++)
     {
-        out << std::hex << std::showbase << (int)bytes[i];
+        out << std::hex << std::showbase << static_cast<int>(bytes[i]);
         if(i < length-1) out << ' ';
     }
+    out << std::dec;
 }
 
 void Stream::memSection(const VirtualMachine& vm,Logi::U8 address,Logi::U8 bytes) const
@@ -106,7 +107,7 @@ void Stream::memSection(const VirtualMachine& vm,Logi::U8 address,Logi::U8 bytes
     Logi::U8 index;
     for(index=address; index<address+bytes; index++)
     {
-        if(index > vm.registers.R[$TOP])
+        if(index > vm.registers.R($TOP))
         {
             out << "memSection: address ";
             U8(index);
@@ -123,7 +124,7 @@ void Stream::memSection(const VirtualMachine& vm,Logi::U8 address,Logi::U8 bytes
 void Stream::allRAM(const VirtualMachine& vm) const
 {
     Logi::U8 index;
-    for(index = 0; index<(Logi::U8)vm.registers.R[$TOP]; index++)
+    for(index = 0; index<(Logi::U8)vm.registers.R($TOP); index++)
     {
         mem(vm.ram,index);
         out << std::endl;
@@ -136,7 +137,7 @@ void Stream::basicRegisters(const VirtualMachine& vm) const
     out << "---------------" << std::endl;
     for(int i=0; i<8; i++)
     {
-        U_REG(vm.registers.R_str(i),vm.registers.R[i]);
+        U_REG(vm.registers.R_str(i),vm.registers.R(i));
         out << std::endl;
     }
     out << "---------------" << std::endl;
@@ -148,7 +149,7 @@ void Stream::generalRegisters(const VirtualMachine& vm) const
     out << "-----------------" << std::endl;
     for(int i=8; i<32; i++)
     {
-        S_REG(vm.registers.R_str(i),vm.registers.R[i]);
+        S_REG(vm.registers.R_str(i),vm.registers.R(i));
         out << std::endl;
     }
     out << "-----------------" << std::endl;
@@ -160,7 +161,7 @@ void Stream::floatRegisters(const VirtualMachine& vm) const
     out << "---------------" << std::endl;
     for(int i=0; i<10; i++)
     {
-        F_REG(vm.registers.R_str(i),vm.registers.R[i]);
+        F_REG(vm.registers.R_str(i),vm.registers.R(i));
         out << std::endl;
     }
     out << "---------------" << std::endl;
@@ -172,7 +173,7 @@ void Stream::doubleRegisters(const VirtualMachine& vm) const
     out << "----------------" << std::endl;
     for(int i=0; i<10; i++)
     {
-        D_REG(vm.registers.R_str(i),vm.registers.R[i]);
+        D_REG(vm.registers.R_str(i),vm.registers.R(i));
         out << std::endl;
     }
     out << "----------------" << std::endl;

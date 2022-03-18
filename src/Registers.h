@@ -12,22 +12,6 @@
 namespace Logi
 {
 
-class Registers
-{
-    friend class Stream;
-    public:
-        const std::string& R_str(unsigned int i) const;
-        const std::string& RF_str(unsigned int i) const;
-        const std::string& RD_str(unsigned int i) const;
-    private:
-        U8 R[32];        //integer registers - 64 bit in size
-        F4 RF[10];       //single-precision float registers - 32 bit in size
-        F8 RD[10];       //double-precision float registers - 64 bit in size
-        static const std::vector<std::string> _RegisterStrings;
-        static const std::vector<std::string> _FloatRegisterStrings;
-        static const std::vector<std::string> _DoubleRegisterStrings;
-};
-
 enum RegisterCodes
 {
     $IP = 0,     //address of next instruction to execute
@@ -91,6 +75,30 @@ enum DoubleRegisterCodes
     $D8,
     $D9,
     $D10
+};
+
+class Registers
+{
+    public:
+        //set registers
+        U8& R(unsigned int code);
+        F4& RF(unsigned int code);
+        F8& RD(unsigned int code);
+        //get registers
+        const U8 R(unsigned int code) const;
+        const F4 RF(unsigned int code) const;
+        const F8 RD(unsigned int code) const;
+        //get register as string
+        const std::string& R_str(unsigned int code) const;
+        const std::string& RF_str(unsigned int code) const;
+        const std::string& RD_str(unsigned int code) const;
+    private:
+        U8 _R[32];        //integer registers - 64 bit in size
+        F4 _RF[10];       //single-precision float registers - 32 bit in size
+        F8 _RD[10];       //double-precision float registers - 64 bit in size
+        static const std::vector<std::string> _RegisterStrings;
+        static const std::vector<std::string> _FloatRegisterStrings;
+        static const std::vector<std::string> _DoubleRegisterStrings;
 };
 
 } //namespace Logi

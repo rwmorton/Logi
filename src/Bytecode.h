@@ -3,6 +3,7 @@
 
 //Logi includes
 #include "Types.h"
+#include "RAM.h"
 
 //std includes
 #include <string>
@@ -10,6 +11,26 @@
 
 namespace Logi
 {
+
+/*
+BYTECODE FILE SPEC
+
+--------------
+HEADER: 26 bytes long
+16-bit magic number
+64-bit value for size of symbol table (in bytes)
+64-bit value for size of string table (in bytes)
+64-bit value for size of bytecode section (in bytes)
+--------------
+SYMBOL TABLE
+--------------
+STRING TABLE
+--------------
+
+BYTECODE
+
+--------------
+*/
 
 //
 // options:
@@ -25,21 +46,25 @@ namespace Logi
 //      DEFAULT_EXECUTABLE_FILE (name of the executable)
 //
 
+class VirtualMachine;
+
 class Bytecode
 {
     public:
         Bytecode();
         ~Bytecode();
-        void load(int argc,char *argv[]);
+        void load(int argc,char *argv[],VirtualMachine& vm);
     private:
         void parseArgs(int argc,char *argv[]);
         static const bool checkFlag(const char* currentChar,const char prefix,const char flags[],unsigned char numFlags);
         std::string bytecodeFile;                           //the bytecode file to execute
-        U8 heap;                                            //heap memory to allocate in KB (heap * 1024 bytes)
-        U8 stack;                                           //stack memory to allocate in KB (stack * 1024 bytes)
-        U8 symbolTable;                                     //size of the symbol table in the executable (in bytes)
-        U8 stringTable;                                     //size of the string table in the executable (in bytes)
-        U8 size;                                            //total size of the bytecode executable (in bytes)
+        U2 magic;                                           //magic number
+        U8 heapSize;                                        //heap memory to allocate in KB (heap * 1024 bytes)
+        U8 stackSize;                                       //stack memory to allocate in KB (stack * 1024 bytes)
+        U8 symbolTableSize;                                 //size of the symbol table in the executable (in bytes)
+        U8 stringTableSize;                                 //size of the string table in the executable (in bytes)
+        U8 bytecodeSize;                                    //size of the bytecode in the executable (in bytes)
+        U8 totalSize;                                       //total size of the bytecode executable (in bytes)
         static const unsigned int MAGIC_NUMBER;             //magic number to verify the bytecode format
         static const unsigned int HEADER_SIZE;              //header size for the bytecode format
         static const unsigned int DEFAULT_STACK_SIZE;       //default stack size if no size supplied

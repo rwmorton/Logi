@@ -19,7 +19,7 @@ namespace Logi
 class Stream
 {
     public:
-        static const Stream* getInstance();
+        static Stream* getInstance();
         void set(const std::ostream* out);
         //stream methods
         void U_REG(const std::string& regStr,U8 reg) const;
@@ -36,9 +36,9 @@ class Stream
         void S2(S2 word) const;
         void S4(S4 dword) const;
         void S8(S8 qword) const;
-        //
+        //RAM stream methods
         void mem(const RAM* ram,Logi::U8 index) const;
-        void bytes(Logi::U1 bytes[],unsigned int length) const;
+        void bytes(const Logi::U1 bytes[],unsigned int length) const;
         //
         //VM stream methods
         void memSection(const VirtualMachine& vm,Logi::U8 address,Logi::U8 bytes) const;
