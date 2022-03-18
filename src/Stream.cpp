@@ -133,6 +133,7 @@ void Stream::allRAM(const VirtualMachine& vm) const
 
 void Stream::basicRegisters(const VirtualMachine& vm) const
 {
+    out << "-----------------" << std::endl;
     out << "BASIC REGISTERS" << std::endl;
     out << "---------------" << std::endl;
     for(int i=0; i<8; i++)
@@ -145,6 +146,7 @@ void Stream::basicRegisters(const VirtualMachine& vm) const
 
 void Stream::generalRegisters(const VirtualMachine& vm) const
 {
+    out << "-----------------" << std::endl;
     out << "GENERAL REGISTERS" << std::endl;
     out << "-----------------" << std::endl;
     for(int i=8; i<32; i++)
@@ -157,6 +159,7 @@ void Stream::generalRegisters(const VirtualMachine& vm) const
 
 void Stream::floatRegisters(const VirtualMachine& vm) const
 {
+    out << "-----------------" << std::endl;
     out << "FLOAT REGISTERS" << std::endl;
     out << "---------------" << std::endl;
     for(int i=0; i<10; i++)
@@ -169,6 +172,7 @@ void Stream::floatRegisters(const VirtualMachine& vm) const
 
 void Stream::doubleRegisters(const VirtualMachine& vm) const
 {
+    out << "-----------------" << std::endl;
     out << "DOUBLE REGISTERS" << std::endl;
     out << "----------------" << std::endl;
     for(int i=0; i<10; i++)

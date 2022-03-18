@@ -28,7 +28,6 @@ int main(int argc,char *argv[])
     transform->qwordToBytecode(bytecodeSize,BYTECODE_SIZE);
 
     Logi::Stream* stream = Logi::Stream::getInstance();
-    stream->set(&cout);
     stream->bytes(MAGIC,2);
     stream->bytes(SYMBOL,8);
     stream->bytes(STRING,8);
@@ -108,6 +107,12 @@ int main(int argc,char *argv[])
             ramPtr->begin(),
             ramPtr->size()
         );
+
+        cout << endl;
+        stream->basicRegisters(vm);
+        stream->generalRegisters(vm);
+        stream->floatRegisters(vm);
+        stream->doubleRegisters(vm);
     }
     catch(const std::exception& e)
     {

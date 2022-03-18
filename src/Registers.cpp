@@ -31,55 +31,55 @@ const std::vector<std::string> Registers::_DoubleRegisterStrings
 
 U8& Registers::R(unsigned int code)
 {
-    if(code >= 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _R[code];
 }
 
 F4& Registers::RF(unsigned int code)
 {
-    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _RF[code];
 }
 
 F8& Registers::RD(unsigned int code)
 {
-    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _RD[code];
 }
 
 const U8 Registers::R(unsigned int code) const
 {
-    if(code >= 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _R[code];
 }
 
 const F4 Registers::RF(unsigned int code) const
 {
-    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _RF[code];
 }
 
 const F8 Registers::RD(unsigned int code) const
 {
-    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _RD[code];
 }
 
 const std::string& Registers::R_str(unsigned int code) const
 {
-    if(code >= 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _RegisterStrings.at(code);
 }
 
 const std::string& Registers::RF_str(unsigned int code) const
 {
-    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _FloatRegisterStrings.at(code);
 }
 
 const std::string& Registers::RD_str(unsigned int code) const
 {
-    if(code >= 10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _DoubleRegisterStrings.at(code);
 }
 
