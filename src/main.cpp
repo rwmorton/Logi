@@ -1,4 +1,6 @@
 #include <iostream>
+#include <ostream>
+#include <fstream>
 #include <memory>
 #include <fstream>
 using namespace std;
@@ -107,6 +109,11 @@ int main(int argc,char *argv[])
     {
         cout << e.what() << endl;
     }
+
+    Logi::InstructionSet iset;
+    cout << iset(Logi::LBI) << endl;
+    cout << iset(Logi::FADD) << endl;
+    cout << iset(Logi::BAD) << endl;
 
     return 0;
 }

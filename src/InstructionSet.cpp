@@ -4,13 +4,10 @@
 namespace Logi
 {
 
-InstructionSet::InstructionSet() {}
-InstructionSet::~InstructionSet() {}
-
-const std::string& InstructionSet::I_str(unsigned int i) const
+const std::string& InstructionSet::operator()(OpCodes code) const
 {
-    if(i >= 73) throw std::exception(); //out of bounds
-    return _InstructionSetStrings.at(i);
+    if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("Instruction out of range");
+    return _InstructionSetStrings.at(code);
 }
 
 const std::vector<std::string> InstructionSet::_InstructionSetStrings

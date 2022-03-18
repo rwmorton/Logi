@@ -81,46 +81,32 @@ const std::string& Registers::RD_str(unsigned int code) const
     return _DoubleRegisterStrings.at(code);
 }
 
-//dump register information to stream
-void Registers::dump() const
+void operator<<(Registers& registers,std::ostream& out)
 {
-    const Stream* stream = Stream::getInstance();
+    out << std::hex;
 
-    const std::string& hdr {"-----------------"};
-    const std::string& dmp {"REGISTER DUMP"};
-    const std::string& bsc {"BASIC"};
-    const std::string& gnl {"GENERAL"};
-    const std::string& flt {"FLOAT"};
-    const std::string& dbl {"DOUBLE"};
-
-    stream->string(hdr).endl().string(dmp).endl().string(hdr).endl();
-
-    stream->string(bsc).endl().string(hdr).endl();
     int i{0};
     for(i=0; i<8; i++)
     {
-        stream->U_REG(R_str(i),R(i)).endl();
+        out << registers.R_str(i) << " = " << registers.R(i) << std::endl;
     }
 
-    stream->string(hdr).endl().string(gnl).endl().string(hdr).endl();
     for(; i<NUM_REGISTERS; i++)
     {
-        stream->S_REG(R_str(i),R(i)).endl();
+        out << registers.R_str(i) << " = " << registers.R(i) << std::endl;
     }
 
-    stream->string(hdr).endl().string(flt).endl().string(hdr).endl();
     for(i=0; i<NUM_FLOAT_REGISTERS; i++)
     {
-        stream->F_REG(RF_str(i),RF(i)).endl();
+        out << registers.RF_str(i) << " = " << registers.RF(i) << std::endl;
     }
 
-    stream->string(hdr).endl().string(dbl).endl().string(hdr).endl();
     for(i=0; i<NUM_DOUBLE_REGISTERS; i++)
     {
-        stream->D_REG(RD_str(i),RD(i)).endl();
+        out << registers.RD_str(i) << " = " << registers.RD(i) << std::endl;
     }
 
-    stream->string(hdr).endl();
+    out << std::dec;
 }
 
 } //namespace Logi

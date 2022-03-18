@@ -50,14 +50,18 @@ U1& RAM::operator()(unsigned int index)
     return *(&_ram[index]);
 }
 
-//dump RAM info to stream
-void RAM::dump() const
+void operator<<(RAM& ram,std::ostream& out)
 {
-    const Stream* stream = Stream::getInstance();
-    stream->string("---------------").endl();
-    stream->string("RAM dump").endl();
-    stream->string("---------------").endl();
-    stream->bytes(begin(),size()).endl();
+    out << std::showbase << std::hex;
+
+    U8 length = ram.size();
+    for(U8 i=0; i<length; i++)
+    {
+        out << static_cast<int>(ram(i));
+        if(i < length-1) out << ' ';
+    }
+
+    out << std::dec;
 }
 
 } //namespace Logi

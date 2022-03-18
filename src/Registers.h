@@ -97,12 +97,12 @@ class Registers
         const std::string& R_str(unsigned int code) const;
         const std::string& RF_str(unsigned int code) const;
         const std::string& RD_str(unsigned int code) const;
-        //dump to stream
-        void dump() const;
+        //stream output
+        friend void operator<<(Registers& registers,std::ostream& out);
     private:
-        U8 _R[NUM_REGISTERS];               //integer registers - 64 bit in size
-        F4 _RF[NUM_FLOAT_REGISTERS];        //single-precision float registers - 32 bit in size
-        F8 _RD[NUM_DOUBLE_REGISTERS];       //double-precision float registers - 64 bit in size
+        U8 _R[NUM_REGISTERS]{};               //integer registers - 64 bit in size
+        F4 _RF[NUM_FLOAT_REGISTERS]{};        //single-precision float registers - 32 bit in size
+        F8 _RD[NUM_DOUBLE_REGISTERS]{};       //double-precision float registers - 64 bit in size
         static const std::vector<std::string> _RegisterStrings;
         static const std::vector<std::string> _FloatRegisterStrings;
         static const std::vector<std::string> _DoubleRegisterStrings;

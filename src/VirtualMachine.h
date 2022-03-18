@@ -6,6 +6,9 @@
 #include "Registers.h"
 #include "RAM.h"
 
+//std includes
+#include <ostream>
+
 namespace Logi
 {
 
@@ -67,11 +70,11 @@ class VirtualMachine
         void init(int argc,char* argv[]);
         void run();
         void shutdown();
+        friend void operator<<(VirtualMachine& vm,std::ostream& out);
     private:
         Bytecode executable;
         Registers registers;
         Logi::RAM* ram;
-        const Stream* stream;
 };
 
 } //namespace Logi

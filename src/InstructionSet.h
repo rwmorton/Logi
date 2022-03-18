@@ -9,16 +9,6 @@
 namespace Logi
 {
 
-class InstructionSet
-{
-    public:
-        InstructionSet();
-        ~InstructionSet();
-        const std::string& I_str(unsigned int i) const;
-    private:
-        static const std::vector<std::string> _InstructionSetStrings;
-};
-
 enum OpCodes
 {
     //data transfer
@@ -102,6 +92,16 @@ enum OpCodes
     DDIV,       //double-precision float division
     DSLT,       //double-precision float set if less than
     BAD = -1,   //not an instruction
+};
+
+static const unsigned int NUM_INSTRUCTIONS {73};
+
+class InstructionSet
+{
+    public:
+        const std::string& operator()(OpCodes code) const;
+    private:
+        static const std::vector<std::string> _InstructionSetStrings;
 };
 
 } //namespace Logi

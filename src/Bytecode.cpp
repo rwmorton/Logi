@@ -42,7 +42,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
 
     //header looks good, continue.
     //set total size of the bytecode executable in bytes
-    totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
+    totalSize = Bytecode::HEADER_SIZE + bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
 
     //get bytecode addresses
     bytecodeStartAddress = Bytecode::HEADER_SIZE + symbolTableSize + stringTableSize;
@@ -80,19 +80,16 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     in.close();
 }
 
-//dump bytecode info to stream
-void Bytecode::dump() const
+void operator<<(Bytecode& bytecode,std::ostream& out)
 {
-    const Stream* stream = Stream::getInstance();
-    stream->string("-------------").endl();
-    stream->string("BYTECODE DUMP").endl();
-    stream->string("-------------").endl();
-    stream->string("BC: stack size = ").U8(stackSize).endl();
-    stream->string("BC: heap size = ").U8(heapSize).endl();
-    stream->string("BC: bytecode size = ").U8(bytecodeSize).endl();
-    stream->string("BC: total bytes allocated = ").U8(totalSize).endl();
-    stream->string("BC: bytecode start address = ").U8(bytecodeStartAddress).endl();
-    stream->string("BC: bytecode end address = ").U8(bytecodeEndAddress).endl();
+    out << "stack size = " << bytecode.stackSize << " KB." << std::endl;
+    out << "heap size = " << bytecode.heapSize << " Kb."  << std::endl;
+    out << "bytecode size = " << bytecode.bytecodeSize << " bytes." << std::endl;
+    out << "total bytes allocated = " << bytecode.totalSize << " bytes." << std::endl;
+    out << std::showbase << std::hex;
+    out << "bytecode start address = " << bytecode.bytecodeStartAddress << std::endl;
+    out << "bytecode end address = " << bytecode.bytecodeEndAddress << std::endl;
+    out << std::dec;
 }
 
 //parse the command line args

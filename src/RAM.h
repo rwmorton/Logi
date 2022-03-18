@@ -4,13 +4,14 @@
 //Logi includes
 #include "Types.h"
 
+//std includes
+#include <ostream>
+
 namespace Logi
 {
 
 class RAM
 {
-    friend class Stream;
-    friend class Bytecode;
     public:
         RAM();
         ~RAM();
@@ -19,7 +20,8 @@ class RAM
         const U1* end() const;
         void allocate(const U8 bytes);
         U1& operator()(unsigned int index);
-        void dump() const;
+        //stream output
+        friend void operator<<(RAM& ram,std::ostream& out);
     private:
         U1* _ram;       //the RAM itself
         U8 _bytes;      //number of bytes in RAM

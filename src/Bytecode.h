@@ -54,7 +54,8 @@ class Bytecode
         Bytecode();
         ~Bytecode();
         void load(int argc,char *argv[],VirtualMachine& vm);
-        void dump() const;
+        //stream output
+        friend void operator<<(Bytecode& bytecode,std::ostream& out);
     private:
         void parseArgs(int argc,char *argv[]);
         static const bool checkFlag(const char* currentChar,const char prefix,const char flags[],unsigned char numFlags);
