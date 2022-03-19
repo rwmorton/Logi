@@ -50,7 +50,7 @@ U1& RAM::operator()(unsigned int index)
     return *(&_ram[index]);
 }
 
-void operator<<(RAM& ram,std::ostream& out)
+std::ostream& operator<<(std::ostream& out,RAM& ram)
 {
     out << std::showbase << std::hex;
 
@@ -62,6 +62,7 @@ void operator<<(RAM& ram,std::ostream& out)
     }
 
     out << std::dec;
+    return out;
 }
 
 } //namespace Logi

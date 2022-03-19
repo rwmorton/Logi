@@ -80,7 +80,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     in.close();
 }
 
-void operator<<(Bytecode& bytecode,std::ostream& out)
+std::ostream& operator<<(std::ostream& out,Bytecode& bytecode)
 {
     out << "stack size = " << bytecode.stackSize << " KB." << std::endl;
     out << "heap size = " << bytecode.heapSize << " Kb."  << std::endl;
@@ -90,6 +90,7 @@ void operator<<(Bytecode& bytecode,std::ostream& out)
     out << "bytecode start address = " << bytecode.bytecodeStartAddress << std::endl;
     out << "bytecode end address = " << bytecode.bytecodeEndAddress << std::endl;
     out << std::dec;
+    return out;
 }
 
 //parse the command line args

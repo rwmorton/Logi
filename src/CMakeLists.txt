@@ -1,9 +1,15 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(LOGI CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 add_compile_options(-std=c++2a)
 
-# add_subdirectory(xyz)
+add_subdirectory(types)
 
-add_executable(main main.cpp)
-
+add_library(Types_obj Types.cpp)
 add_library(Bytecode_obj Bytecode.cpp)
 add_library(InstructionSet_obj InstructionSet.cpp)
 add_library(RAM_obj RAM.cpp)
@@ -12,6 +18,15 @@ add_library(Stream_obj Stream.cpp)
 add_library(Transform_obj Transform.cpp)
 add_library(VirtualMachine_obj VirtualMachine.cpp)
 
+add_executable(main main.cpp)
+
+target_link_libraries(main Types_obj)
+target_link_libraries(main Byte_obj)
+target_link_libraries(main Word_obj)
+target_link_libraries(main DWord_obj)
+target_link_libraries(main QWord_obj)
+target_link_libraries(main Float_obj)
+#
 target_link_libraries(main VirtualMachine_obj)
 target_link_libraries(main Bytecode_obj)
 target_link_libraries(main InstructionSet_obj)
@@ -20,4 +35,4 @@ target_link_libraries(main Stream_obj)
 target_link_libraries(main Registers_obj)
 target_link_libraries(main Transform_obj)
 
-# target_include_directories(main PUBLIC xyz)
+target_include_directories(main PUBLIC types)

@@ -81,7 +81,7 @@ const std::string& Registers::RD_str(unsigned int code) const
     return _DoubleRegisterStrings.at(code);
 }
 
-void operator<<(Registers& registers,std::ostream& out)
+std::ostream& operator<<(std::ostream& out,Registers& registers)
 {
     out << std::hex;
 
@@ -107,6 +107,7 @@ void operator<<(Registers& registers,std::ostream& out)
     }
 
     out << std::dec;
+    return out;
 }
 
 } //namespace Logi

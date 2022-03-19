@@ -40,12 +40,12 @@ void VirtualMachine::run()
     Stream* stream = Stream::getInstance();
     stream->string("VM: running...").endl();
 
-    //this->registers << std::cout;
-    this->executable << std::cout;
-    //(*this->ram) << std::cout;
+    std::cout << this->registers;
+    std::cout << this->executable;
+    std::cout << (*this->ram);
 
     std::ofstream ramDump("RAM_DUMP.BIN",std::ios::binary | std::ios::out);
-    (*this->ram) << ramDump;
+    ramDump << (*this->ram);
     ramDump.close();
 }
 
@@ -55,14 +55,12 @@ void VirtualMachine::shutdown()
     stream->string("VM: shutting down...").endl();
 }
 
-void operator<<(VirtualMachine& vm,std::ostream& out)
+std::ostream& operator<<(std::ostream& out,VirtualMachine& vm)
 {
-    vm.executable << out;
-    out << std::endl;
-    vm.registers << out;
-    out << std::endl;
-    (*vm.ram) << out;
-    out << std::endl;
+    out << vm.executable << std::endl;
+    out << vm.registers << std::endl;
+    out << (*vm.ram) << std::endl;
+    return out;
 }
 
 } //namespace Logi

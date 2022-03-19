@@ -21,7 +21,7 @@ class RAM
         void allocate(const U8 bytes);
         U1& operator()(unsigned int index);
         //stream output
-        friend void operator<<(RAM& ram,std::ostream& out);
+        friend std::ostream& operator<<(std::ostream& out,RAM& ram);
     private:
         U1* _ram;       //the RAM itself
         U8 _bytes;      //number of bytes in RAM

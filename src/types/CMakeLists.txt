@@ -1,0 +1,11 @@
+add_library(Byte_obj Byte.cpp)
+add_library(Word_obj Word.cpp)
+add_library(DWord_obj DWord.cpp)
+add_library(QWord_obj QWord.cpp)
+add_library(Float_obj Float.cpp)
+
+target_include_directories(Byte_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(Word_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(DWord_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(QWord_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(Float_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

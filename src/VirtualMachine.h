@@ -70,7 +70,7 @@ class VirtualMachine
         void init(int argc,char* argv[]);
         void run();
         void shutdown();
-        friend void operator<<(VirtualMachine& vm,std::ostream& out);
+        friend std::ostream& operator<<(std::ostream& out,VirtualMachine& vm);
     private:
         Bytecode executable;
         Registers registers;

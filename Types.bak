@@ -1,0 +1,121 @@
+#ifndef __LOGI_TYPES_H__
+#define __LOGI_TYPES_H__
+
+//std includes
+#include <ostream>
+#include <any>
+
+namespace Logi
+{
+
+typedef signed char S1;
+typedef signed short S2;
+typedef signed int S4;
+typedef signed long long S8;
+
+typedef unsigned char U1;
+typedef unsigned short U2;
+typedef unsigned int U4;
+typedef unsigned long long U8;
+
+typedef float F4;
+typedef double F8;
+
+///////////////////////////////////////////////////////////////////
+//test
+class Base
+{
+    public:
+        virtual ~Base() {}
+    protected:
+        std::any value;
+};
+
+class DerivedA : public Base
+{
+    public:
+        DerivedA(signed int v);
+        friend std::ostream& operator<<(std::ostream& out,DerivedA& dA);
+};
+
+class DerivedB : public Base
+{
+    public:
+        DerivedB(unsigned int v);
+        friend std::ostream& operator<<(std::ostream& out,DerivedB& dB);
+};
+///////////////////////////////////////////////////////////////////
+
+//signed byte
+struct Byte
+{
+    friend std::ostream& operator<<(std::ostream& out,Byte& byte);
+    signed char value;
+};
+
+//unsigned byte
+struct UByte
+{
+    friend std::ostream& operator<<(std::ostream& out,UByte& byte);
+    unsigned char value;
+};
+
+//signed word - 2 bytes
+struct Word
+{
+    friend std::ostream& operator<<(std::ostream& out,Word& word);
+    signed short value;
+};
+
+//unsigned word - 2 bytes
+struct UWord
+{
+    friend std::ostream& operator<<(std::ostream& out,UWord& word);
+    unsigned short value;
+};
+
+//signed dword - 4 bytes
+struct DWord
+{
+    friend std::ostream& operator<<(std::ostream& out,DWord& dword);
+    signed int value;
+};
+
+//unsigned dword - 4 bytes
+struct UDWord
+{
+    friend std::ostream& operator<<(std::ostream& out,UDWord& dword);
+    unsigned int value;
+};
+
+//signed qword - 8 bytes
+struct QWord
+{
+    friend std::ostream& operator<<(std::ostream& out,QWord& qword);
+    signed long long value;
+};
+
+//unsigned qword - 8 bytes
+struct UQWord
+{
+    friend std::ostream& operator<<(std::ostream& out,UQWord& qword);
+    unsigned long long value;
+};
+
+//single-precision float - 4 bytes
+struct Float
+{
+    friend std::ostream& operator<<(std::ostream& out,Float& float_);
+    float value;
+};
+
+//double-precision float - 8 bytes
+struct Double
+{
+    friend std::ostream& operator<<(std::ostream& out,Double& double_);
+    double value;
+};
+
+} //namespace Logi
+
+#endif //__LOGI_TYPES_H__
