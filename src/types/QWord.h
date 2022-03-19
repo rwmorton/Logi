@@ -11,7 +11,8 @@ namespace Logi
 class QWord : public Type
 {
     public:
-        explicit QWord(signed long long value);
+        QWord();
+        explicit QWord(const signed long long value);
         friend std::ostream& operator<<(std::ostream& out,QWord& qword);
 };
 
@@ -19,9 +20,9 @@ class QWord : public Type
 class UQWord : public Type
 {
     public:
-        explicit UQWord(unsigned long long value);
-        friend std::ostream& operator<<(std::ostream& out,UQWord& qword);
-        unsigned long long value;
+        UQWord();
+        explicit UQWord(const unsigned long long value);
+        friend std::ostream& operator<<(std::ostream& out,const UQWord& qword);
 };
 
 } //namespace Logi

@@ -11,7 +11,8 @@ namespace Logi
 class Word : public Type
 {
     public:
-        explicit Word(signed short value);
+        Word();
+        explicit Word(const signed short value);
         friend std::ostream& operator<<(std::ostream& out,Word& word);
 };
 
@@ -19,8 +20,9 @@ class Word : public Type
 class UWord : public Type
 {
     public:
-        explicit UWord(unsigned short value);
-        friend std::ostream& operator<<(std::ostream& out,UWord& word);
+        UWord();
+        explicit UWord(const unsigned short value);
+        friend std::ostream& operator<<(std::ostream& out,const UWord& word);
 };
 
 } //namespace Logi

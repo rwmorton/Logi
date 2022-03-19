@@ -6,24 +6,44 @@ namespace Logi
 
 /////////////////////////// float ///////////////////////////
 
-Float::Float(float value) : Type(std::any_cast<float>(value)) {}
+Float::Float()
+{
+    this->value.F4 = 0.0f;
+    this->tag = TypeUnionTag::F4_TAG;
+}
+
+Float::Float(const float value)
+{
+    this->value.F4 = value;
+    this->tag = TypeUnionTag::F4_TAG;
+}
 
 std::ostream& operator<<(std::ostream& out,Float& float_)
 {
     out << std::showbase << std::hex;
-    out << static_cast<CAST_TO>(std::any_cast<float>(float_.value));
+    out << static_cast<CAST_TO>(float_.value.F4);
     out << std::dec;
     return out;
 }
 
 /////////////////////////// double ///////////////////////////
 
-Double::Double(double value) : Type(std::any_cast<double>(value)) {}
+Double::Double()
+{
+    this->value.F8 = 0.0;
+    this->tag = TypeUnionTag::F8_TAG;
+}
 
-std::ostream& operator<<(std::ostream& out,Double& double_)
+Double::Double(const double value)
+{
+    this->value.F8 = value;
+    this->tag = TypeUnionTag::F8_TAG;
+}
+
+std::ostream& operator<<(std::ostream& out,const Double& double_)
 {
     out << std::showbase << std::hex;
-    out << static_cast<CAST_TO>(std::any_cast<double>(double_.value));
+    out << static_cast<CAST_TO>(double_.value.F8);
     out << std::dec;
     return out;
 }

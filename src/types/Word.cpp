@@ -6,24 +6,44 @@ namespace Logi
 
 /////////////////////////// signed word ///////////////////////////
 
-Word::Word(signed short value) : Type(std::any_cast<signed short>(value)) {}
+Word::Word()
+{
+    this->value.S2 = 0;
+    this->tag = TypeUnionTag::S2_TAG;
+}
+
+Word::Word(const signed short value)
+{
+    this->value.S2 = value;
+    this->tag = TypeUnionTag::S2_TAG;
+}
 
 std::ostream& operator<<(std::ostream& out,Word& word)
 {
     out << std::showbase << std::hex;
-    out << static_cast<CAST_TO>(std::any_cast<signed short>(word.value));
+    out << static_cast<CAST_TO>(word.value.S2);
     out << std::dec;
     return out;
 }
 
 /////////////////////////// unsigned word ///////////////////////////
 
-UWord::UWord(unsigned short value) : Type(std::any_cast<unsigned short>(value)) {}
+UWord::UWord()
+{
+    this->value.U2 = 0;
+    this->tag = TypeUnionTag::U2_TAG;
+}
 
-std::ostream& operator<<(std::ostream& out,UWord& word)
+UWord::UWord(const unsigned short value)
+{
+    this->value.U2 = value;
+    this->tag = TypeUnionTag::U2_TAG;
+}
+
+std::ostream& operator<<(std::ostream& out,const UWord& word)
 {
     out << std::showbase << std::hex;
-    out << static_cast<CAST_TO>(std::any_cast<unsigned short>(word.value));
+    out << static_cast<CAST_TO>(word.value.U2);
     out << std::dec;
     return out;
 }

@@ -4,6 +4,7 @@
 #include <memory>
 #include <fstream>
 #include <iomanip>
+#include <variant>
 using namespace std;
 
 //Logi includes
@@ -112,27 +113,48 @@ int main(int argc,char *argv[])
     U1 THE_BYTE = 0x3f;
     cout << "TEST: " << static_cast<int>(THE_BYTE) << endl;
 
-    Byte lByte(0x5e);
-    cout << "hello: " << lByte << " it works!" << endl;
-
-    DerivedA dA(-532);
-    DerivedB dB(1234);
-
-    cout << "DerivedA = " << dA << endl;
-    cout << "DerivedB = " << dB << endl;
-
-    Byte xB(0xB);
-    cout << xB << endl;
-    xB = lByte;
-    cout << xB << endl;
-
-    Byte testByte = Byte(45);
-    cout << testByte << endl;
-
-    testByte = Byte('x');
-    cout << testByte << endl;
-
     cout << showbase << hex << static_cast<int>('x') << endl;
+
+    Byte myByte(101);
+    cout << myByte << endl;
+    Byte newByte(myByte);
+    cout << myByte << endl;
+
+    UByte myUByte(33);
+    cout << myUByte << endl;
+
+    UByte newUByte(255);
+    cout << newUByte << endl;
+    cout << endl;
+    cout << "BEFORE ASSIGNMENT: " << myUByte << endl;
+    myUByte = newUByte;
+    cout << "AFTER ASSIGNMENT: " << myUByte << endl;
+
+    std::variant<int,float> v,w;
+    v = 42;
+    int i = std::get<int>(v);
+    w = 101;
+
+    cout << "testing += operator" << endl;
+    UByte result(0);
+    cout << result << endl;
+    result += myUByte;
+    cout << result << endl;
+    result += newUByte;
+    cout << result << endl;
+
+    Byte A(1),B(4),C;
+    cout << A << ' ' << B << ' ' << C << endl;
+    C = A;
+    cout << A << ' ' << B << ' ' << C << endl;
+    C += B;
+    cout << A << ' ' << B << ' ' << C << endl;
+
+    cout << C << endl;
+    cout << ++C << endl;
+    cout << C << endl;
+    cout << C++ << endl;
+    cout << C << endl;
 
     return 0;
 }

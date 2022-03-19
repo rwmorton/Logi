@@ -20,12 +20,12 @@ add_library(VirtualMachine_obj VirtualMachine.cpp)
 
 add_executable(main main.cpp)
 
-target_link_libraries(main Types_obj)
 target_link_libraries(main Byte_obj)
 target_link_libraries(main Word_obj)
 target_link_libraries(main DWord_obj)
 target_link_libraries(main QWord_obj)
 target_link_libraries(main Float_obj)
+target_link_libraries(main Types_obj)
 #
 target_link_libraries(main VirtualMachine_obj)
 target_link_libraries(main Bytecode_obj)

@@ -11,7 +11,8 @@ namespace Logi
 class Byte : public Type
 {
     public:
-        explicit Byte(signed char value);
+        Byte();
+        explicit Byte(const signed char value);
         friend std::ostream& operator<<(std::ostream& out,Byte& byte);
 };
 
@@ -19,8 +20,9 @@ class Byte : public Type
 class UByte : public Type
 {
     public:
-        explicit UByte(unsigned char value);
-        friend std::ostream& operator<<(std::ostream& out,UByte& byte);
+        UByte();
+        explicit UByte(const unsigned char value);
+        friend std::ostream& operator<<(std::ostream& out,const UByte& byte);
 };
 
 } //namespace Logi

@@ -6,24 +6,44 @@ namespace Logi
 
 /////////////////////////// signed qword ///////////////////////////
 
-QWord::QWord(signed long long value) : Type(std::any_cast<signed long long>(value)) {}
+QWord::QWord()
+{
+    this->value.S8 = 0;
+    this->tag = TypeUnionTag::S8_TAG;
+}
+
+QWord::QWord(const signed long long value)
+{
+    this->value.S8 = value;
+    this->tag = TypeUnionTag::S8_TAG;
+}
 
 std::ostream& operator<<(std::ostream& out,QWord& qword)
 {
     out << std::showbase << std::hex;
-    out << static_cast<CAST_TO>(std::any_cast<signed long long>(qword.value));
+    out << static_cast<CAST_TO>(qword.value.S8);
     out << std::dec;
     return out;
 }
 
 /////////////////////////// unsigned qword ///////////////////////////
 
-UQWord::UQWord(unsigned long long value) : Type(std::any_cast<unsigned long long>(value)) {}
+UQWord::UQWord()
+{
+    this->value.U8 = 0;
+    this->tag = TypeUnionTag::U8_TAG;
+}
 
-std::ostream& operator<<(std::ostream& out,UQWord& qword)
+UQWord::UQWord(const unsigned long long value)
+{
+    this->value.U8 = value;
+    this->tag = TypeUnionTag::U8_TAG;
+}
+
+std::ostream& operator<<(std::ostream& out,const UQWord& qword)
 {
     out << std::showbase << std::hex;
-    out << static_cast<CAST_TO>(std::any_cast<unsigned long long>(qword.value));
+    out << static_cast<CAST_TO>(qword.value.U8);
     out << std::dec;
     return out;
 }

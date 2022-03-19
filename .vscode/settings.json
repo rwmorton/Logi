@@ -50,6 +50,7 @@
         "typeinfo": "cpp",
         "ctime": "cpp",
         "iomanip": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "variant": "cpp"
     }
 }

@@ -55,7 +55,7 @@ void VirtualMachine::shutdown()
     stream->string("VM: shutting down...").endl();
 }
 
-std::ostream& operator<<(std::ostream& out,VirtualMachine& vm)
+std::ostream& operator<<(std::ostream& out,const VirtualMachine& vm)
 {
     out << vm.executable << std::endl;
     out << vm.registers << std::endl;

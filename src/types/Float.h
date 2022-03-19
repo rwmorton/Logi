@@ -11,7 +11,8 @@ namespace Logi
 class Float : public Type
 {
     public:
-        explicit Float(float value);
+        Float();
+        explicit Float(const float value);
         friend std::ostream& operator<<(std::ostream& out,Float& float_);
 };
 
@@ -19,8 +20,9 @@ class Float : public Type
 class Double : public Type
 {
     public:
-        explicit Double(double value);
-        friend std::ostream& operator<<(std::ostream& out,Double& double_);
+        Double();
+        explicit Double(const double value);
+        friend std::ostream& operator<<(std::ostream& out,const Double& double_);
 };
 
 } //namespace Logi

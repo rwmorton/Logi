@@ -19,7 +19,7 @@ class RAM
         const U1* begin() const;
         const U1* end() const;
         void allocate(const U8 bytes);
-        U1& operator()(unsigned int index);
+        U1& operator()(const unsigned int index);
         //stream output
         friend std::ostream& operator<<(std::ostream& out,RAM& ram);
     private:

@@ -81,7 +81,7 @@ const std::string& Registers::RD_str(unsigned int code) const
     return _DoubleRegisterStrings.at(code);
 }
 
-std::ostream& operator<<(std::ostream& out,Registers& registers)
+std::ostream& operator<<(std::ostream& out,const Registers& registers)
 {
     out << std::hex;
 

@@ -11,7 +11,8 @@ namespace Logi
 class DWord : public Type
 {
     public:
-        explicit DWord(signed int value);
+        DWord();
+        explicit DWord(const signed int value);
         friend std::ostream& operator<<(std::ostream& out,DWord& dword);
 };
 
@@ -19,8 +20,9 @@ class DWord : public Type
 class UDWord : public Type
 {
     public:
-        explicit UDWord(unsigned int value);
-        friend std::ostream& operator<<(std::ostream& out,UDWord& dword);
+        UDWord();
+        explicit UDWord(const unsigned int value);
+        friend std::ostream& operator<<(std::ostream& out,const UDWord& dword);
 };
 
 } //namespace Logi

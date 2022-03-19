@@ -34,7 +34,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
 
     //read in header
     in.read((char*)&magic,2);
-    if(magic != (U2)Bytecode::MAGIC_NUMBER) throw std::runtime_error("Could not read valid magic number from the bytecode.");
+    if(magic != Bytecode::MAGIC_NUMBER) throw std::runtime_error("Could not read valid magic number from the bytecode.");
     in.read((char*)&symbolTableSize,8);
     in.read((char*)&stringTableSize,8);
     in.read((char*)&bytecodeSize,8);
@@ -80,7 +80,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     in.close();
 }
 
-std::ostream& operator<<(std::ostream& out,Bytecode& bytecode)
+std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode)
 {
     out << "stack size = " << bytecode.stackSize << " KB." << std::endl;
     out << "heap size = " << bytecode.heapSize << " Kb."  << std::endl;

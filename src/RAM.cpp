@@ -44,7 +44,7 @@ void RAM::allocate(const U8 bytes)
 }
 
 //get byte at index
-U1& RAM::operator()(unsigned int index)
+U1& RAM::operator()(const unsigned int index)
 {
     if(index >= _bytes) throw std::out_of_range("RAM index out of bounds.");
     return *(&_ram[index]);

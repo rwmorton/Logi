@@ -3,60 +3,86 @@
 
 //std includes
 #include <ostream>
-#include <any>
 
 namespace Logi
 {
 
-typedef signed char S1;
-typedef signed short S2;
-typedef signed int S4;
-typedef signed long long S8;
+using S1 = signed char;
+using S2 = signed short;
+using S4 = signed int;
+using S8 = signed long long;
 
-typedef unsigned char U1;
-typedef unsigned short U2;
-typedef unsigned int U4;
-typedef unsigned long long U8;
+using U1 = unsigned char;
+using U2 = unsigned short;
+using U4 = unsigned int;
+using U8 = unsigned long long;
 
-typedef float F4;
-typedef double F8;
+using F4 = float;
+using F8 = double;
 
-///////////////////////////////////////////////////////////////////
-//test
-class Base
+using CAST_TO = U8;
+
+//will be 8 bytes long for each type
+//which is not an efficient use of space
+//but I am opting to build a more "versatile"
+//system
+union TypeUnion
 {
-    public:
-        virtual ~Base() {}
-    protected:
-        std::any value;
+    signed char S1;
+    unsigned char U1;
+    signed short S2;
+    unsigned short U2;
+    signed int S4;
+    unsigned int U4;
+    signed long long S8;
+    unsigned long long U8;
+    float F4;
+    double F8;
 };
 
-class DerivedA : public Base
+enum TypeUnionTag
 {
-    public:
-        DerivedA(signed int v);
-        friend std::ostream& operator<<(std::ostream& out,DerivedA& dA);
+    S1_TAG = 0,
+    U1_TAG,
+    S2_TAG,
+    U2_TAG,
+    S4_TAG,
+    U4_TAG,
+    S8_TAG,
+    U8_TAG,
+    F4_TAG,
+    F8_TAG,
+    NO_TAG
 };
-
-class DerivedB : public Base
-{
-    public:
-        DerivedB(unsigned int v);
-        friend std::ostream& operator<<(std::ostream& out,DerivedB& dB);
-};
-///////////////////////////////////////////////////////////////////
-
-typedef signed long long CAST_TO;
 
 class Type
 {
     public:
-        Type(std::any value);
-        Type(const Type& type);
+        Type();
+        Type(const Type& copy);
         virtual ~Type() {}
-        Type& operator=(const Type& type);
+        virtual Type& operator=(const Type& type);
+
+        virtual Type& operator++(); //prefix
+        virtual Type operator++(int); //postfix
+
+        virtual Type& operator--(); //prefix
+        virtual Type operator--(int); //postfix
+
+        virtual const Type operator+(const Type& type) const;
+        virtual Type& operator+=(const Type& type);
+        virtual const Type operator-(const Type& type) const;
+        virtual Type& operator-=(const Type& type);
+        virtual const Type operator*(const Type& type) const;
+        virtual Type& operator*=(const Type& type);
+        //no check for divizion by zero!
+        virtual const Type operator/(const Type& type) const;
+        virtual Type& operator/=(const Type& type);
+        //stream output
+        friend std::ostream& operator<<(std::ostream& out,const Type& type);
     protected:
-        std::any value;
+        TypeUnion value;
+        TypeUnionTag tag;
 };
 
 } //namespace Logi
