@@ -5,6 +5,10 @@
 #include "Bytecode.h"
 #include "Registers.h"
 #include "RAM.h"
+#include "InstructionSet.h"
+#include "Stream.h"
+#include "Validator.h"
+#include "Transform.h"
 
 //std includes
 #include <ostream>
@@ -72,9 +76,31 @@ class VirtualMachine
         void shutdown();
         friend std::ostream& operator<<(std::ostream& out,const VirtualMachine& vm);
     private:
+        void validateBytecode();
         Bytecode executable;
         Registers registers;
         Logi::RAM* ram;
+        const InstructionSet* iset;
+        const Stream* stream;
+        const Validator* validate;
+        const Transform* transform;
+        //validate helpers
+        U8 currentByte;
+        U8 stopByte;
+        void VALIDATE_R();
+        void VALIDATE_RF();
+        void VALIDATE_RD();
+        void VALIDATE_OPCODE();
+        void VALIDATE_OPERAND();
+        void VALIDATE_END_BYTE();
+        void VALIDATE_END_WORD();
+        void VALIDATE_END_DWORD();
+        void VALIDATE_END_QWORD();
+        void VALIDATE_ADDRESS(TypeTag tag);
+        static const std::string OPCODE;
+        static const std::string OPERAND;
+        static const std::string ADDR;
+        static const std::string ENDL;
 };
 
 } //namespace Logi

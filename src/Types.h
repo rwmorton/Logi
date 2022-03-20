@@ -22,25 +22,31 @@ using F8 = double;
 
 using CAST_TO = U8;
 
+enum Endian
+{
+    BIG = 0,
+    LITTLE
+};
+
 //will be 8 bytes long for each type
 //which is not an efficient use of space
 //but I am opting to build a more "versatile"
 //system
 union TypeUnion
 {
-    signed char S1;
-    unsigned char U1;
-    signed short S2;
-    unsigned short U2;
-    signed int S4;
-    unsigned int U4;
-    signed long long S8;
-    unsigned long long U8;
-    float F4;
-    double F8;
+    Logi::S1 S1;
+    Logi::U1 U1;
+    Logi::S2 S2;
+    Logi::U2 U2;
+    Logi::S4 S4;
+    Logi::U4 U4;
+    Logi::S8 S8;
+    Logi::U8 U8;
+    Logi::F4 F4;
+    Logi::F8 F8;
 };
 
-enum TypeUnionTag
+enum TypeTag
 {
     S1_TAG = 0,
     U1_TAG,
@@ -62,13 +68,10 @@ class Type
         Type(const Type& copy);
         virtual ~Type() {}
         virtual Type& operator=(const Type& type);
-
         virtual Type& operator++(); //prefix
         virtual Type operator++(int); //postfix
-
         virtual Type& operator--(); //prefix
         virtual Type operator--(int); //postfix
-
         virtual const Type operator+(const Type& type) const;
         virtual Type& operator+=(const Type& type);
         virtual const Type operator-(const Type& type) const;
@@ -82,7 +85,7 @@ class Type
         friend std::ostream& operator<<(std::ostream& out,const Type& type);
     protected:
         TypeUnion value;
-        TypeUnionTag tag;
+        TypeTag tag;
 };
 
 } //namespace Logi

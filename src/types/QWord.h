@@ -12,7 +12,7 @@ class QWord : public Type
 {
     public:
         QWord();
-        explicit QWord(const signed long long value);
+        explicit QWord(const S8 value);
         friend std::ostream& operator<<(std::ostream& out,QWord& qword);
 };
 
@@ -21,7 +21,7 @@ class UQWord : public Type
 {
     public:
         UQWord();
-        explicit UQWord(const unsigned long long value);
+        explicit UQWord(const U8 value);
         friend std::ostream& operator<<(std::ostream& out,const UQWord& qword);
 };
 

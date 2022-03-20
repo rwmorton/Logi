@@ -16,8 +16,9 @@ class RAM
         RAM();
         ~RAM();
         const U8 size() const;
-        const U1* begin() const;
-        const U1* end() const;
+        U1* at(const U8 index);
+        U1* begin();
+        U1* end();
         void allocate(const U8 bytes);
         U1& operator()(const unsigned int index);
         //stream output

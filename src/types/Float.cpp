@@ -9,13 +9,13 @@ namespace Logi
 Float::Float()
 {
     this->value.F4 = 0.0f;
-    this->tag = TypeUnionTag::F4_TAG;
+    this->tag = TypeTag::F4_TAG;
 }
 
-Float::Float(const float value)
+Float::Float(const F4 value)
 {
     this->value.F4 = value;
-    this->tag = TypeUnionTag::F4_TAG;
+    this->tag = TypeTag::F4_TAG;
 }
 
 std::ostream& operator<<(std::ostream& out,Float& float_)
@@ -31,13 +31,13 @@ std::ostream& operator<<(std::ostream& out,Float& float_)
 Double::Double()
 {
     this->value.F8 = 0.0;
-    this->tag = TypeUnionTag::F8_TAG;
+    this->tag = TypeTag::F8_TAG;
 }
 
-Double::Double(const double value)
+Double::Double(const F8 value)
 {
     this->value.F8 = value;
-    this->tag = TypeUnionTag::F8_TAG;
+    this->tag = TypeTag::F8_TAG;
 }
 
 std::ostream& operator<<(std::ostream& out,const Double& double_)

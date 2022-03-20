@@ -8,12 +8,19 @@ namespace Logi
 {
 
 //
+// TODO: add flag to check endian of system
+// this is an optimization to add later.
+//
+
+//
 // Transform is a singleton.
 //
 class Transform
 {
     public:
         static const Transform* getInstance();
+        //check system endian
+        const Endian checkEndian() const;
         //transforms
         U2 bytecodeToWord(U1 bytes[]) const;
         U4 bytecodeToDWord(U1 bytes[]) const;
@@ -29,9 +36,9 @@ class Transform
         //
         //big-endian to little-endian conversion
         //
-        void formatWord(U1 bytes[],unsigned int start);
-        void formatDWord(U1 bytes[],unsigned int start);
-        void formatQWord(U1 bytes[],unsigned int start);
+        void word(U1 bytes[],unsigned int start) const;
+        void dword(U1 bytes[],unsigned int start) const;
+        void qword(U1 bytes[],unsigned int start) const;
     private:
         Transform();
         static Transform* instance;

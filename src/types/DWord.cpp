@@ -9,13 +9,13 @@ namespace Logi
 DWord::DWord()
 {
     this->value.S4 = 0;
-    this->tag = TypeUnionTag::S4_TAG;
+    this->tag = TypeTag::S4_TAG;
 }
 
-DWord::DWord(const signed int value)
+DWord::DWord(const S4 value)
 {
     this->value.S4 = value;
-    this->tag = TypeUnionTag::S4_TAG;
+    this->tag = TypeTag::S4_TAG;
 }
 
 std::ostream& operator<<(std::ostream& out,DWord& dword)
@@ -31,13 +31,13 @@ std::ostream& operator<<(std::ostream& out,DWord& dword)
 UDWord::UDWord()
 {
     this->value.U4 = 0;
-    this->tag = TypeUnionTag::U4_TAG;
+    this->tag = TypeTag::U4_TAG;
 }
 
-UDWord::UDWord(const unsigned int value)
+UDWord::UDWord(const U4 value)
 {
     this->value.U4 = value;
-    this->tag = TypeUnionTag::U4_TAG;
+    this->tag = TypeTag::U4_TAG;
 }
 
 std::ostream& operator<<(std::ostream& out,const UDWord& dword)

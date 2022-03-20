@@ -96,11 +96,17 @@ enum OpCodes
 
 static const unsigned int NUM_INSTRUCTIONS {73};
 
+//
+// InstructionSet is a singleton.
+//
 class InstructionSet
 {
     public:
+        static const InstructionSet* getInstance();
         const std::string& operator()(OpCodes code) const;
     private:
+        InstructionSet();
+        static InstructionSet* instance;
         static const std::vector<std::string> _InstructionSetStrings;
 };
 

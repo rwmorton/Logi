@@ -4,11 +4,24 @@
 namespace Logi
 {
 
+InstructionSet* InstructionSet::instance {nullptr};
+
+const InstructionSet* InstructionSet::getInstance()
+{
+    if(InstructionSet::instance == nullptr)
+    {
+        InstructionSet::instance = new InstructionSet();
+    }
+    return InstructionSet::instance;
+}
+
 const std::string& InstructionSet::operator()(OpCodes code) const
 {
     if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("Instruction out of range");
     return _InstructionSetStrings.at(code);
 }
+
+InstructionSet::InstructionSet() {}
 
 const std::vector<std::string> InstructionSet::_InstructionSetStrings
 {

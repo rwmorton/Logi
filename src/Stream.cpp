@@ -89,7 +89,7 @@ const Stream& Stream::U8(Logi::U8 qword) const
 
 const Stream& Stream::S1(Logi::S1 byte) const
 {
-    //out << std::hex << byte << std::dec;
+    out << std::hex << byte << std::dec;
     return *this;
 }
 

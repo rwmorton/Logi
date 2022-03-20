@@ -15,6 +15,14 @@ const Transform* Transform::getInstance()
     return Transform::instance;
 }
 
+const Endian Transform::checkEndian() const
+{
+    int i = 184594741; //0x0B00B135
+
+    U1* buf = (U1*)&i;
+    return buf[0] == 0x35 ? Endian::LITTLE : Endian::BIG;
+}
+
 U2 Transform::bytecodeToWord(U1 bytes[]) const
 {
     U2 word;
@@ -133,7 +141,7 @@ void Transform::doubleToBytecode(F8 double_,U1 bytes[]) const
 }
 
 //big-endian to little-endian conversion
-void Transform::formatWord(U1 bytes[],unsigned int start)
+void Transform::word(U1 bytes[],unsigned int start) const
 {
     U1 temp[2];
     temp[0] = bytes[start+1];
@@ -143,7 +151,7 @@ void Transform::formatWord(U1 bytes[],unsigned int start)
     bytes[start+1] = temp[0];
 }
 
-void Transform::formatDWord(U1 bytes[],unsigned int start)
+void Transform::dword(U1 bytes[],unsigned int start) const
 {
     U1 temp[4];
     temp[0] = bytes[start+3];
@@ -157,7 +165,7 @@ void Transform::formatDWord(U1 bytes[],unsigned int start)
     bytes[start+3] = temp[3];
 }
 
-void Transform::formatQWord(U1 bytes[],unsigned int start)
+void Transform::qword(U1 bytes[],unsigned int start) const
 {
     U1 temp[8];
     temp[0] = bytes[start+7];

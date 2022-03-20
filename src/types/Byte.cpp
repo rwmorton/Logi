@@ -9,13 +9,13 @@ namespace Logi
 Byte::Byte()
 {
     this->value.S1 = 0;
-    this->tag = TypeUnionTag::S1_TAG;
+    this->tag = TypeTag::S1_TAG;
 }
 
-Byte::Byte(const signed char value)
+Byte::Byte(const S1 value)
 {
     this->value.S1 = value;
-    this->tag = TypeUnionTag::S1_TAG;
+    this->tag = TypeTag::S1_TAG;
 }
 
 std::ostream& operator<<(std::ostream& out,Byte& byte)
@@ -31,13 +31,13 @@ std::ostream& operator<<(std::ostream& out,Byte& byte)
 UByte::UByte()
 {
     this->value.U1 = 0;
-    this->tag = TypeUnionTag::U1_TAG;
+    this->tag = TypeTag::U1_TAG;
 }
 
-UByte::UByte(const unsigned char value)
+UByte::UByte(const U1 value)
 {
     this->value.U1 = value;
-    this->tag = TypeUnionTag::U1_TAG;
+    this->tag = TypeTag::U1_TAG;
 }
 
 std::ostream& operator<<(std::ostream& out,const UByte& byte)

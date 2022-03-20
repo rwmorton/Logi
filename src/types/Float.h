@@ -12,7 +12,7 @@ class Float : public Type
 {
     public:
         Float();
-        explicit Float(const float value);
+        explicit Float(const F4 value);
         friend std::ostream& operator<<(std::ostream& out,Float& float_);
 };
 
@@ -21,7 +21,7 @@ class Double : public Type
 {
     public:
         Double();
-        explicit Double(const double value);
+        explicit Double(const F8 value);
         friend std::ostream& operator<<(std::ostream& out,const Double& double_);
 };
 

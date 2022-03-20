@@ -21,14 +21,20 @@ const U8 RAM::size() const
     return _bytes;
 }
 
+//get a pointer to RAM at given index
+U1* RAM::at(const U8 index)
+{
+    return &_ram[index];
+}
+
 //get a pointer to the first byte of the RAM
-const U1* RAM::begin() const
+U1* RAM::begin()
 {
     return &_ram[0];
 }
 
 //get a pointer to the last byte of the RAM
-const U1* RAM::end() const
+U1* RAM::end()
 {
     return &_ram[this->size()-1];
 }

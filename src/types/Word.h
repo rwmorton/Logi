@@ -12,7 +12,7 @@ class Word : public Type
 {
     public:
         Word();
-        explicit Word(const signed short value);
+        explicit Word(const S2 value);
         friend std::ostream& operator<<(std::ostream& out,Word& word);
 };
 
@@ -21,7 +21,7 @@ class UWord : public Type
 {
     public:
         UWord();
-        explicit UWord(const unsigned short value);
+        explicit UWord(const U2 value);
         friend std::ostream& operator<<(std::ostream& out,const UWord& word);
 };
 

@@ -12,7 +12,7 @@ class DWord : public Type
 {
     public:
         DWord();
-        explicit DWord(const signed int value);
+        explicit DWord(const S4 value);
         friend std::ostream& operator<<(std::ostream& out,DWord& dword);
 };
 
@@ -21,7 +21,7 @@ class UDWord : public Type
 {
     public:
         UDWord();
-        explicit UDWord(const unsigned int value);
+        explicit UDWord(const U4 value);
         friend std::ostream& operator<<(std::ostream& out,const UDWord& dword);
 };
 
