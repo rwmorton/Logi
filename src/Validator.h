@@ -17,26 +17,31 @@ class Validator
 {
     public:
         Validator(U8& currentByte,U8& stopByte,Registers& registers,RAM* ram);
-        void integerRegister(U1 arg,U8 currentByte) const;
-        void floatRegister(U1 arg,U8 currentByte) const;
-        void doubleRegister(U1 arg,U8 currentByte) const;
-        void address_(U1* array,U8 currentByte,const Registers& registers) const;
-        void currentByte_(U8 currentByte,U8 end) const;
-        void endCurrentByte(U8 currentByte,U8 end) const;
         //
         // implement a fluent interface
+        //
+        Validator& R(const U1 count);
+        Validator& RF(const U1 count);
+        Validator& RD(const U1 count);
         //
         Validator& R();
         Validator& RF();
         Validator& RD();
         Validator& opcode();
         Validator& operand();
+        Validator& end();
         Validator& end_byte();
         Validator& end_word();
         Validator& end_dword();
         Validator& end_qword();
         Validator& address(TypeTag tag);
     private:
+        void checkIReg(U1 arg,U8 currentByte) const;
+        void checkFReg(U1 arg,U8 currentByte) const;
+        void checkDReg(U1 arg,U8 currentByte) const;
+        void checkAddr(U1* array,U8 currentByte,const Registers& registers) const;
+        void checkCB(U8 currentByte,U8 end) const;
+        void checkEndCB(U8 currentByte,U8 end) const;
         U8 currentByte;
         U8 stopByte;
         Registers registers;

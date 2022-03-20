@@ -31,17 +31,20 @@ const Logi::RAM* VirtualMachine::RAM() const
 
 void VirtualMachine::init(int argc,char* argv[])
 {
-    stream->string("VM: Initializing virtual machine...").endl();
-    stream->string("VM: Loading bytecode executable...").endl();
+    stream->string("VM: Initializing virtual machine...\n");
+    stream->string("VM: Loading bytecode executable...\n");
     //load the bytecode
     executable.load(argc,argv,*this);
+    stream->string("VM: Bytecode executable loaded.\n");
 
-    stream->string("VM: Bytecode executable loaded.").endl();
+    //validate the bytecode
+    validateBytecode();
+    stream->string("VM: bytecode passed validation!\n");
 }
 
 void VirtualMachine::run()
 {
-    stream->string("VM: running...").endl();
+    stream->string("VM: running...\n");
 
     std::cout << this->registers;
     std::cout << this->executable;
@@ -54,7 +57,7 @@ void VirtualMachine::run()
 
 void VirtualMachine::shutdown()
 {
-    stream->string("VM: shutting down...").endl();
+    stream->string("VM: shutting down...\n");
 }
 
 std::ostream& operator<<(std::ostream& out,const VirtualMachine& vm)
@@ -84,47 +87,37 @@ void VirtualMachine::validateBytecode()
         {
             case LBI: //LBI $R1, BBB
             {
-                validate
-                    ->opcode()
-                    .R()
-                    .operand()
-                    .end_byte();
+                validate->opcode() /* B */
+                    .R().operand() /* R1 */
+                    .end_byte(); /* B */
             }
             break;
             case LWI: //LWI $R1, BBW
             {
-                validate
-                    ->opcode()
-                    .R()
-                    .operand()
-                    .end_word();
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .end_word(); /* W */
             }
             break;
             case LDI: //LDI $R1, BBD
             {
-                validate
-                    ->opcode()
-                    .R()
-                    .operand()
-                    .end_dword();
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .end_dword(); /* D */
             }
             break;
             case LQI: //LQI $R1, BBQ
             {
-                validate
-                    ->opcode()
-                    .R()
-                    .operand()
-                    .end_qword();
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .end_qword(); /* Q */
             }
             break;
             case LF1I: //LF1I $R1, BBD
             {
-                validate
-                    ->opcode()
-                    .R()
-                    .operand()
-                    .end_dword();
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .end_dword(); /* D */
             }
             break;
             case LF2I: //LF2I $R1, BBQ
@@ -158,18 +151,27 @@ void VirtualMachine::validateBytecode()
             case SD:
             case SQ:
             {
-                //
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .R().operand() /* $R2 */
+                    .end();
             }
             break;
             case LF1: // LF1 $F1,$R1,       BBB
             case SF1:
             {
-                //
+                validate->opcode() /* B */
+                    .RF().operand() /* $F */
+                    .R().operand() /* $R1 */
+                    .end();
             }
             break;
             case LF2: // LF2 $D1,$R1,       BBB
             {
-                //
+                validate->opcode() /* B */
+                    .RD().operand() /* $D */
+                    .R().operand() /* $R1 */
+                    .end();
             }
             break;
             case PUSHB: // PUSHB $R1, BB
@@ -182,36 +184,51 @@ void VirtualMachine::validateBytecode()
             case POPQ:
             case JMP:
             {
-                //
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .end();
             }
             break;
             case PUSHF1: // PUSHF1 $F
             case POPF1:
             {
-                //
+                validate->opcode() /* B */
+                    .RF().operand() /* $F */
+                    .end();
             }
             break;
             case PUSHF2:
             case POPF2:
             {
-                //
+                validate->opcode() /* B */
+                    .RD().operand() /* $D */
+                    .end();
             }
             break;
             MOVF: // MOVF $F1,$F2
             {
-                //
+                validate->opcode() /* B */
+                    .RF().operand() /* $F1 */
+                    .RF().operand() /* $F2 */
+                    .end();
             }
             break;
             case MOVD: // MOVD $D1,$D2
             {
-                //
+                validate->opcode() /* B */
+                    .RD().operand() /* $D1 */
+                    .RD().operand() /* $D2 */
+                    .end();
             }
             break;
             case MOV:
             case NOT:
             case BS:
             {
-                //
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .R().operand() /* $R2 */
+                    .end();
             }
             break;
             case JE:
@@ -228,12 +245,17 @@ void VirtualMachine::validateBytecode()
             case SUB:
             case MULT:
             {
-                //
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .R().operand() /* $R2 */
+                    .R().operand() /* $R3 */
+                    .end();
             }
             break;
             case INT: // INT #vector BB
             {
-                //
+                validate->opcode() /* B */
+                    .end_byte(); /* B */
             }
             break;
             case EI:
@@ -241,42 +263,64 @@ void VirtualMachine::validateBytecode()
             case HALT:
             case NOP:
             {
-                //
+                validate->opcode().end(); /* B */
             }
             break;
             case DIV: // DIV $R1,$R2,$R3,$R4
             {
-                //
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .R().operand() /* $R2 */
+                    .R().operand() /* $R3 */
+                    .end();
             }
             break;
             case CAST_IF: // CAST_IF $R,$F
             {
-                //
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .RF().operand() /* $F */
+                    .end();
             }
             break;
             case CAST_ID: // CAST_ID $R,$D
             {
-                //
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .RD().operand() /* $D */
+                    .end();
             }
             break;
             case CAST_FI: // CAST_FI $F,$R
             {
-                //
+                validate->opcode() /* B */
+                    .RF().operand() /* $F */
+                    .R().operand() /* $R1 */
+                    .end();
             }
             break;
             case CAST_FD: // CAST_FD $F,$D
             {
-                //
+                validate->opcode() /* B */
+                    .RF().operand() /* $F */
+                    .RD().operand() /* $D */
+                    .end();
             }
             break;
             case CAST_DI: // CAST_DI $D,$R
             {
-                //
+                validate->opcode() /* B */
+                    .RD().operand() /* $D */
+                    .R().operand() /* $R1 */
+                    .end();
             }
             break;
             case CAST_DF: // CAST_DF $D,$F
             {
-                //
+                validate->opcode() /* B */
+                    .RD().operand() /* $D */
+                    .RF().operand() /* $F */
+                    .end();
             }
             break;
             case FADD: // FADD $F1,$F2,$F3 BBBB
@@ -285,7 +329,14 @@ void VirtualMachine::validateBytecode()
             case FDIV:
             case FSLT:
             {
-                //
+                validate->opcode() /* B */
+                    .RF().operand() /* $F1 */
+                    .RF().operand() /* $F2 */
+                    .RF().operand() /* $F3 */
+                    .end();
+
+                //after testing
+                //validate->opcode().RF(3).end();
             }
             break;
             case DADD: // FADD $F1,$F2,$F3 BBBB
@@ -294,12 +345,19 @@ void VirtualMachine::validateBytecode()
             case DDIV:
             case DSLT:
             {
-                //
+                validate->opcode() /* B */
+                    .RD().operand() /* $D1 */
+                    .RD().operand() /* $D2 */
+                    .RD().operand() /* $D3 */
+                    .end();
+                
+                //after testing
+                //validate->opcode().RD(3).end();
             }
             break;
             default:
             {
-                //
+                throw std::runtime_error("bad opcode.");
             }
         }
     }

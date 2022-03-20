@@ -37,89 +37,89 @@ const Stream& Stream::endl() const
 
 const Stream& Stream::U_REG(const std::string& regStr,Logi::U8 reg) const
 {
-    out << regStr << " = " << std::showbase << std::hex << reg;
+    out << regStr << " = " << std::showbase << std::hex << (CAST_TO)reg;
     std::dec;
     return *this;
 }
 
 const Stream& Stream::S_REG(const std::string& regStr,Logi::U8 reg) const
 {
-    out << regStr << " = " << std::showbase << std::hex << reg;
+    out << regStr << " = " << std::showbase << std::hex << (CAST_TO)reg;
     std::dec;
     return *this;
 }
 
 const Stream& Stream::F_REG(const std::string& regStr,Logi::U8 reg) const
 {
-    out << regStr << " = " << std::showbase << std::hex << reg;
+    out << regStr << " = " << std::showbase << std::hex << (CAST_TO)reg;
     std::dec;
     return *this;
 }
 
 const Stream& Stream::D_REG(const std::string& regStr,Logi::U8 reg) const
 {
-    out << regStr << " = " << std::showbase << std::hex << reg;
+    out << regStr << " = " << std::showbase << std::hex << (CAST_TO)reg;
     std::dec;
     return *this;
 }
 
 const Stream& Stream::U1(Logi::U1 byte) const
 {
-    out << std::hex << byte << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)byte << std::dec;
     return *this;
 }
 
 const Stream& Stream::U2(Logi::U2 word) const
 {
-    out << std::hex << word << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)word << std::dec;
     return *this;
 }
 
 const Stream& Stream::U4(Logi::U4 dword) const
 {
-    out << std::hex << dword << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)dword << std::dec;
     return *this;
 }
 
 const Stream& Stream::U8(Logi::U8 qword) const
 {
-    out << std::hex << qword << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)qword << std::dec;
     return *this;
 }
 
 const Stream& Stream::S1(Logi::S1 byte) const
 {
-    out << std::hex << byte << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)byte << std::dec;
     return *this;
 }
 
 const Stream& Stream::S2(Logi::S2 word) const
 {
-    out << std::hex << word << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)word << std::dec;
     return *this;
 }
 
 const Stream& Stream::S4(Logi::S4 dword) const
 {
-    out << std::hex << dword << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)dword << std::dec;
     return *this;
 }
 
 const Stream& Stream::S8(Logi::S8 qword) const
 {
-    out << std::hex << qword << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)qword << std::dec;
     return *this;
 }
 
 const Stream& Stream::F4(Logi::F4 float_) const
 {
-    out << std::hex << float_ << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)float_ << std::dec;
     return *this;
 }
 
 const Stream& Stream::F8(Logi::F8 double_) const
 {
-    out << std::hex << double_ << std::dec;
+    out << std::showbase << std::hex << (CAST_TO)double_ << std::dec;
     return *this;
 }
 

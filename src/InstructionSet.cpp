@@ -17,7 +17,7 @@ const InstructionSet* InstructionSet::getInstance()
 
 const std::string& InstructionSet::operator()(OpCodes code) const
 {
-    if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("Instruction out of range");
+    if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("instruction out of range");
     return _InstructionSetStrings.at(code);
 }
 

@@ -21,63 +21,39 @@ Validator::Validator
     transform = Transform::getInstance();
 }
 
-void Validator::integerRegister(U1 arg,U8 currentByte) const
+Validator& Validator::R(const U1 count)
 {
-    if(arg > RegisterCodes::$R24) throw std::runtime_error("invalid integer register code.");
+    for(U1 i=0; i<count; i++) R().opcode();
+    return *this;
 }
 
-void Validator::floatRegister(U1 arg,U8 currentByte) const
+Validator& Validator::RF(const U1 count)
 {
-    if(arg > FloatRegisterCodes::$F10) throw std::runtime_error("invalid float register code.");
+    for(U1 i=0; i<count; i++) RF().opcode();
+    return *this;
 }
 
-void Validator::doubleRegister(U1 arg,U8 currentByte) const
+Validator& Validator::RD(const U1 count)
 {
-    if(arg > DoubleRegisterCodes::$D10) throw std::runtime_error("invalid double register code.");
-}
-
-//
-// make sure that the bytecode address literals do not
-// reference memory beyond the end of the address space.
-//
-void Validator::address_(U1* array,U8 currentByte,const Registers& registers) const
-{
-    U8* address = (U8*)&array[currentByte];
-    if(*address > registers.R(RegisterCodes::$TOP)) throw std::runtime_error("address is out of bounds.");
-}
-
-//
-// safeguard against incomplete instructions.
-//
-void Validator::currentByte_(U8 currentByte,U8 end) const
-{
-    if(currentByte >= end) throw std::runtime_error("incomplete instruction at address.");
-}
-
-//
-// the last byte of an instruction is allowed to be at the end of the bytecode.
-// this function checks for that.
-//
-void Validator::endCurrentByte(U8 currentByte,U8 end) const
-{
-    if(currentByte > end) throw std::runtime_error("incomplete instruction: passed end of bytecode.");
+    for(U1 i=0; i<count; i++) RD().opcode();
+    return *this;
 }
 
 Validator& Validator::R()
 {
-    integerRegister(*ram->at(currentByte),currentByte);
+    checkIReg(*ram->at(currentByte),currentByte);
     return *this;
 }
 
 Validator& Validator::RF()
 {
-    floatRegister(*ram->at(currentByte),currentByte);
+    checkFReg(*ram->at(currentByte),currentByte);
     return *this;
 }
 
 Validator& Validator::RD()
 {
-    doubleRegister(*ram->at(currentByte),currentByte);
+    checkDReg(*ram->at(currentByte),currentByte);
     return *this;
 }
 
@@ -85,7 +61,7 @@ Validator& Validator::opcode()
 {
     stream->string(Validator::OPCODE).string((*iset)((OpCodes)((*ram)(currentByte)))).string(Validator::ENDL);
     currentByte++;
-    currentByte_(currentByte,stopByte);
+    checkCB(currentByte,stopByte);
     return *this;
 }
 
@@ -93,15 +69,20 @@ Validator& Validator::operand()
 {
     stream->string(Validator::OPERAND).string(registers.R_str((RegisterCodes)((*ram)(currentByte)))).string(Validator::ENDL);
     currentByte++;
-    currentByte_(currentByte,stopByte);
+    checkCB(currentByte,stopByte);
+    return *this;
+}
+
+Validator& Validator::end()
+{
+    checkEndCB(currentByte,stopByte);
     return *this;
 }
 
 Validator& Validator::end_byte()
 {
-    endCurrentByte(currentByte,stopByte);
-    //currentByte += sizeof(U1);
-    endCurrentByte(currentByte,stopByte);
+    currentByte += sizeof(U1);
+    checkEndCB(currentByte,stopByte);
     return *this;
 }
 
@@ -109,7 +90,7 @@ Validator& Validator::end_word()
 {
     transform->word(ram->at(currentByte),currentByte);
     currentByte += sizeof(U2);
-    endCurrentByte(currentByte,stopByte);
+    checkEndCB(currentByte,stopByte);
     return *this;
 }
 
@@ -117,7 +98,7 @@ Validator& Validator::end_dword()
 {
     transform->dword(ram->at(currentByte),currentByte);
     currentByte += sizeof(U4);
-    endCurrentByte(currentByte,stopByte);
+    checkEndCB(currentByte,stopByte);
     return *this;
 }
 
@@ -125,13 +106,13 @@ Validator& Validator::end_qword()
 {
     transform->qword(ram->at(currentByte),currentByte);
     currentByte += sizeof(U8);
-    endCurrentByte(currentByte,stopByte);
+    checkEndCB(currentByte,stopByte);
     return *this;
 }
 
 Validator& Validator::address(TypeTag tag)
 {
-    address_(ram->at(currentByte),currentByte,registers);
+    checkAddr(ram->at(currentByte),currentByte,registers);
     switch(tag)
     {
         case TypeTag::S1_TAG: stream->string(ADDR).S1(*((S1*)ram->at(currentByte))).string(ENDL); break;
@@ -147,6 +128,49 @@ Validator& Validator::address(TypeTag tag)
         default: throw std::runtime_error("invalid type tag.");
     }
     return *this;
+}
+
+void Validator::checkIReg(U1 arg,U8 currentByte) const
+{
+    Stream::getInstance()->string("arg = ").U1(arg).string(", currentByte = ").U8(currentByte).endl();
+    if(arg > RegisterCodes::$R24) throw std::runtime_error("invalid integer register code.");
+}
+
+void Validator::checkFReg(U1 arg,U8 currentByte) const
+{
+    if(arg > FloatRegisterCodes::$F10) throw std::runtime_error("invalid float register code.");
+}
+
+void Validator::checkDReg(U1 arg,U8 currentByte) const
+{
+    if(arg > DoubleRegisterCodes::$D10) throw std::runtime_error("invalid double register code.");
+}
+
+//
+// make sure that the bytecode address literals do not
+// reference memory beyond the end of the address space.
+//
+void Validator::checkAddr(U1* array,U8 currentByte,const Registers& registers) const
+{
+    U8* address = (U8*)&array[currentByte];
+    if(*address > registers.R(RegisterCodes::$TOP)) throw std::runtime_error("address is out of bounds.");
+}
+
+//
+// safeguard against incomplete instructions.
+//
+void Validator::checkCB(U8 currentByte,U8 end) const
+{
+    if(currentByte >= end) throw std::runtime_error("incomplete instruction at address.");
+}
+
+//
+// the last byte of an instruction is allowed to be at the end of the bytecode.
+// this function checks for that.
+//
+void Validator::checkEndCB(U8 currentByte,U8 end) const
+{
+    if(currentByte > end) throw std::runtime_error("incomplete instruction: passed end of bytecode.");
 }
 
 } //namespace Logi

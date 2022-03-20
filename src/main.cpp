@@ -8,7 +8,6 @@
 #include <initializer_list>
 #include <memory>
 #include <algorithm>
-using namespace std;
 
 //Logi includes
 #include "Logi.h"
@@ -17,7 +16,7 @@ using namespace std;
 
 void makeRandomBytecodeFile()
 {
-    ofstream out("random.RUN",ios::binary|ios::out);
+    std::ofstream out("random.RUN",std::ios::binary|std::ios::out);
     Logi::U2 magic = 0xDEED;
     Logi::U8 symbolTableSize = 16;
     Logi::U8 stringTableSize = 64;
@@ -41,51 +40,20 @@ int main(int argc,char *argv[])
 {
     //makeRandomBytecodeFile();
 
-    cout << "Testing Virtual Machine" << endl;
-    cout << "-----------------------" << endl;
+    std::cout << "Testing Virtual Machine\n" << std::setw(25) << std::setfill('-') << '\n';
 
     Logi::VirtualMachine vm;
 
     try
     {
-        //vm.init(argc,argv);
+        vm.init(argc,argv);
         //vm.run();
         //vm.shutdown();
     }
     catch(const std::exception& e)
     {
-        cout << e.what() << endl;
+        std::cout << "ERROR: " << e.what() << std::endl;
         vm.shutdown();
-    }
-
-    try
-    {
-        const Logi::InstructionSet* iset = Logi::InstructionSet::getInstance();
-        cout << (*iset)(Logi::LBI) << endl;
-        cout << (*iset)(Logi::FADD) << endl;
-        cout << (*iset)(Logi::MOV) << endl;
-        cout << (*iset)(Logi::BAD) << endl;
-    }
-    catch(const std::exception& e)
-    {
-        cout << e.what() << endl;
-    }
-
-    ////////////////////////////////////////////////////////
-
-    int res = Logi::Transform::getInstance()->checkEndian();
-    switch(res)
-    {
-        case Logi::Endian::BIG:
-        {
-            cout << "Platform is big endian" << endl;
-        }
-        break;
-        case Logi::Endian::LITTLE:
-        {
-            cout << "Platform is little endian" << endl;
-        }
-        break;
     }
 
     return 0;
