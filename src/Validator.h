@@ -27,7 +27,7 @@ class Validator
         Validator& R();
         Validator& RF();
         Validator& RD();
-        Validator& opcode();
+        Validator& opcode(const bool thenEnd=false);
         Validator& operand();
         Validator& end();
         Validator& end_byte();
@@ -40,10 +40,10 @@ class Validator
         void checkFReg(U1 arg,U8 currentByte) const;
         void checkDReg(U1 arg,U8 currentByte) const;
         void checkAddr(U1* array,U8 currentByte,const Registers& registers) const;
-        void checkCB(U8 currentByte,U8 end) const;
-        void checkEndCB(U8 currentByte,U8 end) const;
-        U8 currentByte;
-        U8 stopByte;
+        void checkCB(U8 currentByte,U8 endByte) const;
+        void checkEndCB(U8 currentByte,U8 endByte) const;
+        U8& currentByte;
+        const U8& stopByte;
         Registers registers;
         RAM* ram;
         const Transform* transform;

@@ -42,7 +42,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
 
     //header looks good, continue.
     //set total size of the bytecode executable in bytes
-    totalSize = Bytecode::HEADER_SIZE + bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
+    totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
 
     //get bytecode addresses
     bytecodeStartAddress = Bytecode::HEADER_SIZE + symbolTableSize + stringTableSize;
@@ -63,7 +63,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     vm.registers.R($BE) = bytecodeSize - 1;                         //set bytecode end
     vm.registers.R($HS) = bytecodeSize;                             //set heap start address
     vm.registers.R($HE) = bytecodeSize + (heapSize * 1024) - 1;     //set heap end address
-    vm.registers.R($SS) = bytecodeSize + (stackSize * 1024) - 1;    //set stack start address
+    vm.registers.R($SS) = bytecodeSize + (stackSize * 1024);        //set stack start address
     vm.registers.R($TOP) = totalSize - 1;                           //set stack top address
 
     //load bytecode into RAM
@@ -83,7 +83,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
 std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode)
 {
     out << "stack size = " << bytecode.stackSize << " KB." << std::endl;
-    out << "heap size = " << bytecode.heapSize << " Kb."  << std::endl;
+    out << "heap size = " << bytecode.heapSize << " KB."  << std::endl;
     out << "bytecode size = " << bytecode.bytecodeSize << " bytes." << std::endl;
     out << "total bytes allocated = " << bytecode.totalSize << " bytes." << std::endl;
     out << std::showbase << std::hex;

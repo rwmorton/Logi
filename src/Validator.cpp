@@ -57,11 +57,24 @@ Validator& Validator::RD()
     return *this;
 }
 
-Validator& Validator::opcode()
+//
+// increment defaults to 1.
+// Pass 0 if this is doesn't require a forward check.
+// ex. only single byte opcode.
+//
+Validator& Validator::opcode(const bool thenEnd)
 {
+    stream->string("opcode() : currentByte = ").U8(currentByte).endl();
     stream->string(Validator::OPCODE).string((*iset)((OpCodes)((*ram)(currentByte)))).string(Validator::ENDL);
-    currentByte++;
-    checkCB(currentByte,stopByte);
+    if(thenEnd)
+    {
+        checkEndCB(currentByte,stopByte);
+    }
+    else
+    {
+        currentByte ++;
+        checkCB(currentByte,stopByte);
+    }
     return *this;
 }
 
@@ -69,6 +82,7 @@ Validator& Validator::operand()
 {
     stream->string(Validator::OPERAND).string(registers.R_str((RegisterCodes)((*ram)(currentByte)))).string(Validator::ENDL);
     currentByte++;
+    stream->string("operand() : currentByte = ").U8(currentByte).endl();
     checkCB(currentByte,stopByte);
     return *this;
 }
@@ -159,18 +173,20 @@ void Validator::checkAddr(U1* array,U8 currentByte,const Registers& registers) c
 //
 // safeguard against incomplete instructions.
 //
-void Validator::checkCB(U8 currentByte,U8 end) const
+void Validator::checkCB(U8 currentByte,U8 endByte) const
 {
-    if(currentByte >= end) throw std::runtime_error("incomplete instruction at address.");
+    stream->string("checkCB() : currentByte = ").U8(currentByte).endl();
+    if(currentByte >= endByte) throw std::runtime_error("incomplete instruction at address.");
 }
 
 //
 // the last byte of an instruction is allowed to be at the end of the bytecode.
 // this function checks for that.
 //
-void Validator::checkEndCB(U8 currentByte,U8 end) const
+void Validator::checkEndCB(U8 currentByte,U8 endByte) const
 {
-    if(currentByte > end) throw std::runtime_error("incomplete instruction: passed end of bytecode.");
+    stream->string("checkEndCB() : currentByte = ").U8(currentByte).endl();
+    if(currentByte > endByte) throw std::runtime_error("incomplete instruction: passed end of bytecode.");
 }
 
 } //namespace Logi

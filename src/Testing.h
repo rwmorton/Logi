@@ -5,9 +5,37 @@
 #include <memory>
 #include <algorithm>
 #include <cassert>
+using namespace std;
 
 namespace Logi
 {
+
+void makeBC_01()
+{
+    ofstream out("BC_01.RUN",ios::binary|ios::out);
+}
+
+void makeRandomBytecodeFile()
+{
+    std::ofstream out("random.RUN",std::ios::binary|std::ios::out);
+    Logi::U2 magic = 0xDEED;
+    Logi::U8 symbolTableSize = 16;
+    Logi::U8 stringTableSize = 64;
+    Logi::U8 bytecodeSize = 1024;
+
+    out.write((const char*)&magic,sizeof(Logi::U2));
+    out.write((const char*)&symbolTableSize,sizeof(Logi::U8));
+    out.write((const char*)&stringTableSize,sizeof(Logi::U8));
+    out.write((const char*)&bytecodeSize,sizeof(Logi::U8));
+    
+    //write random bytes
+    Logi::U1 byte{};
+    for(int i=0; i<bytecodeSize; i++)
+    {
+        out.put(std::rand() % 255);
+    }
+    out.close();
+}
 
 class vector
 {

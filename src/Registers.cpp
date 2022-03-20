@@ -83,27 +83,27 @@ const std::string& Registers::RD_str(unsigned int code) const
 
 std::ostream& operator<<(std::ostream& out,const Registers& registers)
 {
-    out << std::hex;
+    out << std::showbase << std::hex;
 
     int i{0};
     for(i=0; i<8; i++)
     {
-        out << registers.R_str(i) << " = " << registers.R(i) << std::endl;
+        out << registers.R_str(i) << " = " << static_cast<int>(registers.R(i)) << std::endl;
     }
 
     for(; i<NUM_REGISTERS; i++)
     {
-        out << registers.R_str(i) << " = " << registers.R(i) << std::endl;
+        out << registers.R_str(i) << " = " << static_cast<int>(registers.R(i)) << std::endl;
     }
 
     for(i=0; i<NUM_FLOAT_REGISTERS; i++)
     {
-        out << registers.RF_str(i) << " = " << registers.RF(i) << std::endl;
+        out << registers.RF_str(i) << " = " << static_cast<int>(registers.RF(i)) << std::endl;
     }
 
     for(i=0; i<NUM_DOUBLE_REGISTERS; i++)
     {
-        out << registers.RD_str(i) << " = " << registers.RD(i) << std::endl;
+        out << registers.RD_str(i) << " = " << static_cast<int>(registers.RD(i)) << std::endl;
     }
 
     out << std::dec;
