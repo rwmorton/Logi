@@ -1,35 +1,35 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_AND()
+void InstructionSet::AND() const
 {
     //
 }
 
-void handle_OR()
+void InstructionSet::OR() const
 {
     //
 }
 
-void handle_XOR()
+void InstructionSet::XOR() const
 {
     //
 }
 
-void handle_NOT()
+void InstructionSet::NOT() const
 {
     //
 }
 
-void handle_BT()
+void InstructionSet::BT() const
 {
     //
 }
 
-void handle_BS()
+void InstructionSet::BS() const
 {
     //
 }

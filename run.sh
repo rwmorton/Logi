@@ -1,1 +1,1 @@
-./build/main -s=512 -h=128 ./validate.RUN
+./build/main -s=1 -h=1 ./validate.RUN

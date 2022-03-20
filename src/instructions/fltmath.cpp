@@ -1,30 +1,30 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_FADD()
+void InstructionSet::FADD() const
 {
     //
 }
 
-void handle_FSUB()
+void InstructionSet::FSUB() const
 {
     //
 }
 
-void handle_FMULT()
+void InstructionSet::FMULT() const
 {
     //
 }
 
-void handle_FDIV()
+void InstructionSet::FDIV() const
 {
     //
 }
 
-void handle_FSLT()
+void InstructionSet::FSLT() const
 {
     //
 }

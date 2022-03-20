@@ -1,20 +1,20 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_SRA()
+void InstructionSet::SRA() const
 {
     //
 }
 
-void handle_SRL()
+void InstructionSet::SRL() const
 {
     //
 }
 
-void handle_SL()
+void InstructionSet::SL() const
 {
     //
 }

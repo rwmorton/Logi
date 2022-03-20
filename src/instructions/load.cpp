@@ -1,75 +1,75 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_LBI()
+void InstructionSet::LBI() const
 {
     //
 }
 
-void handle_LWI()
+void InstructionSet::LWI() const
 {
     //
 }
 
-void handle_LDI()
+void InstructionSet::LDI() const
 {
     //
 }
 
-void handle_LQI()
+void InstructionSet::LQI() const
 {
     //
 }
 
-void handle_LF1I()
+void InstructionSet::LF1I() const
 {
     //
 }
 
-void handle_LF2I()
+void InstructionSet::LF2I() const
 {
     //
 }
 
-void handle_LAD()
+void InstructionSet::LAD() const
 {
     //
 }
 
-void handle_LAI()
+void InstructionSet::LAI() const
 {
     //
 }
 
-void handle_LB()
+void InstructionSet::LB() const
 {
     //
 }
 
-void handle_LW()
+void InstructionSet::LW() const
 {
     //
 }
 
-void handle_LD()
+void InstructionSet::LD() const
 {
     //
 }
 
-void handle_LQ()
+void InstructionSet::LQ() const
 {
     //
 }
 
-void handle_LF1()
+void InstructionSet::LF1() const
 {
     //
 }
 
-void handle_LF2()
+void InstructionSet::LF2() const
 {
     //
 }

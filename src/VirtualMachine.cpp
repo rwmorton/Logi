@@ -2,7 +2,6 @@
 #include "VirtualMachine.h"
 #include "Stream.h"
 #include "Validator.h"
-#include "Instructions.h"
 
 //std includes
 #include <iostream>
@@ -105,12 +104,7 @@ void VirtualMachine::run()
             case INT: break;
             case DI: break;
             case EI: break;
-            case HALT:
-            {
-                std::cout << "GOT HALT OPCODE - shutting down the virtual machine..." << std::endl;
-                return;
-            }
-            break;
+            case HALT: iset->HALT(); break;
             case NOP: break;
             case AND: break;
             case OR: break;
@@ -149,7 +143,7 @@ void VirtualMachine::run()
     std::cout << std::endl << std::endl;
     for(int i=0; i<ram->size(); i++)
     {
-        std::cout << (int)(*ram)(i) << ' ';
+        std::cout << (int)(*ram)(i) << 'x';
     }
 }
 

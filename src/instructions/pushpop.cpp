@@ -1,65 +1,65 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_PUSHB()
+void InstructionSet::PUSHB() const
 {
     //
 }
 
-void handle_PUSHW()
+void InstructionSet::PUSHW() const
 {
     //
 }
 
-void handle_PUSHD()
+void InstructionSet::PUSHD() const
 {
     //
 }
 
-void handle_PUSHQ()
+void InstructionSet::PUSHQ() const
 {
     //
 }
 
-void handle_PUSHF1()
+void InstructionSet::PUSHF1() const
 {
     //
 }
 
-void handle_PUSHF2()
+void InstructionSet::PUSHF2() const
 {
     //
 }
 
-void handle_POPB()
+void InstructionSet::POPB() const
 {
     //
 }
 
-void handle_POPW()
+void InstructionSet::POPW() const
 {
     //
 }
 
-void handle_POPD()
+void InstructionSet::POPD() const
 {
     //
 }
 
-void handle_POPQ()
+void InstructionSet::POPQ() const
 {
     //
 }
 
-void handle_POPF1()
+void InstructionSet::POPF1() const
 {
     //
 }
 
-void handle_POPF2()
+void InstructionSet::POPF2() const
 {
     //
 }

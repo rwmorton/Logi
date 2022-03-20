@@ -1,20 +1,20 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_JMP()
+void InstructionSet::JMP() const
 {
     //
 }
 
-void handle_JE()
+void InstructionSet::JE() const
 {
     //
 }
 
-void handle_JNE()
+void InstructionSet::JNE() const
 {
     //
 }

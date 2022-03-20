@@ -1,30 +1,35 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
+
+//// TEMP
+#include <iostream>
+using namespace std;
 
 namespace Logi
 {
 
-void handle_INT()
+void InstructionSet::INT() const
 {
     //
 }
 
-void handle_DI()
+void InstructionSet::DI() const
 {
     //
 }
 
-void handle_EI()
+void InstructionSet::EI() const
 {
     //
 }
 
-void handle_HALT()
+void InstructionSet::HALT() const
 {
-    //
+    cout << "Got HALT instruction, shutting down the virtual machine..." << endl;
+    exit(0);
 }
 
-void handle_NOP()
+void InstructionSet::NOP() const
 {
     //
 }

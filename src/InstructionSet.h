@@ -104,6 +104,92 @@ class InstructionSet
     public:
         static const InstructionSet* getInstance();
         const std::string& operator()(OpCodes code) const;
+        //load instructions
+        void LBI() const;
+        void LWI() const;
+        void LDI() const;
+        void LQI() const;
+        void LF1I() const;
+        void LF2I() const;
+        void LAD() const;
+        void LAI() const;
+        void LB() const;
+        void LW() const;
+        void LD() const;
+        void LQ() const;
+        void LF1() const;
+        void LF2() const;
+        //store instructions
+        void SB() const;
+        void SW() const;
+        void SD() const;
+        void SQ() const;
+        void SF1() const;
+        void SF2() const;
+        //push/pop instructions
+        void PUSHB() const;
+        void PUSHW() const;
+        void PUSHD() const;
+        void PUSHQ() const;
+        void PUSHF1() const;
+        void PUSHF2() const;
+        void POPB() const;
+        void POPW() const;
+        void POPD() const;
+        void POPQ() const;
+        void POPF1() const;
+        void POPF2() const;
+        //move instructions
+        void MOV() const;
+        void MOVF() const;
+        void MOVD() const;
+        //jump instructions
+        void JMP() const;
+        void JE() const;
+        void JNE() const;
+        //shift instructions
+        void SLT() const;
+        //interrupt instructions
+        void INT() const;
+        void DI() const;
+        void EI() const;
+        void HALT() const;
+        void NOP() const;
+        //bitwise instructions
+        void AND() const;
+        void OR() const;
+        void XOR() const;
+        void NOT() const;
+        void BT() const;
+        void BS() const;
+        //shift instructions
+        void SRA() const;
+        void SRL() const;
+        void SL() const;
+        //integer math instructions
+        void ADD() const;
+        void SUB() const;
+        void MULT() const;
+        void DIV() const;
+        //??
+        void CAST_IF() const {}
+        void CAST_ID() const {}
+        void CAST_FI() const {}
+        void CAST_FD() const {}
+        void CAST_DI() const {}
+        void CAST_DF() const {}
+        //float math instructions
+        void FADD() const;
+        void FSUB() const;
+        void FMULT() const;
+        void FDIV() const;
+        void FSLT() const;
+        //double math instructions
+        void DADD() const;
+        void DSUB() const;
+        void DMULT() const;
+        void DDIV() const;
+        void DSLT() const;
     private:
         InstructionSet();
         static InstructionSet* instance;

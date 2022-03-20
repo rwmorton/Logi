@@ -1,20 +1,20 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_MOV()
+void InstructionSet::MOV() const
 {
     //
 }
 
-void handle_MOVF()
+void InstructionSet::MOVF() const
 {
     //
 }
 
-void handle_MOVD()
+void InstructionSet::MOVD() const
 {
     //
 }

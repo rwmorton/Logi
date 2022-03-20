@@ -1,35 +1,35 @@
 //Logi includes
-#include "../Instructions.h"
+#include "../InstructionSet.h"
 
 namespace Logi
 {
 
-void handle_SB()
+void InstructionSet::SB() const
 {
     //
 }
 
-void handle_SW()
+void InstructionSet::SW() const
 {
     //
 }
 
-void handle_SD()
+void InstructionSet::SD() const
 {
     //
 }
 
-void handle_SQ()
+void InstructionSet::SQ() const
 {
     //
 }
 
-void handle_SF1()
+void InstructionSet::SF1() const
 {
     //
 }
 
-void handle_SF2()
+void InstructionSet::SF2() const
 {
     //
 }
