@@ -10,23 +10,18 @@
 namespace Logi
 {
 
-const std::string VirtualMachine::OPCODE {"opcode = "};
-const std::string VirtualMachine::OPERAND {"operand = "};
-const std::string VirtualMachine::ADDR {"address = "};
-const std::string VirtualMachine::ENDL {'\n'};
-
-VirtualMachine::VirtualMachine() : registers{},ram{nullptr}
+VirtualMachine::VirtualMachine() : registers{},ram{nullptr},validate{nullptr}
 {
     ram = new Logi::RAM();
     iset = InstructionSet::getInstance();
     stream = Stream::getInstance();
-    validate = Validator::getInstance();
     transform = Transform::getInstance();
 }
 
 VirtualMachine::~VirtualMachine()
 {
     if(ram != nullptr) delete ram;
+    if(validate != nullptr) delete validate;
 }
 
 const Logi::RAM* VirtualMachine::RAM() const
@@ -71,86 +66,6 @@ std::ostream& operator<<(std::ostream& out,const VirtualMachine& vm)
 }
 
 //
-// validate helpers - note that these use the internal
-// currentByte and stopByte.
-//
-void VirtualMachine::VALIDATE_R()
-{
-    validate->integerRegister(*ram->at(currentByte),currentByte);
-}
-
-void VirtualMachine::VALIDATE_RF()
-{
-    validate->floatRegister(*ram->at(currentByte),currentByte);
-}
-
-void VirtualMachine::VALIDATE_RD()
-{
-    validate->doubleRegister(*ram->at(currentByte),currentByte);
-}
-
-void VirtualMachine::VALIDATE_OPCODE()
-{
-    stream->string(VirtualMachine::OPCODE).string((*iset)((OpCodes)((*ram)(currentByte)))).string(VirtualMachine::ENDL);
-    currentByte++;
-    validate->currentByte(currentByte,stopByte);
-}
-
-void VirtualMachine::VALIDATE_OPERAND()
-{
-    stream->string(VirtualMachine::OPERAND).string(registers.R_str((RegisterCodes)((*ram)(currentByte)))).string(VirtualMachine::ENDL);
-    currentByte++;
-    validate->currentByte(currentByte,stopByte);
-}
-
-void VirtualMachine::VALIDATE_END_BYTE()
-{
-    validate->endCurrentByte(currentByte,stopByte);
-    //currentByte += sizeof(U1);
-    validate->endCurrentByte(currentByte,stopByte);
-}
-
-void VirtualMachine::VALIDATE_END_WORD()
-{
-    transform->word(ram->at(currentByte),currentByte);
-    currentByte += sizeof(U2);
-    validate->endCurrentByte(currentByte,stopByte);
-}
-
-void VirtualMachine::VALIDATE_END_DWORD()
-{
-    transform->dword(ram->at(currentByte),currentByte);
-    currentByte += sizeof(U4);
-    validate->endCurrentByte(currentByte,stopByte);
-}
-
-void VirtualMachine::VALIDATE_END_QWORD()
-{
-    transform->qword(ram->at(currentByte),currentByte);
-    currentByte += sizeof(U8);
-    validate->endCurrentByte(currentByte,stopByte);
-}
-
-void VirtualMachine::VALIDATE_ADDRESS(TypeTag tag)
-{
-    validate->address(ram->at(currentByte),currentByte,registers);
-    switch(tag)
-    {
-        case TypeTag::S1_TAG: stream->string(ADDR).S1(*((S1*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::U1_TAG: stream->string(ADDR).U1(*((U1*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::S2_TAG: stream->string(ADDR).S2(*((S2*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::U2_TAG: stream->string(ADDR).U2(*((U2*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::S4_TAG: stream->string(ADDR).S4(*((S4*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::U4_TAG: stream->string(ADDR).U4(*((U4*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::S8_TAG: stream->string(ADDR).S8(*((S8*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::U8_TAG: stream->string(ADDR).U8(*((U8*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::F4_TAG: stream->string(ADDR).F4(*((F4*)ram->at(currentByte))).string(ENDL); break;
-        case TypeTag::F8_TAG: stream->string(ADDR).F8(*((F8*)ram->at(currentByte))).string(ENDL); break;
-        default: throw std::runtime_error("invalid type tag.");
-    }
-}
-
-//
 // validation begins at address 0 and continues until the beginning
 // of the heap segemenht is reached. each time an instruction has
 // been validated the next byte is expected to be an instruction
@@ -158,8 +73,10 @@ void VirtualMachine::VALIDATE_ADDRESS(TypeTag tag)
 //
 void VirtualMachine::validateBytecode()
 {
-    currentByte = 0;
-    stopByte  = registers.R(RegisterCodes::$HS);     //heap start address
+    U8 currentByte = 0;
+    U8 stopByte  = registers.R(RegisterCodes::$HS);     //heap start address
+
+    validate = new Validator(currentByte,stopByte,registers,ram);
 
     while(currentByte < stopByte)
     {
@@ -167,69 +84,69 @@ void VirtualMachine::validateBytecode()
         {
             case LBI: //LBI $R1, BBB
             {
-                VALIDATE_OPCODE(); //LBI
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_END_BYTE();
+                validate
+                    ->opcode()
+                    .R()
+                    .operand()
+                    .end_byte();
             }
             break;
             case LWI: //LWI $R1, BBW
             {
-                VALIDATE_OPCODE(); //LWI
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_END_WORD();
+                validate
+                    ->opcode()
+                    .R()
+                    .operand()
+                    .end_word();
             }
             break;
             case LDI: //LDI $R1, BBD
             {
-                VALIDATE_OPCODE(); //LDI
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_END_DWORD();
+                validate
+                    ->opcode()
+                    .R()
+                    .operand()
+                    .end_dword();
             }
             break;
             case LQI: //LQI $R1, BBQ
             {
-                VALIDATE_OPCODE(); //LQI
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_END_QWORD();
+                validate
+                    ->opcode()
+                    .R()
+                    .operand()
+                    .end_qword();
             }
             break;
             case LF1I: //LF1I $R1, BBD
             {
-                VALIDATE_OPCODE(); //LF1I
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_END_DWORD();
+                validate
+                    ->opcode()
+                    .R()
+                    .operand()
+                    .end_dword();
             }
             break;
             case LF2I: //LF2I $R1, BBQ
             {
-                VALIDATE_OPCODE(); //LF2I
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_END_QWORD();
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .end_qword(); /* Q */
             }
             break;
             case LAD: //LAD $R1, address = BBQ
             {
-                VALIDATE_OPCODE(); //LAD
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_ADDRESS(TypeTag::F4_TAG);
-                VALIDATE_END_QWORD();
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .address(TypeTag::F4_TAG).end_qword(); /* Q */
             }
             break;
             case LAI: //LAI $R1,$R2,qword,  BBBQ
             {
-                VALIDATE_OPCODE(); //LAI
-                VALIDATE_R(); //$R1
-                VALIDATE_OPERAND(); //$R1
-                VALIDATE_R(); //$R2
-                VALIDATE_OPERAND(); //$R2
-                VALIDATE_END_QWORD();
+                validate->opcode() /* B */
+                    .R().operand() /* $R1 */
+                    .R().operand() /* $R2 */
+                    .end_qword(); /* Q */
             }
             break;
             case LB: // LB $R1,$R2,     BBB

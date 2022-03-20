@@ -4,22 +4,24 @@
 //Logi includes
 #include "Types.h"
 #include "Registers.h"
+#include "RAM.h"
+#include "Transform.h"
+#include "Stream.h"
 
 namespace Logi
 {
 
-//
-// Validator is a singleton.
-//
+class Stream;
+
 class Validator
 {
     public:
-        static const Validator* getInstance();
+        Validator(U8& currentByte,U8& stopByte,Registers& registers,RAM* ram);
         void integerRegister(U1 arg,U8 currentByte) const;
         void floatRegister(U1 arg,U8 currentByte) const;
         void doubleRegister(U1 arg,U8 currentByte) const;
         void address_(U1* array,U8 currentByte,const Registers& registers) const;
-        void currentByte(U8 currentByte,U8 end) const;
+        void currentByte_(U8 currentByte,U8 end) const;
         void endCurrentByte(U8 currentByte,U8 end) const;
         //
         // implement a fluent interface
@@ -37,8 +39,15 @@ class Validator
     private:
         U8 currentByte;
         U8 stopByte;
-        Validator();
-        static Validator* instance;
+        Registers registers;
+        RAM* ram;
+        const Transform* transform;
+        const InstructionSet* iset;
+        const Stream* stream;
+        static const std::string OPCODE;
+        static const std::string OPERAND;
+        static const std::string ADDR;
+        static const std::string ENDL;
 };
 
 } //namespace Logi

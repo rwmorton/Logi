@@ -62,6 +62,7 @@ STACK SEGMENT
 */
 
 class Stream;
+class Validator;
 
 class VirtualMachine
 {
@@ -82,25 +83,8 @@ class VirtualMachine
         Logi::RAM* ram;
         const InstructionSet* iset;
         const Stream* stream;
-        const Validator* validate;
+        Validator* validate;
         const Transform* transform;
-        //validate helpers
-        U8 currentByte;
-        U8 stopByte;
-        void VALIDATE_R();
-        void VALIDATE_RF();
-        void VALIDATE_RD();
-        void VALIDATE_OPCODE();
-        void VALIDATE_OPERAND();
-        void VALIDATE_END_BYTE();
-        void VALIDATE_END_WORD();
-        void VALIDATE_END_DWORD();
-        void VALIDATE_END_QWORD();
-        void VALIDATE_ADDRESS(TypeTag tag);
-        static const std::string OPCODE;
-        static const std::string OPERAND;
-        static const std::string ADDR;
-        static const std::string ENDL;
 };
 
 } //namespace Logi
