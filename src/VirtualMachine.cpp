@@ -57,12 +57,18 @@ void VirtualMachine::run()
     //ramDump << (*this->ram);
     //ramDump.close();
 
+    //TEMP
+    int quit = 0;
+
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
+
+        if(++quit == 4) return; //TEMP
+
         switch((*ram)(registers.R($IP)))
         {
             case LBI: iset->LBI(); break;
-            case LWI: break;
+            case LWI: iset->LWI(); break;
             case LDI: break;
             case LQI: break;
             case LF1I: break;

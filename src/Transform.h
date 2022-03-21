@@ -34,6 +34,11 @@ class Transform
         void floatToBytecode(F4 float_,U1 bytes[]) const;
         void doubleToBytecode(F8 double_,U1 bytes[]) const;
         //
+        static void byteToRegister(U1 byte,U8& reg);
+        static void wordToRegister(U1 bytes[],U8& reg);
+        static void dwordToRegister(U1 bytes[],U8& reg);
+        static void qwordToRegister(U1 bytes[],U8& reg);
+        //
         //big-endian to little-endian conversion
         //
         void word(U1 bytes[],unsigned int start) const;

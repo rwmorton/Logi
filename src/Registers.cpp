@@ -33,6 +33,12 @@ U8& Registers::R(unsigned int code)
     return _R[code];
 }
 
+U8& Registers::R1_24(unsigned int code)
+{
+    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _R[(code-1) + 8];
+}
+
 F4& Registers::RF(unsigned int code)
 {
     if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
@@ -49,6 +55,12 @@ const U8 Registers::R(unsigned int code) const
 {
     if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
     return _R[code];
+}
+
+const U8 Registers::R1_24(unsigned int code) const
+{
+    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _R[(code-1) + 8];
 }
 
 const F4 Registers::RF(unsigned int code) const
@@ -87,10 +99,13 @@ std::ostream& operator<<(std::ostream& out,const Registers& registers)
 
     ////////////////////////
     /// TREMP! FOR DEBUGGING
-    out << registers.R_str(0) << " = " << static_cast<int>(registers.R(0)) << ", "; // $IP
-    out << registers.R_str(1) << " = " << static_cast<int>(registers.R(1)) << ", "; // $SP
-    out << registers.R_str(2) << " = " << static_cast<int>(registers.R(2)) << ", "; // $FP
-    out << registers.R_str(3) << " = " << static_cast<int>(registers.R(3)) << std::endl; //$BE
+    out << registers.R_str(0) << "= " << static_cast<int>(registers.R(0)) << ", "; // $IP
+    out << registers.R_str(3) << "= " << static_cast<int>(registers.R(3)) << ", "; //$BE
+    out << registers.R_str(8) << "= " << static_cast<int>(registers.R(8)) << ", "; //$R1
+    out << registers.R_str(9) << "= " << static_cast<int>(registers.R(9)) << ", "; //$R2
+    out << registers.R_str(10) << "= " << static_cast<int>(registers.R(10)) << ", "; //$R3
+    out << registers.R_str(11) << "= " << static_cast<int>(registers.R(11)) << ", "; //$R4
+    out << registers.R_str(12) << "= " << static_cast<int>(registers.R(12)) << std::endl; //$R5
     /////////////////////
 
 

@@ -87,10 +87,12 @@ class Registers
     public:
         //set registers
         U8& R(unsigned int code);
+        U8& R1_24(unsigned int code); //set registers from R1 - R24
         F4& RF(unsigned int code);
         F8& RD(unsigned int code);
         //get registers
         const U8 R(unsigned int code) const;
+        const U8 R1_24(unsigned int code) const; //get registers from R1 - R24
         const F4 RF(unsigned int code) const;
         const F8 RD(unsigned int code) const;
         //get register as string

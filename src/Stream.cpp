@@ -3,6 +3,7 @@
 
 //std includes
 #include <iostream>
+#include <iomanip>
 
 namespace Logi
 {
@@ -71,19 +72,25 @@ const Stream& Stream::U1(Logi::U1 byte) const
 
 const Stream& Stream::U2(Logi::U2 word) const
 {
-    out << std::showbase << std::hex << (CAST_TO)word << std::dec;
+    Logi::U1* buffer = (Logi::U1*)&word;
+    for(int i=0; i<2; i++) out << std::showbase << std::hex << (CAST_TO)(*(&buffer[i])) << ' ';
+    std::dec;
     return *this;
 }
 
 const Stream& Stream::U4(Logi::U4 dword) const
 {
-    out << std::showbase << std::hex << (CAST_TO)dword << std::dec;
+    Logi::U1* buffer = (Logi::U1*)&dword;
+    for(int i=0; i<4; i++) out << std::showbase << std::hex << (CAST_TO)(*(&buffer[i])) << ' ';
+    std::dec;
     return *this;
 }
 
 const Stream& Stream::U8(Logi::U8 qword) const
 {
-    out << std::showbase << std::hex << (CAST_TO)qword << std::dec;
+    Logi::U1* buffer = (Logi::U1*)&qword;
+    for(int i=0; i<8; i++) out << std::showbase << std::hex << (CAST_TO)(*(&buffer[i])) << ' ';
+    std::dec;
     return *this;
 }
 

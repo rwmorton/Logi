@@ -14,55 +14,56 @@ using std::setfill;
 namespace Logi
 {
 
+void InstructionSet::debug_load_pre() const
+{
+    cout << setw(20) << setfill('*') << '\n';
+    cout << _InstructionSetStrings.at($IP) << " instr. beg:\n";
+    cout << setw(20) << setfill('*') << '\n';
+
+    cout << "RAM: " << (*vm->ram) << endl;
+    cout << "REG: " << vm->registers << endl;
+
+    cout << "R[$IP] = " << vm->registers.R($IP) << endl;
+    cout << "RAM[opcode index]: RAM[" << vm->registers.R($IP) << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP))) << '\n';
+    cout << "RAM[operand index]: RAM[" << vm->registers.R($IP) + 1 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+1)) << '\n';
+    cout << "RAM[byte index]: RAM[" << vm->registers.R($IP) + 2 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+2)) << '\n';
+    cout << setw(20) << setfill('-') << '\n';
+}
+
+void InstructionSet::debug_load_post() const
+{
+    cout << setw(20) << setfill('-') << '\n';
+    cout << "RAM: " << (*vm->ram) << endl;
+    cout << "REG: " << vm->registers << endl;
+    cout << setw(20) << setfill('*') << '\n';
+    cout << "LBI instr. end.\n";
+    cout << setw(20) << setfill('*') << '\n';
+}
+
 void InstructionSet::LBI() const
 {
-    const Stream* stream = Stream::getInstance();
-    cout << setw(20) << setfill('*') << '\n';
-    stream->string("LBI instruction:\n");
-    cout << setw(20) << setfill('*') << '\n';
+    debug_load_pre();
 
-    RAM& ram = *vm->ram;
-    Registers& reg = vm->registers;
+    //set register at byte 2 to byte 3
+    Transform::byteToRegister((*vm->ram)(vm->registers.R($IP)+2),vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)));
 
-    cout << "RAM: " << ram << endl;
-    cout << "REG: " << reg << endl;
+    debug_load_pre();
 
-    stream->string("$IP = ").U1($IP).endl();
-    stream->string("$IP+1 = ").U1($IP+1).endl();
-    stream->string("$IP+2 = ").U1($IP+2).endl();
-    cout << setw(20) << setfill('-') << '\n';
-    cout << "modifying registers..." << endl;
-    cout << setw(20) << setfill('-') << '\n';
+    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
 
-    cout << reg << endl;
-
-    cout << "R[$IP+1]: = R[" << $IP+1 << "] = " << reg.R($IP+1) << endl;
-    cout << "R[$IP]: = R[" << $IP << "] = " << reg.R($IP) << endl;
-    cout << "R[$IP] + 3: = R[" << $IP << "] + 3 = " << reg.R($IP) + 3 << endl;
-    cout << setw(20) << setfill('-') << '\n';
-
-    cout << "RAM[opcode] = " << reg.R($IP) << endl;
-    cout << "RAM[operand] = " << static_cast<int>(ram(reg.R($IP)+1)) << endl;
-    cout << "RAM[byte constant] = " << static_cast<int>(ram(reg.R($IP)+2)) << endl;
-    cout << setw(20) << setfill('-') << '\n';
-
-    cout << "RAM[R[$IP+1]]: RAM[" << static_cast<int>(ram(reg.R($IP)+1)) << "] = " << static_cast<int>(ram(reg.R($IP)+2)) << endl;
-    ram(reg.R($IP)+1) = ram(reg.R($IP)+2); //put 3rd byte into 2nd byte
-
-    cout << setw(20) << setfill('-') << '\n';
-
-    reg.R($IP) = reg.R($IP) + 3;
-    cout << reg << endl;
-
-    cout << "RAM: " << ram << endl;
-    cout << setw(20) << setfill('*') << '\n';
-    stream->string("LBI instr. end.\n");
-    cout << setw(20) << setfill('*') << '\n';
+    debug_load_post();
 }
 
 void InstructionSet::LWI() const
 {
-    //
+    debug_load_pre();
+
+    //set register at byte 2 to word starting at byte 3
+    Transform::wordToRegister(&(*vm->ram)(vm->registers.R($IP)+2),vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)));
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 4; //set next instruction
+
+    debug_load_post();
 }
 
 void InstructionSet::LDI() const

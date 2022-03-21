@@ -1,6 +1,10 @@
 #ifndef __LOGI_INSTRUCTION_SET_H__
 #define __LOGI_INSTRUCTION_SET_H__
 
+//Logi includes
+#include "Registers.h"
+#include "RAM.h"
+
 //std includes
 #include <vector>
 #include <string>
@@ -97,6 +101,8 @@ enum OpCodes
 static const unsigned int NUM_INSTRUCTIONS {73};
 
 class VirtualMachine;
+class Registers;
+class RAM;
 
 class InstructionSet
 {
@@ -119,6 +125,10 @@ class InstructionSet
         void LQ() const;
         void LF1() const;
         void LF2() const;
+        // debug
+        void debug_load_pre() const;
+        void debug_load_post() const;
+        //
         //store instructions
         void SB() const;
         void SW() const;
