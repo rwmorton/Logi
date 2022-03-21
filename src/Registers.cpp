@@ -105,13 +105,14 @@ std::ostream& operator<<(std::ostream& out,const Registers& registers)
 
     ////////////////////////
     /// TREMP! FOR DEBUGGING
-    out << registers.R_str(0) << "= " << static_cast<int>(registers.R(0)) << ", "; // $IP
-    out << registers.R_str(3) << "= " << static_cast<int>(registers.R(3)) << ", "; //$BE
-    out << registers.R_str(8) << "= " << static_cast<int>(registers.R(8)) << ", "; //$R1
-    out << registers.R_str(9) << "= " << static_cast<int>(registers.R(9)) << ", "; //$R2
-    out << registers.R_str(10) << "= " << static_cast<int>(registers.R(10)) << ", "; //$R3
-    out << registers.R_str(11) << "= " << static_cast<int>(registers.R(11)) << ", "; //$R4
-    out << registers.R_str(12) << "= " << static_cast<int>(registers.R(12)) << std::endl; //$R5
+    const Stream* s = Stream::getInstance();
+    out << registers.R_str(0) << "= "; s->U8(registers.R(0)); out << std::endl; // $IP
+    out << registers.R_str(3) << "= "; s->U8(registers.R(3)); out << std::endl; // $BE
+    out << registers.R_str(8) << "= "; s->U8(registers.R(8)); out << std::endl; // $R1
+    out << registers.R_str(9) << "= "; s->U8(registers.R(9)); out << std::endl; // $R2
+    out << registers.R_str(10) << "= "; s->U8(registers.R(10)); out << std::endl; // $R3
+    out << registers.R_str(11) << "= "; s->U8(registers.R(11)); out << std::endl; // $R4
+    out << registers.R_str(12) << "= "; s->U8(registers.R(12)); out << std::endl; // $R5
     /////////////////////
 
 

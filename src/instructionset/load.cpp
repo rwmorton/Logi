@@ -20,8 +20,8 @@ void InstructionSet::debug_load_pre() const
     cout << _InstructionSetStrings.at((*vm->ram)(vm->registers.R($IP))) << " instr. beg:\n";
     cout << setw(20) << setfill('*') << '\n';
 
-    cout << "RAM: " << (*vm->ram) << endl;
-    cout << "REG: " << vm->registers;// << endl;
+    cout << "EXE: " << (*vm->ram) << endl;
+    cout << "REGISTERS:\n" << vm->registers;// << endl;
 
     //cout << "R[$IP] = " << vm->registers.R($IP) << endl;
     //cout << "RAM[$IP] = " << static_cast<int>(*(vm->ram->at(vm->registers.R($IP)))) << endl;
@@ -34,8 +34,8 @@ void InstructionSet::debug_load_pre() const
 void InstructionSet::debug_load_post() const
 {
     cout << setw(20) << setfill('-') << '\n';
-    //cout << "RAM: " << (*vm->ram) << endl;
-    cout << "REG: " << vm->registers;
+    //cout << "EXE: " << (*vm->ram) << endl;
+    cout << "REGISTERS:\n" << vm->registers;
     //cout << setw(20) << setfill('*') << '\n';
     cout << setw(20) << setfill('-') << '\n';
     cout << _InstructionSetStrings.at((*vm->ram)($IP)) << " instr. end.\n";
@@ -80,7 +80,14 @@ void InstructionSet::LDI() const
 
 void InstructionSet::LQI() const
 {
-    //
+    debug_load_pre();
+
+    //set register at byte 2 to qword starting at byte 3
+    Transform::qwordToRegister(&(*vm->ram)(vm->registers.R($IP)+2),vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)));
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 10; //set next instruction
+
+    debug_load_post();
 }
 
 void InstructionSet::LF1I() const

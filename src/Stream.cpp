@@ -89,7 +89,7 @@ const Stream& Stream::U4(Logi::U4 dword) const
 const Stream& Stream::U8(Logi::U8 qword) const
 {
     Logi::U1* buffer = (Logi::U1*)&qword;
-    for(int i=0; i<8; i++) out << std::showbase << std::hex << (CAST_TO)(*(&buffer[i])) << ' ';
+    for(int i=0; i<8; i++) out << std::showbase << std::hex << std::setw(4) << std::setfill(' ') << (CAST_TO)(*(&buffer[i])) << ' ';
     std::dec;
     return *this;
 }
