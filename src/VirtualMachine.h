@@ -85,7 +85,6 @@ class VirtualMachine
         InstructionSet* iset;
         Validator* validate;
         const Stream* stream;
-        const Transform* transform;
 };
 
 } //namespace Logi

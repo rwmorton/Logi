@@ -4,18 +4,7 @@
 namespace Logi
 {
 
-Transform* Transform::instance {nullptr};
-
-const Transform* Transform::getInstance()
-{
-    if(Transform::instance == nullptr)
-    {
-        Transform::instance = new Transform();
-    }
-    return Transform::instance;
-}
-
-const Endian Transform::checkEndian() const
+Endian Transform::checkEndian()
 {
     int i = 184594741; //0x0B00B135
 
@@ -23,7 +12,7 @@ const Endian Transform::checkEndian() const
     return buf[0] == 0x35 ? Endian::LITTLE : Endian::BIG;
 }
 
-U2 Transform::bytecodeToWord(U1 bytes[]) const
+U2 Transform::bytecodeToWord(U1 bytes[])
 {
     U2 word;
     U1* buffer = (U1*)&word;
@@ -33,7 +22,7 @@ U2 Transform::bytecodeToWord(U1 bytes[]) const
     return word;
 }
 
-U4 Transform::bytecodeToDWord(U1 bytes[]) const
+U4 Transform::bytecodeToDWord(U1 bytes[])
 {
     U4 dword;
     U1* buffer = (U1*)&dword;
@@ -61,7 +50,7 @@ U8 Transform::bytecodeToQWord(U1 bytes[])
     return qword;
 }
 
-F4 Transform::bytecodeToFloat(U1 bytes[]) const
+F4 Transform::bytecodeToFloat(U1 bytes[])
 {
     F4 float_;
     U1* buffer = (U1*)&float_;
@@ -73,7 +62,7 @@ F4 Transform::bytecodeToFloat(U1 bytes[]) const
     return float_;
 }
 
-F8 Transform::bytecodeToDouble(U1 bytes[]) const
+F8 Transform::bytecodeToDouble(U1 bytes[])
 {
     F8 double_;
     U1* buffer = (U1*)&double_;
@@ -89,14 +78,14 @@ F8 Transform::bytecodeToDouble(U1 bytes[]) const
     return double_;
 }
 
-void Transform::wordToBytecode(U2 word,U1 bytes[]) const
+void Transform::wordToBytecode(U2 word,U1 bytes[])
 {
     U1* buffer = (U1*)&word;
     bytes[0] = buffer[1];
     bytes[1] = buffer[0];
 }
 
-void Transform::dwordToBytecode(U4 dword,U1 bytes[]) const
+void Transform::dwordToBytecode(U4 dword,U1 bytes[])
 {
     U1* buffer = (U1*)&dword;
     bytes[0] = buffer[3];
@@ -105,7 +94,7 @@ void Transform::dwordToBytecode(U4 dword,U1 bytes[]) const
     bytes[3] = buffer[0];
 }
 
-void Transform::qwordToBytecode(U8 qword,U1 bytes[]) const
+void Transform::qwordToBytecode(U8 qword,U1 bytes[])
 {
     U1* buffer = (U1*)&qword;
     bytes[0] = buffer[7];
@@ -118,7 +107,7 @@ void Transform::qwordToBytecode(U8 qword,U1 bytes[]) const
     bytes[7] = buffer[0];
 }
 
-void Transform::floatToBytecode(F4 float_,U1 bytes[]) const
+void Transform::floatToBytecode(F4 float_,U1 bytes[])
 {
     U1* buffer = (U1*)&float_;
     bytes[0] = buffer[3];
@@ -127,7 +116,7 @@ void Transform::floatToBytecode(F4 float_,U1 bytes[]) const
     bytes[3] = buffer[0];
 }
 
-void Transform::doubleToBytecode(F8 double_,U1 bytes[]) const
+void Transform::doubleToBytecode(F8 double_,U1 bytes[])
 {
     U1* buffer = (U1*)&double_;
     bytes[0] = buffer[7];
@@ -212,7 +201,7 @@ void Transform::addressToRegister(U1 bytes[],U8& reg)
 }
 
 //big-endian to little-endian conversion
-void Transform::word(U1 bytes[],unsigned int start) const
+void Transform::word(U1 bytes[],unsigned int start)
 {
     U1 temp[2];
     temp[0] = bytes[start+1];
@@ -222,7 +211,7 @@ void Transform::word(U1 bytes[],unsigned int start) const
     bytes[start+1] = temp[0];
 }
 
-void Transform::dword(U1 bytes[],unsigned int start) const
+void Transform::dword(U1 bytes[],unsigned int start)
 {
     U1 temp[4];
     temp[0] = bytes[start+3];
@@ -236,7 +225,7 @@ void Transform::dword(U1 bytes[],unsigned int start) const
     bytes[start+3] = temp[3];
 }
 
-void Transform::qword(U1 bytes[],unsigned int start) const
+void Transform::qword(U1 bytes[],unsigned int start)
 {
     U1 temp[8];
     temp[0] = bytes[start+7];

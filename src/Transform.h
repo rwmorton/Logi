@@ -12,27 +12,23 @@ namespace Logi
 // this is an optimization to add later.
 //
 
-//
-// Transform is a singleton.
-//
 class Transform
 {
     public:
-        static const Transform* getInstance();
-        //check system endian
-        const Endian checkEndian() const;
+        //check system endianess
+        static Endian checkEndian();
         //transforms
-        U2 bytecodeToWord(U1 bytes[]) const;
-        U4 bytecodeToDWord(U1 bytes[]) const;
+        static U2 bytecodeToWord(U1 bytes[]);
+        static U4 bytecodeToDWord(U1 bytes[]);
         static U8 bytecodeToQWord(U1 bytes[]);
-        F4 bytecodeToFloat(U1 bytes[]) const;
-        F8 bytecodeToDouble(U1 bytes[]) const;
+        static F4 bytecodeToFloat(U1 bytes[]);
+        static F8 bytecodeToDouble(U1 bytes[]);
         //
-        void wordToBytecode(U2 word,U1 bytes[]) const;
-        void dwordToBytecode(U4 dword,U1 bytes[]) const;
-        void qwordToBytecode(U8 qword,U1 bytes[]) const;
-        void floatToBytecode(F4 float_,U1 bytes[]) const;
-        void doubleToBytecode(F8 double_,U1 bytes[]) const;
+        static void wordToBytecode(U2 word,U1 bytes[]);
+        static void dwordToBytecode(U4 dword,U1 bytes[]);
+        static void qwordToBytecode(U8 qword,U1 bytes[]);
+        static void floatToBytecode(F4 float_,U1 bytes[]);
+        static void doubleToBytecode(F8 double_,U1 bytes[]);
         //
         static void byteToRegister(U1 byte,U8& reg);
         static void wordToRegister(U1 bytes[],U8& reg);
@@ -44,12 +40,11 @@ class Transform
         //
         //big-endian to little-endian conversion
         //
-        void word(U1 bytes[],unsigned int start) const;
-        void dword(U1 bytes[],unsigned int start) const;
-        void qword(U1 bytes[],unsigned int start) const;
+        static void word(U1 bytes[],unsigned int start);
+        static void dword(U1 bytes[],unsigned int start);
+        static void qword(U1 bytes[],unsigned int start);
     private:
         Transform();
-        static Transform* instance;
 };
 
 } //namespace Logi

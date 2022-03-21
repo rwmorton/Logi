@@ -32,6 +32,7 @@ target_link_libraries(main Types_obj)
 #
 target_link_libraries(main VirtualMachine_obj)
 # virtualmachine
+target_link_libraries(main Transform_obj)
 target_link_libraries(main validatebytecode_obj)
 #
 target_link_libraries(main Validator_obj)
@@ -40,7 +41,6 @@ target_link_libraries(main InstructionSet_obj)
 target_link_libraries(main RAM_obj)
 target_link_libraries(main Stream_obj)
 target_link_libraries(main Registers_obj)
-target_link_libraries(main Transform_obj)
 # instructionset
 target_link_libraries(main bitwise_obj)
 target_link_libraries(main dblmath_obj)

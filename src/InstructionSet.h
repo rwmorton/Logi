@@ -4,6 +4,7 @@
 //Logi includes
 #include "Registers.h"
 #include "RAM.h"
+#include "Transform.h"
 
 //std includes
 #include <vector>
@@ -103,6 +104,7 @@ static const unsigned int NUM_INSTRUCTIONS {73};
 class VirtualMachine;
 class Registers;
 class RAM;
+class Transform;
 
 class InstructionSet
 {
@@ -136,6 +138,10 @@ class InstructionSet
         void SQ() const;
         void SF1() const;
         void SF2() const;
+        // debug
+        void debug_store_pre() const;
+        void debug_store_post() const;
+        //
         //push/pop instructions
         void PUSHB() const;
         void PUSHW() const;
@@ -149,6 +155,10 @@ class InstructionSet
         void POPQ() const;
         void POPF1() const;
         void POPF2() const;
+        // debug
+        void debug_pushpop_pre() const;
+        void debug_pushpop_post() const;
+        //
         //move instructions
         void MOV() const;
         void MOVF() const;

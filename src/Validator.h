@@ -5,7 +5,6 @@
 #include "Types.h"
 #include "Registers.h"
 #include "RAM.h"
-#include "Transform.h"
 #include "Stream.h"
 
 namespace Logi
@@ -48,7 +47,6 @@ class Validator
         const InstructionSet* iset;
         Registers registers;
         RAM* ram;
-        const Transform* transform;
         const Stream* stream;
         static const std::string OPCODE;
         static const std::string OPERAND;

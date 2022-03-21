@@ -4,6 +4,16 @@
 namespace Logi
 {
 
+void InstructionSet::debug_pushpop_pre() const
+{
+    //
+}
+
+void InstructionSet::debug_pushpop_post() const
+{
+    //
+}
+
 void InstructionSet::PUSHB() const
 {
     //

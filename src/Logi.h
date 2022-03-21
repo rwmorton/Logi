@@ -15,6 +15,7 @@
 #include "Stream.h"
 #include "Transform.h"
 #include "VirtualMachine.h"
+#include "Validator.h"
 
 namespace Logi
 {

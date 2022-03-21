@@ -1,5 +1,6 @@
 //Logi includes
 #include "Validator.h"
+#include "Transform.h"
 
 //temp
 #include <iostream>
@@ -21,8 +22,7 @@ Validator::Validator
 ) : currentByte{currentByte},stopByte{stopByte},registers{registers},ram{ram},iset{iset}
 {
     stream = Stream::getInstance();
-    if(ram == nullptr) throw std::runtime_error("null pointer is passed in.");
-    transform = Transform::getInstance();
+    if(ram == nullptr) throw std::runtime_error("VALIDATOR: null pointer passed in.");
 }
 
 Validator& Validator::R(const U1 count)

@@ -15,7 +15,6 @@ VirtualMachine::VirtualMachine() : registers{},ram{nullptr},validate{nullptr}
     ram = new Logi::RAM();
     iset = new InstructionSet{this};
     stream = Stream::getInstance();
-    transform = Transform::getInstance();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -59,9 +58,16 @@ void VirtualMachine::run()
     //ramDump.close();
 
     //set register temp
-    registers.R1_24(2) = 0x04; // 14_LAI.RUN test
-    registers.R1_24(3) = 0x0b; // 15_LAI_LWI_LBI_HALT.RUN test
-    registers.R1_24(4) = 0x04; // 16_LB_HALT.RUN test through to 21_LF2_HALT.RUN
+    //registers.R1_24(2) = 0x04; // 14_LAI.RUN test
+    //registers.R1_24(3) = 0x0b; // 15_LAI_LWI_LBI_HALT.RUN test
+    //registers.R1_24(4) = 0x04; // 16_LB_HALT.RUN test through to 21_LF2_HALT.RUN
+    //
+    //22_SB_HALT.RUN through 23_SB_SB_HALT.RUN
+    registers.R1_24(1) = 0xf;
+    registers.R1_24(2) = 0xa;
+    registers.R1_24(3) = 0x7;
+    registers.R1_24(4) = 0xf;
+    //
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
@@ -81,7 +87,7 @@ void VirtualMachine::run()
             case LQ: iset->LQ(); break;
             case LF1: iset->LF1(); break;
             case LF2: iset->LF2(); break;
-            case SB: break;
+            case SB: iset->SB(); break;
             case SW: break;
             case SD: break;
             case SQ: break;

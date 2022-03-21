@@ -29,73 +29,73 @@ const std::vector<std::string> Registers::_DoubleRegisterStrings
 
 U8& Registers::R(unsigned int code)
 {
-    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
 U8& Registers::R1_24(unsigned int code)
 {
-    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[(code-1) + 8];
 }
 
 F4& Registers::RF(unsigned int code)
 {
-    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RF[code];
 }
 
 F8& Registers::RD(unsigned int code)
 {
-    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RD[code];
 }
 
 const U8 Registers::R(unsigned int code) const
 {
-    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
 const U8 Registers::R1_24(unsigned int code) const
 {
-    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[(code-1) + 8];
 }
 
 const F4 Registers::RF(unsigned int code) const
 {
-    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RF[code];
 }
 
 const F8 Registers::RD(unsigned int code) const
 {
-    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RD[code];
 }
 
 const std::string& Registers::R_str(unsigned int code) const
 {
-    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RegisterStrings.at(code);
 }
 
 const std::string& Registers::R1_24_str(unsigned int code) const
 {
-    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RegisterStrings.at((code-1) + 8);
 }
 
 const std::string& Registers::RF_str(unsigned int code) const
 {
-    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _FloatRegisterStrings.at(code);
 }
 
 const std::string& Registers::RD_str(unsigned int code) const
 {
-    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _DoubleRegisterStrings.at(code);
 }
 
