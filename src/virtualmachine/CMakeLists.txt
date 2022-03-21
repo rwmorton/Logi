@@ -1,0 +1,3 @@
+add_library(validatebytecode_obj validatebytecode.cpp)
+
+target_include_directories(validatebytecode_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,18 +1,15 @@
 //Logi includes
 #include "InstructionSet.h"
+#include "VirtualMachine.h"
 
 namespace Logi
 {
 
-InstructionSet* InstructionSet::instance {nullptr};
+InstructionSet::InstructionSet(VirtualMachine* vm) : vm{vm} {}
 
-const InstructionSet* InstructionSet::getInstance()
+void InstructionSet::setVM(VirtualMachine* vm)
 {
-    if(InstructionSet::instance == nullptr)
-    {
-        InstructionSet::instance = new InstructionSet();
-    }
-    return InstructionSet::instance;
+    this->vm = vm;
 }
 
 const std::string& InstructionSet::operator()(OpCodes code) const
@@ -20,8 +17,6 @@ const std::string& InstructionSet::operator()(OpCodes code) const
     if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("instruction out of range");
     return _InstructionSetStrings.at(code);
 }
-
-InstructionSet::InstructionSet() {}
 
 const std::vector<std::string> InstructionSet::_InstructionSetStrings
 {

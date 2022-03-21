@@ -85,7 +85,16 @@ std::ostream& operator<<(std::ostream& out,const Registers& registers)
 {
     out << std::showbase << std::hex;
 
-    int i{0};
+    ////////////////////////
+    /// TREMP! FOR DEBUGGING
+    out << registers.R_str(0) << " = " << static_cast<int>(registers.R(0)) << ", "; // $IP
+    out << registers.R_str(1) << " = " << static_cast<int>(registers.R(1)) << ", "; // $SP
+    out << registers.R_str(2) << " = " << static_cast<int>(registers.R(2)) << ", "; // $FP
+    out << registers.R_str(3) << " = " << static_cast<int>(registers.R(3)) << std::endl; //$BE
+    /////////////////////
+
+
+    /*int i{0};
     for(i=0; i<8; i++)
     {
         out << registers.R_str(i) << " = " << static_cast<int>(registers.R(i)) << std::endl;
@@ -104,7 +113,7 @@ std::ostream& operator<<(std::ostream& out,const Registers& registers)
     for(i=0; i<NUM_DOUBLE_REGISTERS; i++)
     {
         out << registers.RD_str(i) << " = " << static_cast<int>(registers.RD(i)) << std::endl;
-    }
+    }*/
 
     out << std::dec;
     return out;

@@ -42,7 +42,15 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
 
     //header looks good, continue.
     //set total size of the bytecode executable in bytes
-    totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
+    
+    //////////////////////////////////////////////////////////////////////////
+    // TEMP!!! FOR DEBUGGING, DON'T OUTPUT HEAP AND STACK * 1024
+    //
+    totalSize = bytecodeSize + 1;//+ heapSize + stackSize; // !!!!!!TEMP!!!!!!
+    //
+    //////////////////////////////////////////////////////////////////////////
+    //                  UNCOMMENT WHEN ABOVE DELETED
+    //totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
 
     //get bytecode addresses
     bytecodeStartAddress = Bytecode::HEADER_SIZE + symbolTableSize + stringTableSize;

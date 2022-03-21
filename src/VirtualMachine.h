@@ -68,6 +68,7 @@ class VirtualMachine
 {
     friend class Stream;
     friend class Bytecode;
+    friend class InstructionSet;
     public:
         VirtualMachine();
         ~VirtualMachine();
@@ -81,9 +82,9 @@ class VirtualMachine
         Bytecode executable;
         Registers registers;
         Logi::RAM* ram;
-        const InstructionSet* iset;
-        const Stream* stream;
+        InstructionSet* iset;
         Validator* validate;
+        const Stream* stream;
         const Transform* transform;
 };
 

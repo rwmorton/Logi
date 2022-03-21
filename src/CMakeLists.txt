@@ -8,7 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-std=c++2a)
 
 add_subdirectory(types)
-add_subdirectory(instructions)
+add_subdirectory(instructionset)
+add_subdirectory(virtualmachine)
 
 add_library(Types_obj Types.cpp)
 add_library(Bytecode_obj Bytecode.cpp)
@@ -30,6 +31,9 @@ target_link_libraries(main Float_obj)
 target_link_libraries(main Types_obj)
 #
 target_link_libraries(main VirtualMachine_obj)
+# virtualmachine
+target_link_libraries(main validatebytecode_obj)
+#
 target_link_libraries(main Validator_obj)
 target_link_libraries(main Bytecode_obj)
 target_link_libraries(main InstructionSet_obj)
@@ -37,7 +41,7 @@ target_link_libraries(main RAM_obj)
 target_link_libraries(main Stream_obj)
 target_link_libraries(main Registers_obj)
 target_link_libraries(main Transform_obj)
-#
+# instructionset
 target_link_libraries(main bitwise_obj)
 target_link_libraries(main dblmath_obj)
 target_link_libraries(main fltmath_obj)

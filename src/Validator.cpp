@@ -12,12 +12,12 @@ const std::string Validator::ENDL {'\n'};
 Validator::Validator
 (
     U8& currentByte,U8& stopByte,
+    const InstructionSet* iset,
     Registers& registers,RAM* ram
 ) : currentByte{currentByte},stopByte{stopByte},registers{registers},ram{ram},iset{iset}
 {
     stream = Stream::getInstance();
     if(ram == nullptr) throw std::runtime_error("null pointer is passed in.");
-    iset = InstructionSet::getInstance();
     transform = Transform::getInstance();
 }
 

@@ -16,7 +16,7 @@ class Stream;
 class Validator
 {
     public:
-        Validator(U8& currentByte,U8& stopByte,Registers& registers,RAM* ram);
+        Validator(U8& currentByte,U8& stopByte,const InstructionSet* iset,Registers& registers,RAM* ram);
         //
         // implement a fluent interface
         //
@@ -44,10 +44,10 @@ class Validator
         void checkEndCB(U8 currentByte,U8 endByte) const;
         U8& currentByte;
         const U8& stopByte;
+        const InstructionSet* iset;
         Registers registers;
         RAM* ram;
         const Transform* transform;
-        const InstructionSet* iset;
         const Stream* stream;
         static const std::string OPCODE;
         static const std::string OPERAND;

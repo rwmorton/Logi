@@ -96,13 +96,13 @@ enum OpCodes
 
 static const unsigned int NUM_INSTRUCTIONS {73};
 
-//
-// InstructionSet is a singleton.
-//
+class VirtualMachine;
+
 class InstructionSet
 {
     public:
-        static const InstructionSet* getInstance();
+        InstructionSet(VirtualMachine* vm);
+        void setVM(VirtualMachine* vm);
         const std::string& operator()(OpCodes code) const;
         //load instructions
         void LBI() const;
@@ -191,8 +191,7 @@ class InstructionSet
         void DDIV() const;
         void DSLT() const;
     private:
-        InstructionSet();
-        static InstructionSet* instance;
+        VirtualMachine* vm; //test
         static const std::vector<std::string> _InstructionSetStrings;
 };
 
