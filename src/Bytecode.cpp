@@ -29,16 +29,16 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     std::ifstream in(bytecodeFile,std::ios::in | std::ios::binary);
     if(!in.is_open())
     {
-        throw std::runtime_error("Could not load bytecode file.");
+        throw std::runtime_error("BYTECODE: could not load file.");
     }
 
     //read in header
     in.read((char*)&magic,2);
-    if(magic != Bytecode::MAGIC_NUMBER) throw std::runtime_error("Could not read valid magic number from the bytecode.");
+    if(magic != Bytecode::MAGIC_NUMBER) throw std::runtime_error("BYTECODE: could not read valid magic number.");
     in.read((char*)&symbolTableSize,8);
     in.read((char*)&stringTableSize,8);
     in.read((char*)&bytecodeSize,8);
-    if(bytecodeSize == 0) throw std::runtime_error("No bytecode to execute.");
+    if(bytecodeSize == 0) throw std::runtime_error("BYTECODE: nothing to execute.");
 
     //header looks good, continue.
     //set total size of the bytecode executable in bytes
@@ -46,11 +46,13 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     //////////////////////////////////////////////////////////////////////////
     // TEMP!!! FOR DEBUGGING, DON'T OUTPUT HEAP AND STACK * 1024
     //
-    totalSize = bytecodeSize + 1;//+ heapSize + stackSize; // !!!!!!TEMP!!!!!!
+    totalSize = bytecodeSize + 100; //add just enough to avoid out of bounds errors
     //
     //////////////////////////////////////////////////////////////////////////
     //                  UNCOMMENT WHEN ABOVE DELETED
     //totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
+    //
+    //////////////////////////////////////////////////////////////////////////
 
     //get bytecode addresses
     bytecodeStartAddress = Bytecode::HEADER_SIZE + symbolTableSize + stringTableSize;

@@ -5,7 +5,7 @@
 namespace Logi
 {
 
-const std::string REG_CODE_OUT_OF_BOUNDS {"register code out of bounds"};
+const std::string REG_CODE_OUT_OF_BOUNDS {"REGISTERS: register code out of bounds"};
 
 const std::vector<std::string> Registers::_RegisterStrings
 {
@@ -108,6 +108,7 @@ std::ostream& operator<<(std::ostream& out,const Registers& registers)
     const Stream* s = Stream::getInstance();
     out << registers.R_str(0) << "= "; s->U8(registers.R(0)); out << std::endl; // $IP
     out << registers.R_str(3) << "= "; s->U8(registers.R(3)); out << std::endl; // $BE
+    out << registers.R_str(7) << "= "; s->U8(registers.R(7)); out << std::endl; // $$TOP
     out << registers.R_str(8) << "= "; s->U8(registers.R(8)); out << std::endl; // $R1
     out << registers.R_str(9) << "= "; s->U8(registers.R(9)); out << std::endl; // $R2
     out << registers.R_str(10) << "= "; s->U8(registers.R(10)); out << std::endl; // $R3

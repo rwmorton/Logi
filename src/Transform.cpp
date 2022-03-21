@@ -45,7 +45,7 @@ U4 Transform::bytecodeToDWord(U1 bytes[]) const
     return dword;
 }
 
-U8 Transform::bytecodeToQWord(U1 bytes[]) const
+U8 Transform::bytecodeToQWord(U1 bytes[])
 {
     U8 qword;
     U1* buffer = (U1*)&qword;
@@ -164,6 +164,41 @@ void Transform::dwordToRegister(U1 bytes[],U8& reg)
 }
 
 void Transform::qwordToRegister(U1 bytes[],U8& reg)
+{
+    U1* buffer = (U1*)&reg;
+    buffer[0] = bytes[0];
+    buffer[1] = bytes[1];
+    buffer[2] = bytes[2];
+    buffer[3] = bytes[3];
+    buffer[4] = bytes[4];
+    buffer[5] = bytes[5];
+    buffer[6] = bytes[6];
+    buffer[7] = bytes[7];
+}
+
+void Transform::floatToRegister(U1 bytes[],U8& reg)
+{
+    U1* buffer = (U1*)&reg;
+    buffer[0] = bytes[0];
+    buffer[1] = bytes[1];
+    buffer[2] = bytes[2];
+    buffer[3] = bytes[3];
+}
+
+void Transform::doubleToRegister(U1 bytes[],U8& reg)
+{
+    U1* buffer = (U1*)&reg;
+    buffer[0] = bytes[0];
+    buffer[1] = bytes[1];
+    buffer[2] = bytes[2];
+    buffer[3] = bytes[3];
+    buffer[4] = bytes[4];
+    buffer[5] = bytes[5];
+    buffer[6] = bytes[6];
+    buffer[7] = bytes[7];
+}
+
+void Transform::addressToRegister(U1 bytes[],U8& reg)
 {
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];

@@ -1,6 +1,10 @@
 //Logi includes
 #include "Validator.h"
 
+//temp
+#include <iostream>
+using namespace std;
+
 namespace Logi
 {
 
@@ -78,9 +82,21 @@ Validator& Validator::opcode(const bool thenEnd)
     return *this;
 }
 
-Validator& Validator::operand()
+//
+// increment defaults to 1.
+//
+Validator& Validator::operand(const U8 increment)
 {
     stream->string(Validator::OPERAND).string(registers.R1_24_str((RegisterCodes)((*ram)(currentByte)))).string(Validator::ENDL);
+    
+    /*
+    for(int i=0; i<increment; i++)
+    {
+        stream->string("operand() : currentByte = ").U8(currentByte).endl();
+        currentByte++;
+        checkCB(currentByte,stopByte);
+    }
+    */
     currentByte++;
     stream->string("operand() : currentByte = ").U8(currentByte).endl();
     checkCB(currentByte,stopByte);
@@ -130,7 +146,15 @@ Validator& Validator::end_qword()
 
 Validator& Validator::address(TypeTag tag)
 {
-    checkAddr(ram->at(currentByte),currentByte,registers);
+
+    cout << endl << endl;
+    cout << "REGISTERS:\n" << registers << endl;
+    cout << "currentByte = " << currentByte << endl;
+    cout << "RAM(" << currentByte << ") = " << static_cast<int>(*ram->at(currentByte)) << endl;
+
+    //checkAddr(ram->at(currentByte),currentByte,registers);
+    checkAddr(currentByte);
+
     switch(tag)
     {
         case TypeTag::S1_TAG: stream->string(ADDR).S1(*((S1*)ram->at(currentByte))).string(ENDL); break;
@@ -143,7 +167,7 @@ Validator& Validator::address(TypeTag tag)
         case TypeTag::U8_TAG: stream->string(ADDR).U8(*((U8*)ram->at(currentByte))).string(ENDL); break;
         case TypeTag::F4_TAG: stream->string(ADDR).F4(*((F4*)ram->at(currentByte))).string(ENDL); break;
         case TypeTag::F8_TAG: stream->string(ADDR).F8(*((F8*)ram->at(currentByte))).string(ENDL); break;
-        default: throw std::runtime_error("invalid type tag.");
+        default: throw std::runtime_error("VALIDATOR: invalid type tag.");
     }
     return *this;
 }
@@ -151,17 +175,17 @@ Validator& Validator::address(TypeTag tag)
 void Validator::checkIReg(U1 arg,U8 currentByte) const
 {
     Stream::getInstance()->string("arg = ").U1(arg).string(", currentByte = ").U8(currentByte).endl();
-    if(arg > RegisterCodes::$R24) throw std::runtime_error("invalid integer register code.");
+    if(arg > RegisterCodes::$R24) throw std::runtime_error("VALIDATOR: invalid integer register code.");
 }
 
 void Validator::checkFReg(U1 arg,U8 currentByte) const
 {
-    if(arg > FloatRegisterCodes::$F10) throw std::runtime_error("invalid float register code.");
+    if(arg > FloatRegisterCodes::$F10) throw std::runtime_error("VALIDATOR: invalid float register code.");
 }
 
 void Validator::checkDReg(U1 arg,U8 currentByte) const
 {
-    if(arg > DoubleRegisterCodes::$D10) throw std::runtime_error("invalid double register code.");
+    if(arg > DoubleRegisterCodes::$D10) throw std::runtime_error("VALIDATOR: invalid double register code.");
 }
 
 //
@@ -170,8 +194,31 @@ void Validator::checkDReg(U1 arg,U8 currentByte) const
 //
 void Validator::checkAddr(U1* array,U8 currentByte,const Registers& registers) const
 {
+    stream->string("checkAddr() : currentByte = ").U8(currentByte).endl();
+    cout << registers.R(RegisterCodes::$TOP) << endl;
+    stream->string("R[$TOP] = ").U8(registers.R(RegisterCodes::$TOP)).endl();
+    
     U8* address = (U8*)&array[currentByte];
-    if(*address > registers.R(RegisterCodes::$TOP)) throw std::runtime_error("address is out of bounds.");
+
+    cout << "address = " << *address << endl;
+    
+    if(*address > registers.R(RegisterCodes::$TOP)) throw std::runtime_error("VALIDATOR: address is out of bounds.");
+}
+
+void Validator::checkAddr(U8 currentByte) const
+{
+    stream->string("checkAddr() : currentByte = ").U8(currentByte).endl();
+    cout << registers.R(RegisterCodes::$TOP) << endl;
+    stream->string("R[$TOP] = ").U8(registers.R(RegisterCodes::$TOP)).endl();
+    
+    //U8* address = (U8*)(*ram)(currentByte);
+
+    //U8 address = Transform::bytecodeToQWord(&(*ram)(currentByte));
+    U1* address = &(*ram)(currentByte);
+
+    cout << "address = " << static_cast<int>(*address) << endl;
+    
+    if(*address > registers.R(RegisterCodes::$TOP)) throw std::runtime_error("VALIDATOR: address is out of bounds.");
 }
 
 //
@@ -180,7 +227,7 @@ void Validator::checkAddr(U1* array,U8 currentByte,const Registers& registers) c
 void Validator::checkCB(U8 currentByte,U8 endByte) const
 {
     stream->string("checkCB() : currentByte = ").U8(currentByte).endl();
-    if(currentByte >= endByte) throw std::runtime_error("incomplete instruction at address.");
+    if(currentByte >= endByte) throw std::runtime_error("VALIDATOR: incomplete instruction at address.");
 }
 
 //
@@ -189,8 +236,8 @@ void Validator::checkCB(U8 currentByte,U8 endByte) const
 //
 void Validator::checkEndCB(U8 currentByte,U8 endByte) const
 {
-    stream->string("checkEndCB() : currentByte = ").U8(currentByte).endl();
-    if(currentByte > endByte) throw std::runtime_error("incomplete instruction: passed end of bytecode.");
+    stream->string("checkEndCB() : currentByte = ").U8(currentByte).string(", endByte = ").U8(endByte).endl();
+    if(currentByte > endByte) throw std::runtime_error("VALIDATOR: incomplete instruction: passed end of bytecode.");
 }
 
 } //namespace Logi

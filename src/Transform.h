@@ -24,7 +24,7 @@ class Transform
         //transforms
         U2 bytecodeToWord(U1 bytes[]) const;
         U4 bytecodeToDWord(U1 bytes[]) const;
-        U8 bytecodeToQWord(U1 bytes[]) const;
+        static U8 bytecodeToQWord(U1 bytes[]);
         F4 bytecodeToFloat(U1 bytes[]) const;
         F8 bytecodeToDouble(U1 bytes[]) const;
         //
@@ -38,6 +38,9 @@ class Transform
         static void wordToRegister(U1 bytes[],U8& reg);
         static void dwordToRegister(U1 bytes[],U8& reg);
         static void qwordToRegister(U1 bytes[],U8& reg);
+        static void floatToRegister(U1 bytes[],U8& reg);
+        static void doubleToRegister(U1 bytes[],U8& reg);
+        static void addressToRegister(U1 bytes[],U8& reg);
         //
         //big-endian to little-endian conversion
         //

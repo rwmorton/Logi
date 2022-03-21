@@ -17,11 +17,11 @@ void makeBC_01()
 
 void makeRandomBytecodeFile()
 {
-    std::ofstream out("random.RUN",std::ios::binary|std::ios::out);
+    std::ofstream out("14_LF2I_random.RUN",std::ios::binary|std::ios::out);
     Logi::U2 magic = 0xDEED;
-    Logi::U8 symbolTableSize = 16;
-    Logi::U8 stringTableSize = 64;
-    Logi::U8 bytecodeSize = 1024;
+    Logi::U8 symbolTableSize = 1;
+    Logi::U8 stringTableSize = 1;
+    Logi::U8 bytecodeSize = 10'000'001;
 
     out.write((const char*)&magic,sizeof(Logi::U2));
     out.write((const char*)&symbolTableSize,sizeof(Logi::U8));
@@ -30,10 +30,20 @@ void makeRandomBytecodeFile()
     
     //write random bytes
     Logi::U1 byte{};
-    for(int i=0; i<bytecodeSize; i++)
+    for(int i=0; i<bytecodeSize-1; i+=10)
     {
+        out.put(0x05);
+        out.put((std::rand() % 4) + 1);
+        out.put(std::rand() % 255);
+        out.put(std::rand() % 255);
+        out.put(std::rand() % 255);
+        out.put(std::rand() % 255);
+        out.put(std::rand() % 255);
+        out.put(std::rand() % 255);
+        out.put(std::rand() % 255);
         out.put(std::rand() % 255);
     }
+    out.put(0x2a);
     out.close();
 }
 

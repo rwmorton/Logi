@@ -11,12 +11,11 @@
 
 //Logi includes
 #include "Logi.h"
-
 #include "Testing.h"
 
 int main(int argc,char *argv[])
 {
-    //makeRandomBytecodeFile();
+    //Logi::makeRandomBytecodeFile();
 
     std::cout << "Testing Virtual Machine\n" << std::setw(25) << std::setfill('-') << '\n';
 
@@ -26,7 +25,7 @@ int main(int argc,char *argv[])
     {
         vm.init(argc,argv);
         vm.run();
-        //vm.shutdown();
+        vm.shutdown();
     }
     catch(const std::exception& e)
     {

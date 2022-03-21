@@ -24,7 +24,7 @@ const U8 RAM::size() const
 //get a pointer to RAM at given index
 U1* RAM::at(const U8 index)
 {
-    if(index >= _numBytes) throw std::runtime_error("cannot get byte - out of range!");
+    if(index >= _numBytes) throw std::runtime_error("RAM: cannot get byte - out of range!");
     _currentByte = index;
     return &_ram[index];
 }
@@ -32,14 +32,14 @@ U1* RAM::at(const U8 index)
 //get a pointer to the next byte of the RAM
 U1* RAM::next()
 {
-    if(++_currentByte >= _numBytes) throw std::runtime_error("cannot get next byte - out of range!");
+    if(++_currentByte >= _numBytes) throw std::runtime_error("RAM: cannot get next byte - out of range!");
     return &_ram[_currentByte];
 }
 
 //get a pointer to the previous byte of the RAM
 U1* RAM::prev()
 {
-    if(_currentByte-1 < 0) throw std::runtime_error("cannot get previous byte - out of range!");
+    if(_currentByte-1 < 0) throw std::runtime_error("RAM: cannot get previous byte - out of range!");
     return &_ram[--_currentByte];
 }
 
@@ -60,7 +60,7 @@ U1* RAM::end()
 //does not include bounds error checking
 void RAM::allocate(const U8 bytes)
 {
-    if(bytes == 0) throw std::runtime_error("cannot allocate RAM with zero bytes.");
+    if(bytes == 0) throw std::runtime_error("RAM: cannot allocate RAM with zero bytes.");
     if(_ram) delete[] _ram;
     //allocate
     _ram = new U1[bytes]{};
@@ -72,7 +72,7 @@ U1& RAM::operator()(const unsigned int index)
 {
     //Stream::getInstance()->string("RAM::operator() : index = ").U8(index).endl();
 
-    if(index >= _numBytes) throw std::out_of_range("RAM index out of bounds.");
+    if(index >= _numBytes) throw std::out_of_range("RAM: index out of bounds.");
     return *(&_ram[index]);
 }
 

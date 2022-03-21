@@ -40,9 +40,10 @@ void VirtualMachine::init(int argc,char* argv[])
 
     //debug
     std::cout << this->registers;
-    std::cout << this->executable;
+    std::cout << this->executable << std::endl;
+    //std::cout << this->executable;
     std::cout << (*this->ram);
-    std::cout << std::endl;
+    //std::cout << std::endl;
 
     //validate the bytecode
     validateBytecode();
@@ -57,6 +58,11 @@ void VirtualMachine::run()
     //ramDump << (*this->ram);
     //ramDump.close();
 
+    //set register temp
+    registers.R1_24(2) = 0x04; // 14_LAI.RUN test
+    registers.R1_24(3) = 0x0b; // 15_LAI_LWI_LBI_HALT.RUN test
+    registers.R1_24(4) = 0x04; // 16_LB_HALT.RUN test through to 21_LF2_HALT.RUN
+
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
         switch((*ram)(registers.R($IP)))
@@ -65,16 +71,16 @@ void VirtualMachine::run()
             case LWI: iset->LWI(); break;
             case LDI: iset->LDI(); break;
             case LQI: iset->LQI(); break;
-            case LF1I: break;
-            case LF2I: break;
-            case LAD: break;
-            case LAI: break;
-            case LB: break;
-            case LW: break;
-            case LD: break;
-            case LQ: break;
-            case LF1: break;
-            case LF2: break;
+            case LF1I: iset->LF1I(); break;
+            case LF2I: iset->LF2I(); break;
+            case LAD: iset->LAD(); break;
+            case LAI: iset->LAI(); break;
+            case LB: iset->LB(); break;
+            case LW: iset->LW(); break;
+            case LD: iset->LD(); break;
+            case LQ: iset->LQ(); break;
+            case LF1: iset->LF1(); break;
+            case LF2: iset->LF2(); break;
             case SB: break;
             case SW: break;
             case SD: break;
@@ -134,7 +140,7 @@ void VirtualMachine::run()
             case DMULT: break;
             case DDIV: break;
             case DSLT: break;
-            default: throw std::runtime_error("invalid instruction.");
+            default: throw std::runtime_error("VIRTUAL_MACHINE: invalid instruction.");
         }
     }
 }

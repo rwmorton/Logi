@@ -23,7 +23,7 @@ void VirtualMachine::validateBytecode()
     validate = new Validator(currentByte,stopByte,iset,registers,ram);
 
     cout << endl;
-    cout << "RAM: " << *ram << endl;
+    //cout << "RAM: " << *ram << endl;
     cout << endl;
 
     stream->string("stopByte = ").U8(stopByte).endl();
@@ -84,7 +84,7 @@ void VirtualMachine::validateBytecode()
             {
                 validate->opcode() /* B */
                     .R().operand() /* $R1 */
-                    .address(TypeTag::F4_TAG).end_qword(); /* Q */
+                    .address(TypeTag::U8_TAG).end(); /* Q */
             }
             break;
             case LAI: //LAI $R1,$R2,qword,  BBBQ
@@ -92,7 +92,9 @@ void VirtualMachine::validateBytecode()
                 validate->opcode() /* B */
                     .R().operand() /* $R1 */
                     .R().operand() /* $R2 */
-                    .end_qword(); /* Q */
+                    .address(TypeTag::U8_TAG) /* qword (address) */
+                    .end();
+                    //.end_qword(); /* Q */
             }
             break;
             case LB: // LB $R1,$R2,     BBB
