@@ -72,7 +72,7 @@ Validator& Validator::opcode(const bool thenEnd)
     }
     else
     {
-        currentByte ++;
+        currentByte++;
         checkCB(currentByte,stopByte);
     }
     return *this;
@@ -80,7 +80,7 @@ Validator& Validator::opcode(const bool thenEnd)
 
 Validator& Validator::operand()
 {
-    stream->string(Validator::OPERAND).string(registers.R_str((RegisterCodes)((*ram)(currentByte)))).string(Validator::ENDL);
+    stream->string(Validator::OPERAND).string(registers.R1_24_str((RegisterCodes)((*ram)(currentByte)))).string(Validator::ENDL);
     currentByte++;
     stream->string("operand() : currentByte = ").U8(currentByte).endl();
     checkCB(currentByte,stopByte);
@@ -102,7 +102,7 @@ Validator& Validator::end_byte()
 
 Validator& Validator::end_word()
 {
-    transform->word(ram->at(currentByte),currentByte);
+    //transform->word(ram->at(currentByte),currentByte);
     currentByte += sizeof(U2);
     checkEndCB(currentByte,stopByte);
     return *this;
@@ -110,15 +110,19 @@ Validator& Validator::end_word()
 
 Validator& Validator::end_dword()
 {
-    transform->dword(ram->at(currentByte),currentByte);
+    //transform->dword(ram->at(currentByte),currentByte);
+    stream->endl();
+    stream->string("currentByte = ").U8(currentByte).endl();
     currentByte += sizeof(U4);
+    stream->string("currentByte = ").U8(currentByte).endl();
+    stream->endl();
     checkEndCB(currentByte,stopByte);
     return *this;
 }
 
 Validator& Validator::end_qword()
 {
-    transform->qword(ram->at(currentByte),currentByte);
+    //transform->qword(ram->at(currentByte),currentByte);
     currentByte += sizeof(U8);
     checkEndCB(currentByte,stopByte);
     return *this;

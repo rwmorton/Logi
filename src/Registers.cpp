@@ -81,6 +81,12 @@ const std::string& Registers::R_str(unsigned int code) const
     return _RegisterStrings.at(code);
 }
 
+const std::string& Registers::R1_24_str(unsigned int code) const
+{
+    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds
+    return _RegisterStrings.at((code-1) + 8);
+}
+
 const std::string& Registers::RF_str(unsigned int code) const
 {
     if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS); //out of bounds

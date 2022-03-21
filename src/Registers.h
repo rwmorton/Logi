@@ -97,6 +97,7 @@ class Registers
         const F8 RD(unsigned int code) const;
         //get register as string
         const std::string& R_str(unsigned int code) const;
+        const std::string& R1_24_str(unsigned int code) const;
         const std::string& RF_str(unsigned int code) const;
         const std::string& RD_str(unsigned int code) const;
         //stream output

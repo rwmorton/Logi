@@ -17,27 +17,29 @@ namespace Logi
 void InstructionSet::debug_load_pre() const
 {
     cout << setw(20) << setfill('*') << '\n';
-    cout << _InstructionSetStrings.at($IP) << " instr. beg:\n";
+    cout << _InstructionSetStrings.at((*vm->ram)(vm->registers.R($IP))) << " instr. beg:\n";
     cout << setw(20) << setfill('*') << '\n';
 
     cout << "RAM: " << (*vm->ram) << endl;
-    cout << "REG: " << vm->registers << endl;
+    cout << "REG: " << vm->registers;// << endl;
 
-    cout << "R[$IP] = " << vm->registers.R($IP) << endl;
-    cout << "RAM[opcode index]: RAM[" << vm->registers.R($IP) << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP))) << '\n';
-    cout << "RAM[operand index]: RAM[" << vm->registers.R($IP) + 1 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+1)) << '\n';
-    cout << "RAM[byte index]: RAM[" << vm->registers.R($IP) + 2 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+2)) << '\n';
-    cout << setw(20) << setfill('-') << '\n';
+    //cout << "R[$IP] = " << vm->registers.R($IP) << endl;
+    //cout << "RAM[$IP] = " << static_cast<int>(*(vm->ram->at(vm->registers.R($IP)))) << endl;
+    //cout << "RAM[opcode index]: RAM[" << vm->registers.R($IP) << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP))) << '\n';
+    //cout << "RAM[operand index]: RAM[" << vm->registers.R($IP) + 1 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+1)) << '\n';
+    //cout << "RAM[byte index]: RAM[" << vm->registers.R($IP) + 2 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+2)) << '\n';
+    //cout << setw(20) << setfill('-') << '\n';
 }
 
 void InstructionSet::debug_load_post() const
 {
     cout << setw(20) << setfill('-') << '\n';
-    cout << "RAM: " << (*vm->ram) << endl;
-    cout << "REG: " << vm->registers << endl;
-    cout << setw(20) << setfill('*') << '\n';
-    cout << "LBI instr. end.\n";
-    cout << setw(20) << setfill('*') << '\n';
+    //cout << "RAM: " << (*vm->ram) << endl;
+    cout << "REG: " << vm->registers;
+    //cout << setw(20) << setfill('*') << '\n';
+    cout << setw(20) << setfill('-') << '\n';
+    cout << _InstructionSetStrings.at((*vm->ram)($IP)) << " instr. end.\n";
+    //cout << setw(20) << setfill('*') << '\n';
 }
 
 void InstructionSet::LBI() const
@@ -46,8 +48,6 @@ void InstructionSet::LBI() const
 
     //set register at byte 2 to byte 3
     Transform::byteToRegister((*vm->ram)(vm->registers.R($IP)+2),vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)));
-
-    debug_load_pre();
 
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
 
@@ -68,7 +68,14 @@ void InstructionSet::LWI() const
 
 void InstructionSet::LDI() const
 {
-    //
+    debug_load_pre();
+
+    //set register at byte 2 to dword starting at byte 3
+    Transform::dwordToRegister(&(*vm->ram)(vm->registers.R($IP)+2),vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)));
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 6; //set next instruction
+
+    debug_load_post();
 }
 
 void InstructionSet::LQI() const
