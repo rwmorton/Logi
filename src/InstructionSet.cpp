@@ -2,6 +2,16 @@
 #include "InstructionSet.h"
 #include "VirtualMachine.h"
 
+// TEMP INCL
+//Logi includes
+//#include "../Stream.h" //for debugging in instructions
+#include <iostream>
+#include <iomanip>
+using std::cout;
+using std::endl;
+using std::setw;
+using std::setfill;
+
 namespace Logi
 {
 
@@ -16,6 +26,34 @@ const std::string& InstructionSet::operator()(OpCodes code) const
 {
     if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("INSTRUCTION_SET: out of range");
     return _InstructionSetStrings.at(code);
+}
+
+void InstructionSet::debug_pre() const
+{
+    cout << setw(20) << setfill('*') << '\n';
+    cout << _InstructionSetStrings.at((*vm->ram)(vm->registers.R($IP))) << " instr. beg:\n";
+    cout << setw(20) << setfill('*') << '\n';
+
+    cout << "BYTECODE: " << (*vm->ram) << endl;
+    cout << "REGISTERS:\n" << vm->registers;// << endl;
+
+    cout << "R[$IP] = " << vm->registers.R($IP) << endl;
+    cout << "RAM[$IP] = " << static_cast<int>(*(vm->ram->at(vm->registers.R($IP)))) << endl;
+    cout << "RAM[opcode index]: RAM[" << vm->registers.R($IP) << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP))) << '\n';
+    cout << "RAM[operand index]: RAM[" << vm->registers.R($IP) + 1 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+1)) << '\n';
+    cout << "RAM[byte index]: RAM[" << vm->registers.R($IP) + 2 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+2)) << '\n';
+    cout << setw(20) << setfill('-') << '\n';
+}
+
+void InstructionSet::debug_post() const
+{
+    cout << setw(20) << setfill('-') << '\n';
+    //cout << "BYTECODE: " << (*vm->ram) << endl;
+    cout << "REGISTERS:\n" << vm->registers;
+    //cout << setw(20) << setfill('*') << '\n';
+    cout << setw(20) << setfill('-') << '\n';
+    cout << _InstructionSetStrings.at((*vm->ram)($IP)) << " instr. end.\n";
+    //cout << setw(20) << setfill('*') << '\n';
 }
 
 const std::vector<std::string> InstructionSet::_InstructionSetStrings

@@ -1,46 +1,9 @@
 //Logi includes
 #include "../InstructionSet.h"
-
-// TEMP INCL
-//Logi includes
-#include "../Stream.h" //for debugging in instructions
-#include <iostream>
-#include <iomanip>
-using std::cout;
-using std::endl;
-using std::setw;
-using std::setfill;
+#include "../VirtualMachine.h"
 
 namespace Logi
 {
-
-void InstructionSet::debug_store_pre() const
-{
-    cout << setw(20) << setfill('*') << '\n';
-    cout << _InstructionSetStrings.at((*vm->ram)(vm->registers.R($IP))) << " instr. beg:\n";
-    cout << setw(20) << setfill('*') << '\n';
-
-    cout << "BYTECODE: " << (*vm->ram) << endl;
-    cout << "REGISTERS:\n" << vm->registers;// << endl;
-
-    cout << "R[$IP] = " << vm->registers.R($IP) << endl;
-    cout << "RAM[$IP] = " << static_cast<int>(*(vm->ram->at(vm->registers.R($IP)))) << endl;
-    cout << "RAM[opcode index]: RAM[" << vm->registers.R($IP) << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP))) << '\n';
-    cout << "RAM[operand index]: RAM[" << vm->registers.R($IP) + 1 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+1)) << '\n';
-    cout << "RAM[byte index]: RAM[" << vm->registers.R($IP) + 2 << "] = " << static_cast<int>((*vm->ram)(vm->registers.R($IP)+2)) << '\n';
-    cout << setw(20) << setfill('-') << '\n';
-}
-
-void InstructionSet::debug_store_post() const
-{
-    cout << setw(20) << setfill('-') << '\n';
-    cout << "BYTECODE: " << (*vm->ram) << endl;
-    cout << "REGISTERS:\n" << vm->registers;
-    //cout << setw(20) << setfill('*') << '\n';
-    cout << setw(20) << setfill('-') << '\n';
-    cout << _InstructionSetStrings.at((*vm->ram)($IP)) << " instr. end.\n";
-    //cout << setw(20) << setfill('*') << '\n';
-}
 
 //
 // SB $R1, $R2
@@ -49,17 +12,12 @@ void InstructionSet::debug_store_post() const
 //
 void InstructionSet::SB() const
 {
-    debug_store_pre();
-
     Transform::byteToBytecode
     (
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
-
-    debug_store_post();
 }
 
 //
@@ -69,17 +27,12 @@ void InstructionSet::SB() const
 //
 void InstructionSet::SW() const
 {
-    debug_store_pre();
-
     Transform::wordToBytecode
     (
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
-
-    debug_store_post();
 }
 
 //
@@ -89,17 +42,12 @@ void InstructionSet::SW() const
 //
 void InstructionSet::SD() const
 {
-    debug_store_pre();
-
     Transform::dwordToBytecode
     (
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
-
-    debug_store_post();
 }
 
 //
@@ -109,17 +57,12 @@ void InstructionSet::SD() const
 //
 void InstructionSet::SQ() const
 {
-    debug_store_pre();
-
     Transform::qwordToBytecode
     (
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
-
-    debug_store_post();
 }
 
 //
@@ -129,17 +72,12 @@ void InstructionSet::SQ() const
 //
 void InstructionSet::SF1() const
 {
-    debug_store_pre();
-
     Transform::floatToBytecode
     (
         vm->registers.RF((FloatRegisterCodes)((*vm->ram)(vm->registers.RF((FloatRegisterCodes)$IP)+1))),
         &(*vm->ram)(vm->registers.R1_24(($IP+2)))
     );
-
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
-
-    debug_store_post();
 }
 
 //
@@ -149,17 +87,12 @@ void InstructionSet::SF1() const
 //
 void InstructionSet::SF2() const
 {
-    debug_store_pre();
-
     Transform::doubleToBytecode
     (
         vm->registers.RD((DoubleRegisterCodes)((*vm->ram)(vm->registers.RD((DoubleRegisterCodes)$IP)+1))),
         &(*vm->ram)(vm->registers.R1_24(($IP+2)))
     );
-
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
-
-    debug_store_post();
 }
 
 } //namespace Logi

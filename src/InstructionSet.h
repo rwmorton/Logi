@@ -112,6 +112,9 @@ class InstructionSet
         InstructionSet(VirtualMachine* vm);
         void setVM(VirtualMachine* vm);
         const std::string& operator()(OpCodes code) const;
+        // debug
+        void debug_pre() const;
+        void debug_post() const;
         //load instructions
         void LBI() const;
         void LWI() const;
@@ -127,10 +130,6 @@ class InstructionSet
         void LQ() const;
         void LF1() const;
         void LF2() const;
-        // debug
-        void debug_load_pre() const;
-        void debug_load_post() const;
-        //
         //store instructions
         void SB() const;
         void SW() const;
@@ -138,10 +137,6 @@ class InstructionSet
         void SQ() const;
         void SF1() const;
         void SF2() const;
-        // debug
-        void debug_store_pre() const;
-        void debug_store_post() const;
-        //
         //push/pop instructions
         void PUSHB() const;
         void PUSHW() const;
@@ -155,10 +150,6 @@ class InstructionSet
         void POPQ() const;
         void POPF1() const;
         void POPF2() const;
-        // debug
-        void debug_pushpop_pre() const;
-        void debug_pushpop_post() const;
-        //
         //move instructions
         void MOV() const;
         void MOVF() const;

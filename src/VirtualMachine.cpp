@@ -90,8 +90,18 @@ void VirtualMachine::run()
     //registers.RD($D1) = 35635632;//0xbe73ab9157c5d3a8;
     //registers.RD($D2) = 345343;//0x87bc73fa7c5a8e9b;
 
+    //mov
+    registers.R1_24(1) = 0xf;
+    registers.R1_24(2) = 0xff;
+    registers.RF($F1) = 1;
+    registers.RF($F2) = 354343;
+    registers.RD($D1) = 2;
+    registers.RD($D2) = 34354353;
+
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
+        iset->debug_pre();
+
         switch((*ram)(registers.R($IP)))
         {
             case LBI: iset->LBI(); break;
@@ -124,11 +134,11 @@ void VirtualMachine::run()
             case POPW: iset->POPW(); break;
             case POPD: iset->POPD(); break;
             case POPQ: iset->POPQ(); break;
-            case POPF1: iset->POPF1(); break;
-            case POPF2: iset->POPF2(); break; //32
-            case MOV: break;
-            case MOVF: break;
-            case MOVD: break;
+            case POPF1: iset->POPF1(); break; //UNIMPL.
+            case POPF2: iset->POPF2(); break; //UNIMPL.
+            case MOV: iset->MOV(); break;
+            case MOVF: iset->MOVF(); break;
+            case MOVD: iset->MOVD(); break;
             case JMP: break;
             case JE: break;
             case JNE: break;
@@ -169,6 +179,8 @@ void VirtualMachine::run()
             case DSLT: break;
             default: throw std::runtime_error("VIRTUAL_MACHINE: invalid instruction.");
         }
+
+        iset->debug_post();
     }
 }
 

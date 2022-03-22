@@ -160,7 +160,7 @@ void VirtualMachine::validateBytecode()
                     .end();
             }
             break;
-            MOVF: // MOVF $F1,$F2
+            case MOVF: // MOVF $F1,$F2
             {
                 validate->opcode() /* B */
                     .RF().operand() /* $F1 */
@@ -315,7 +315,7 @@ void VirtualMachine::validateBytecode()
             break;
             default:
             {
-                throw std::runtime_error("bad opcode.");
+                throw std::runtime_error("VALIDATOR: bad opcode.");
             }
         }
     }
