@@ -58,10 +58,15 @@ void InstructionSet::SB() const
     cout << "addr at $R2 = " << addrAtR2 << endl;
     cout << endl;
 
-    (*vm->ram)(addrAtR2) = byteAtR1;
+    //(*vm->ram)(addrAtR2) = byteAtR1;
 
-    //set register at byte 2 to byte 3
-    //Transform::byteToRegister((*vm->ram)(vm->registers.R($IP)+2),vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)));
+    //static void byteToRegister(U1 byte,U8& reg);
+
+    Transform::byteToBytecode
+    (
+        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
+    );
 
     vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
 
@@ -75,7 +80,17 @@ void InstructionSet::SB() const
 //
 void InstructionSet::SW() const
 {
-    //
+    debug_store_pre();
+
+    Transform::wordToBytecode
+    (
+        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
+    );
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+
+    debug_store_post();
 }
 
 //
@@ -85,7 +100,17 @@ void InstructionSet::SW() const
 //
 void InstructionSet::SD() const
 {
-    //
+    debug_store_pre();
+
+    Transform::dwordToBytecode
+    (
+        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
+    );
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+
+    debug_store_post();
 }
 
 //
@@ -95,7 +120,17 @@ void InstructionSet::SD() const
 //
 void InstructionSet::SQ() const
 {
-    //
+    debug_store_pre();
+
+    Transform::qwordToBytecode
+    (
+        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
+    );
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+
+    debug_store_post();
 }
 
 //
@@ -105,7 +140,17 @@ void InstructionSet::SQ() const
 //
 void InstructionSet::SF1() const
 {
-    //
+    debug_store_pre();
+
+    Transform::floatToBytecode
+    (
+        vm->registers.RF(((*vm->ram)(vm->registers.RF($IP)+1))),
+        &(*vm->ram)(vm->registers.R1_24(($IP+2)))
+    );
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+
+    debug_store_post();
 }
 
 //
@@ -115,7 +160,17 @@ void InstructionSet::SF1() const
 //
 void InstructionSet::SF2() const
 {
-    //
+    debug_store_pre();
+
+    Transform::doubleToBytecode
+    (
+        vm->registers.RD(((*vm->ram)(vm->registers.RD($IP)+1))),
+        &(*vm->ram)(vm->registers.R1_24(($IP+2)))
+    );
+
+    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+
+    debug_store_post();
 }
 
 } //namespace Logi

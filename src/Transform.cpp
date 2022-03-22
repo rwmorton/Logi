@@ -78,6 +78,12 @@ F8 Transform::bytecodeToDouble(U1 bytes[])
     return double_;
 }
 
+void Transform::byteToBytecode(U1 byte,U1 bytes[])
+{
+    U1* buffer = (U1*)&word;
+    bytes[0] = buffer[1];
+}
+
 void Transform::wordToBytecode(U2 word,U1 bytes[])
 {
     U1* buffer = (U1*)&word;

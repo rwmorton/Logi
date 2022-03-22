@@ -46,7 +46,7 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     //////////////////////////////////////////////////////////////////////////
     // TEMP!!! FOR DEBUGGING, DON'T OUTPUT HEAP AND STACK * 1024
     //
-    totalSize = bytecodeSize + 100; //add just enough to avoid out of bounds errors
+    totalSize = bytecodeSize + 1000; //add just enough to avoid out of bounds errors
     //
     //////////////////////////////////////////////////////////////////////////
     //                  UNCOMMENT WHEN ABOVE DELETED

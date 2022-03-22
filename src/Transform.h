@@ -24,6 +24,7 @@ class Transform
         static F4 bytecodeToFloat(U1 bytes[]);
         static F8 bytecodeToDouble(U1 bytes[]);
         //
+        static void byteToBytecode(U1 byte,U1 bytes[]);
         static void wordToBytecode(U2 word,U1 bytes[]);
         static void dwordToBytecode(U4 dword,U1 bytes[]);
         static void qwordToBytecode(U8 qword,U1 bytes[]);

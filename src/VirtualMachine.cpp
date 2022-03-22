@@ -63,10 +63,10 @@ void VirtualMachine::run()
     //registers.R1_24(4) = 0x04; // 16_LB_HALT.RUN test through to 21_LF2_HALT.RUN
     //
     //22_SB_HALT.RUN through 23_SB_SB_HALT.RUN
-    registers.R1_24(1) = 0xf;
-    registers.R1_24(2) = 0xa;
-    registers.R1_24(3) = 0x7;
-    registers.R1_24(4) = 0xf;
+    registers.R1_24(1) = 0xfa37ef58;
+    registers.R1_24(2) = 0x15a;
+    registers.R1_24(3) = 0x14;
+    registers.R1_24(4) = 0xabcdef12ea34fa37;
     //
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
@@ -88,9 +88,9 @@ void VirtualMachine::run()
             case LF1: iset->LF1(); break;
             case LF2: iset->LF2(); break;
             case SB: iset->SB(); break;
-            case SW: break;
-            case SD: break;
-            case SQ: break;
+            case SW: iset->SW(); break;
+            case SD: iset->SD(); break;
+            case SQ: iset->SQ(); break;
             case SF1: break;
             case SF2: break;
             case PUSHB: break;
