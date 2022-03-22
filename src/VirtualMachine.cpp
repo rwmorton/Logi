@@ -62,12 +62,33 @@ void VirtualMachine::run()
     //registers.R1_24(3) = 0x0b; // 15_LAI_LWI_LBI_HALT.RUN test
     //registers.R1_24(4) = 0x04; // 16_LB_HALT.RUN test through to 21_LF2_HALT.RUN
     //
-    //22_SB_HALT.RUN through 23_SB_SB_HALT.RUN
-    registers.R1_24(1) = 0xfa37ef58;
-    registers.R1_24(2) = 0x15a;
-    registers.R1_24(3) = 0x14;
-    registers.R1_24(4) = 0xabcdef12ea34fa37;
+    //SB_HALT.RUN through SQ_SQ_HALT.RUN
+    //registers.R1_24(1) = 0xfa37ef58;
+    //registers.R1_24(2) = 0x15a;
+    //registers.R1_24(3) = 0x14;
+    //registers.R1_24(4) = 0xabcdef12ea34fa37;
     //
+    //registers.RF(0) = 0xf;
+    //registers.RF(1) = 0xabcdef;
+
+    //pushpop byte
+    //registers.R1_24(1) = 0xf;
+    //registers.R1_24(2) = 0x73;
+    //pushpop word
+    //registers.R1_24(1) = 0xfa73;
+    //registers.R1_24(2) = 0x87bc;
+    //pushpop dword
+    //registers.R1_24(1) = 0xbe73ab91;
+    //registers.R1_24(2) = 0x87bc73fa;
+    //pushpop dword
+    //registers.R1_24(1) = 0xbe73ab9157c5d3a8;
+    //registers.R1_24(2) = 0x87bc73fa7c5a8e9b;
+    //pushpop float
+    //registers.RF($F1) = 565465; //0xbe73ab91;
+    //registers.RF($F2) = 65454; //0x87bc73fa;
+    //pushpop double
+    //registers.RD($D1) = 35635632;//0xbe73ab9157c5d3a8;
+    //registers.RD($D2) = 345343;//0x87bc73fa7c5a8e9b;
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
@@ -91,20 +112,20 @@ void VirtualMachine::run()
             case SW: iset->SW(); break;
             case SD: iset->SD(); break;
             case SQ: iset->SQ(); break;
-            case SF1: break;
-            case SF2: break;
-            case PUSHB: break;
-            case PUSHW: break;
-            case PUSHD: break;
-            case PUSHQ: break;
-            case PUSHF1: break;
-            case PUSHF2: break;
-            case POPB: break;
-            case POPW: break;
-            case POPD: break;
-            case POPQ: break;
-            case POPF1: break;
-            case POPF2: break;
+            case SF1: iset->SF1(); break;
+            case SF2: iset->SF2(); break;
+            case PUSHB: iset->PUSHB(); break;
+            case PUSHW: iset->PUSHW(); break;
+            case PUSHD: iset->PUSHD(); break;
+            case PUSHQ: iset->PUSHQ(); break;
+            case PUSHF1: iset->PUSHF1(); break;
+            case PUSHF2: iset->PUSHF2(); break;
+            case POPB: iset->POPB(); break;
+            case POPW: iset->POPW(); break;
+            case POPD: iset->POPD(); break;
+            case POPQ: iset->POPQ(); break;
+            case POPF1: iset->POPF1(); break;
+            case POPF2: iset->POPF2(); break; //32
             case MOV: break;
             case MOVF: break;
             case MOVD: break;

@@ -51,7 +51,7 @@ enum RegisterCodes
 
 enum FloatRegisterCodes
 {
-    $F1 = 0,
+    $F1 = 1,
     $F2,
     $F3,
     $F4,
@@ -65,7 +65,7 @@ enum FloatRegisterCodes
 
 enum DoubleRegisterCodes
 {
-    $D1 = 0,
+    $D1 = 1,
     $D2,
     $D3,
     $D4,
@@ -86,20 +86,20 @@ class Registers
 {
     public:
         //set registers
-        U8& R(unsigned int code);
+        U8& R(const RegisterCodes code);
         U8& R1_24(unsigned int code); //set registers from R1 - R24
-        F4& RF(unsigned int code);
-        F8& RD(unsigned int code);
+        F4& RF(const FloatRegisterCodes code);
+        F8& RD(const DoubleRegisterCodes code);
         //get registers
-        const U8 R(unsigned int code) const;
+        const U8 R(const RegisterCodes code) const;
         const U8 R1_24(unsigned int code) const; //get registers from R1 - R24
-        const F4 RF(unsigned int code) const;
-        const F8 RD(unsigned int code) const;
+        const F4 RF(const FloatRegisterCodes code) const;
+        const F8 RD(const DoubleRegisterCodes code) const;
         //get register as string
-        const std::string& R_str(unsigned int code) const;
+        const std::string& R_str(const RegisterCodes code) const;
         const std::string& R1_24_str(unsigned int code) const;
-        const std::string& RF_str(unsigned int code) const;
-        const std::string& RD_str(unsigned int code) const;
+        const std::string& RF_str(const FloatRegisterCodes code) const;
+        const std::string& RD_str(const DoubleRegisterCodes code) const;
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const Registers& registers);
     private:

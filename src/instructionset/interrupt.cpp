@@ -25,8 +25,7 @@ void InstructionSet::EI() const
 
 void InstructionSet::HALT() const
 {
-    cout << "Got HALT instruction, shutting down the virtual machine..." << endl;
-    exit(0);
+    //
 }
 
 void InstructionSet::NOP() const

@@ -2,6 +2,11 @@
 #include "Registers.h"
 #include "Stream.h"
 
+//// TEMP
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
 namespace Logi
 {
 
@@ -27,9 +32,9 @@ const std::vector<std::string> Registers::_DoubleRegisterStrings
     "$D6","$D7","$D8","$D9","$D10"
 };
 
-U8& Registers::R(unsigned int code)
+U8& Registers::R(const RegisterCodes code)
 {
-    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code >= (NUM_FLOAT_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
@@ -39,21 +44,21 @@ U8& Registers::R1_24(unsigned int code)
     return _R[(code-1) + 8];
 }
 
-F4& Registers::RF(unsigned int code)
+F4& Registers::RF(const FloatRegisterCodes code)
 {
-    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _RF[code];
+    if(code < FloatRegisterCodes::$F1 || code >= (NUM_FLOAT_REGISTERS + FloatRegisterCodes::$F1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _RF[code-1];
 }
 
-F8& Registers::RD(unsigned int code)
+F8& Registers::RD(const DoubleRegisterCodes code)
 {
-    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _RD[code];
+    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_FLOAT_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _RD[code-1];
 }
 
-const U8 Registers::R(unsigned int code) const
+const U8 Registers::R(const RegisterCodes code) const
 {
-    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code >= (NUM_FLOAT_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
@@ -63,21 +68,21 @@ const U8 Registers::R1_24(unsigned int code) const
     return _R[(code-1) + 8];
 }
 
-const F4 Registers::RF(unsigned int code) const
+const F4 Registers::RF(const FloatRegisterCodes code) const
 {
-    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _RF[code];
+    if(code < FloatRegisterCodes::$F1 || code >= (NUM_FLOAT_REGISTERS + FloatRegisterCodes::$F1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _RF[code-1];
 }
 
-const F8 Registers::RD(unsigned int code) const
+const F8 Registers::RD(const DoubleRegisterCodes code) const
 {
-    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _RD[code];
+    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_FLOAT_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _RD[code-1];
 }
 
-const std::string& Registers::R_str(unsigned int code) const
+const std::string& Registers::R_str(const RegisterCodes code) const
 {
-    if(code >= NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code >= (NUM_FLOAT_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RegisterStrings.at(code);
 }
 
@@ -87,16 +92,16 @@ const std::string& Registers::R1_24_str(unsigned int code) const
     return _RegisterStrings.at((code-1) + 8);
 }
 
-const std::string& Registers::RF_str(unsigned int code) const
+const std::string& Registers::RF_str(const FloatRegisterCodes code) const
 {
-    if(code >= NUM_FLOAT_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _FloatRegisterStrings.at(code);
+    if(code < FloatRegisterCodes::$F1 || code >= (NUM_FLOAT_REGISTERS + FloatRegisterCodes::$F1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _FloatRegisterStrings.at(code-1);
 }
 
-const std::string& Registers::RD_str(unsigned int code) const
+const std::string& Registers::RD_str(const DoubleRegisterCodes code) const
 {
-    if(code >= NUM_DOUBLE_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _DoubleRegisterStrings.at(code);
+    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_FLOAT_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _DoubleRegisterStrings.at(code-1);
 }
 
 std::ostream& operator<<(std::ostream& out,const Registers& registers)
@@ -105,15 +110,30 @@ std::ostream& operator<<(std::ostream& out,const Registers& registers)
 
     ////////////////////////
     /// TREMP! FOR DEBUGGING
+    const int LEN = 50;
     const Stream* s = Stream::getInstance();
-    out << registers.R_str(0) << "= "; s->U8(registers.R(0)); out << std::endl; // $IP
-    out << registers.R_str(3) << "= "; s->U8(registers.R(3)); out << std::endl; // $BE
-    out << registers.R_str(7) << "= "; s->U8(registers.R(7)); out << std::endl; // $$TOP
-    out << registers.R_str(8) << "= "; s->U8(registers.R(8)); out << std::endl; // $R1
-    out << registers.R_str(9) << "= "; s->U8(registers.R(9)); out << std::endl; // $R2
-    out << registers.R_str(10) << "= "; s->U8(registers.R(10)); out << std::endl; // $R3
-    out << registers.R_str(11) << "= "; s->U8(registers.R(11)); out << std::endl; // $R4
-    out << registers.R_str(12) << "= "; s->U8(registers.R(12)); out << std::endl; // $R5
+    out << setw(LEN) << setfill('-') << '\n';
+    out << registers.R_str($IP) << "= "; s->U8(registers.R($IP)); out << std::endl; // $IP
+    out << registers.R_str($SP) << "= "; s->U8(registers.R($SP)); out << std::endl; // $SP
+    out << registers.R_str($BE) << "= "; s->U8(registers.R($BE)); out << std::endl; // $BE
+    out << registers.R_str($HS) << "= "; s->U8(registers.R($HS)); out << std::endl; // $HS
+    out << registers.R_str($HE) << "= "; s->U8(registers.R($HE)); out << std::endl; // $HE
+    out << registers.R_str($SS) << "= "; s->U8(registers.R($SS)); out << std::endl; // $SS
+    out << registers.R_str($TOP) << "= "; s->U8(registers.R($TOP)); out << std::endl; // $$TOP
+    out << setw(LEN) << setfill('-') << '\n';
+    out << registers.R_str($R1) << "= "; s->U8(registers.R($R1)); out << std::endl; // $R1
+    out << registers.R_str($R2) << "= "; s->U8(registers.R($R2)); out << std::endl; // $R2
+    out << registers.R_str($R3) << "= "; s->U8(registers.R($R3)); out << std::endl; // $R3
+    out << registers.R_str($R4) << "= "; s->U8(registers.R($R4)); out << std::endl; // $R4
+    out << registers.R_str($R5) << "= "; s->U8(registers.R($R5)); out << std::endl; // $R5
+    out << setw(LEN) << setfill('-') << '\n';
+    out << registers.RF_str($F1) << "= "; s->U8(registers.RF($F1)); out << std::endl; // $F1
+    out << registers.RF_str($F2) << "= "; s->U8(registers.RF($F2)); out << std::endl; // $F2
+    out << registers.RF_str($F3) << "= "; s->U8(registers.RF($F3)); out << std::endl; // $F3
+    out << setw(LEN) << setfill('-') << '\n';
+    out << registers.RD_str($D1) << "= "; s->U8(registers.RD($D1)); out << std::endl; // $F1
+    out << registers.RD_str($D2) << "= "; s->U8(registers.RD($D2)); out << std::endl; // $F2
+    out << registers.RD_str($D3) << "= "; s->U8(registers.RD($D3)); out << std::endl; // $F3
     /////////////////////
 
 

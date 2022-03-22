@@ -13,8 +13,8 @@ namespace Logi
 
 const unsigned int Bytecode::MAGIC_NUMBER {57069}; //0xDEED
 const unsigned int Bytecode::HEADER_SIZE {26};
-const unsigned int Bytecode::DEFAULT_STACK_SIZE {64};
-const unsigned int Bytecode::DEFAULT_HEAP_SIZE {64};
+const unsigned int Bytecode::DEFAULT_STACK_SIZE {1};//{64};
+const unsigned int Bytecode::DEFAULT_HEAP_SIZE {1};//{64};
 const std::string Bytecode::DEFAULT_EXECUTABLE_FILE {"bytecode.RUN"};
 
 Bytecode::Bytecode() : stackSize(Bytecode::DEFAULT_STACK_SIZE),heapSize(Bytecode::DEFAULT_HEAP_SIZE),bytecodeFile(Bytecode::DEFAULT_EXECUTABLE_FILE) {}
@@ -46,11 +46,11 @@ void Bytecode::load(int argc,char* argv[],VirtualMachine& vm)
     //////////////////////////////////////////////////////////////////////////
     // TEMP!!! FOR DEBUGGING, DON'T OUTPUT HEAP AND STACK * 1024
     //
-    totalSize = bytecodeSize + 1000; //add just enough to avoid out of bounds errors
+    //totalSize = bytecodeSize + 1000; //add just enough to avoid out of bounds errors
     //
     //////////////////////////////////////////////////////////////////////////
     //                  UNCOMMENT WHEN ABOVE DELETED
-    //totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
+    totalSize = bytecodeSize + (heapSize * 1024) + (stackSize * 1024);
     //
     //////////////////////////////////////////////////////////////////////////
 

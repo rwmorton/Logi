@@ -51,17 +51,6 @@ void InstructionSet::SB() const
 {
     debug_store_pre();
 
-    cout << endl;
-    U8 byteAtR1 = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1));
-    cout << "byte at $R1 = " << byteAtR1 << endl;
-    U8 addrAtR2 = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2));
-    cout << "addr at $R2 = " << addrAtR2 << endl;
-    cout << endl;
-
-    //(*vm->ram)(addrAtR2) = byteAtR1;
-
-    //static void byteToRegister(U1 byte,U8& reg);
-
     Transform::byteToBytecode
     (
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
@@ -144,7 +133,7 @@ void InstructionSet::SF1() const
 
     Transform::floatToBytecode
     (
-        vm->registers.RF(((*vm->ram)(vm->registers.RF($IP)+1))),
+        vm->registers.RF((FloatRegisterCodes)((*vm->ram)(vm->registers.RF((FloatRegisterCodes)$IP)+1))),
         &(*vm->ram)(vm->registers.R1_24(($IP+2)))
     );
 
@@ -164,7 +153,7 @@ void InstructionSet::SF2() const
 
     Transform::doubleToBytecode
     (
-        vm->registers.RD(((*vm->ram)(vm->registers.RD($IP)+1))),
+        vm->registers.RD((DoubleRegisterCodes)((*vm->ram)(vm->registers.RD((DoubleRegisterCodes)$IP)+1))),
         &(*vm->ram)(vm->registers.R1_24(($IP+2)))
     );
 

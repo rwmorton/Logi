@@ -206,6 +206,122 @@ void Transform::addressToRegister(U1 bytes[],U8& reg)
     buffer[7] = bytes[7];
 }
 
+//push data to top of stack
+void Transform::byteToStack(const U1 byte,U1* stackTop)
+{
+    stackTop[0] = byte;
+}
+
+void Transform::wordToStack(const U2 word,U1* stackTop)
+{
+    U1* buffer = (U1*)&word;
+    stackTop[0] = buffer[0];
+    stackTop[-1] = buffer[1];
+}
+
+void Transform::dwordToStack(const U4 dword,U1* stackTop)
+{
+    U1* buffer = (U1*)&dword;
+    stackTop[0] = buffer[0];
+    stackTop[-1] = buffer[1];
+    stackTop[-2] = buffer[2];
+    stackTop[-3] = buffer[3];
+}
+
+void Transform::qwordToStack(const U8 qword,U1* stackTop)
+{
+    U1* buffer = (U1*)&qword;
+    stackTop[0] = buffer[0];
+    stackTop[-1] = buffer[1];
+    stackTop[-2] = buffer[2];
+    stackTop[-3] = buffer[3];
+    stackTop[-4] = buffer[4];
+    stackTop[-5] = buffer[5];
+    stackTop[-6] = buffer[6];
+    stackTop[-7] = buffer[7];
+}
+
+void Transform::floatToStack(const F4 float_,U1* stackTop)
+{
+    U1* buffer = (U1*)&float_;
+    stackTop[0] = buffer[0];
+    stackTop[-1] = buffer[1];
+    stackTop[-2] = buffer[2];
+    stackTop[-3] = buffer[3];
+}
+
+void Transform::doubleToStack(const F8 double_,U1* stackTop)
+{
+    U1* buffer = (U1*)&double_;
+    stackTop[0] = buffer[0];
+    stackTop[-1] = buffer[1];
+    stackTop[-2] = buffer[2];
+    stackTop[-3] = buffer[3];
+    stackTop[-4] = buffer[4];
+    stackTop[-5] = buffer[5];
+    stackTop[-6] = buffer[6];
+    stackTop[-7] = buffer[7];
+}
+
+//get data from top of stack
+void Transform::byteFromStack(U8& byte,const U1* stackTop)
+{
+    U1* buffer = (U1*)&byte;
+    buffer[0] = stackTop[0];
+}
+
+
+void Transform::wordFromStack(U8& word,const U1* stackTop)
+{
+    U1* buffer = (U1*)&word;
+    buffer[0] = stackTop[0];
+    buffer[1] = stackTop[-1];
+}
+
+void Transform::dwordFromStack(U8& dword,const U1* stackTop)
+{
+    U1* buffer = (U1*)&dword;
+    buffer[0] = stackTop[0];
+    buffer[1] = stackTop[-1];
+    buffer[2] = stackTop[-2];
+    buffer[3] = stackTop[-3];
+}
+
+void Transform::qwordFromStack(U8& qword,const U1* stackTop)
+{
+    U1* buffer = (U1*)&qword;
+    buffer[0] = stackTop[0];
+    buffer[1] = stackTop[-1];
+    buffer[2] = stackTop[-2];
+    buffer[3] = stackTop[-3];
+    buffer[4] = stackTop[-4];
+    buffer[5] = stackTop[-5];
+    buffer[6] = stackTop[-6];
+    buffer[7] = stackTop[-7];
+}
+
+void Transform::floatFromStack(U8& float_,const U1* stackTop)
+{
+    U1* buffer = (U1*)&float_;
+    buffer[0] = stackTop[0];
+    buffer[1] = stackTop[-1];
+    buffer[2] = stackTop[-2];
+    buffer[3] = stackTop[-3];
+}
+
+void Transform::doubleFromStack(U8& double_,const U1* stackTop)
+{
+    U1* buffer = (U1*)&double_;
+    buffer[0] = stackTop[0];
+    buffer[1] = stackTop[-1];
+    buffer[2] = stackTop[-2];
+    buffer[3] = stackTop[-3];
+    buffer[4] = stackTop[-4];
+    buffer[5] = stackTop[-5];
+    buffer[6] = stackTop[-6];
+    buffer[7] = stackTop[-7];
+}
+
 //big-endian to little-endian conversion
 void Transform::word(U1 bytes[],unsigned int start)
 {

@@ -3,6 +3,7 @@
 
 //Logi includes
 #include "Types.h"
+#include "RAM.h"
 
 namespace Logi
 {
@@ -38,6 +39,20 @@ class Transform
         static void floatToRegister(U1 bytes[],U8& reg);
         static void doubleToRegister(U1 bytes[],U8& reg);
         static void addressToRegister(U1 bytes[],U8& reg);
+        //
+        static void byteToStack(const U1 byte,U1* stackTop);
+        static void wordToStack(const U2 word,U1* stackTop);
+        static void dwordToStack(const U4 dword,U1* stackTop);
+        static void qwordToStack(const U8 qword,U1* stackTop);
+        static void floatToStack(const F4 float_,U1* stackTop);
+        static void doubleToStack(const F8 double_,U1* stackTop);
+        //
+        static void byteFromStack(U8& byte,const U1* stackTop);
+        static void wordFromStack(U8& byte,const U1* stackTop);
+        static void dwordFromStack(U8& byte,const U1* stackTop);
+        static void qwordFromStack(U8& byte,const U1* stackTop);
+        static void floatFromStack(U8& byte,const U1* stackTop);
+        static void doubleFromStack(U8& byte,const U1* stackTop);
         //
         //big-endian to little-endian conversion
         //
