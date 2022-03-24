@@ -99,11 +99,23 @@ void VirtualMachine::run()
     //registers.RD($D2) = 34354353;
 
     //jump
-    registers.R1_24(1) = 0x7;
-    registers.R1_24(2) = 0x7;
-    registers.R1_24(3) = 0x22;
-    registers.R1_24(4) = 0x21;
-    registers.R1_24(5) = 0x1;
+    //registers.R1_24(1) = 0x7;
+    //registers.R1_24(2) = 0x7;
+    //registers.R1_24(3) = 0x22;
+    //registers.R1_24(4) = 0x21;
+    //registers.R1_24(5) = 0x1;
+
+    //bitwise
+    //registers.R1_24(1) = 0x7;
+    //registers.R1_24(2) = 0x7;
+    //registers.R1_24(3) = 0x0;
+    //registers.R1_24(4) = 33;
+    //registers.R1_24(5) = 0x5; //test bit 5
+
+    //shift
+    registers.R1_24(1) = 0x0;
+    registers.R1_24(2) = 0xf0f0f0f0;
+    registers.R1_24(3) = 0x5; //shift
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
@@ -154,16 +166,16 @@ void VirtualMachine::run()
             case DI: iset->DI(); break;
             case EI: iset->EI(); break;
             case HALT: iset->HALT(); break;
-            case NOP: break;
-            case AND: break;
-            case OR: break;
-            case XOR: break;
-            case NOT: break;
-            case BT: break;
-            case BS: break;
-            case SRA: break;
-            case SRL: break;
-            case SL: break;
+            case NOP: iset->NOP(); break;
+            case AND: iset->AND(); break;
+            case OR: iset->OR(); break;
+            case XOR: iset->XOR(); break;
+            case NOT: iset->NOT(); break;
+            case BT: iset->BT(); break;
+            case BS: iset->BS(); break;
+            case SRA: iset->SRA(); break;
+            case SRL: iset->SRL(); break;
+            case SL: iset->SL(); break;
             case ADD: break;
             case SUB: break;
             case MULT: break;
