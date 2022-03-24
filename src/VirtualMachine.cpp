@@ -187,22 +187,22 @@ void VirtualMachine::run()
             case SUB: iset->SUB(); break;
             case MULT: iset->MULT(); break;
             case DIV: iset->DIV(); break;
-            case CAST_IF: break;
-            case CAST_ID: break;
-            case CAST_FI: break;
-            case CAST_FD: break;
-            case CAST_DI: break;
-            case CAST_DF: break;
-            case FADD: break;
-            case FSUB: break;
-            case FMULT: break;
-            case FDIV: break;
-            case FSLT: break;
-            case DADD: break;
-            case DSUB: break;
-            case DMULT: break;
-            case DDIV: break;
-            case DSLT: break;
+            case CAST_IF: iset->CAST_IF(); break;
+            case CAST_ID: iset->CAST_ID(); break;
+            case CAST_FI: iset->CAST_FI(); break;
+            case CAST_FD: iset->CAST_FD(); break;
+            case CAST_DI: iset->CAST_DI(); break;
+            case CAST_DF: iset->CAST_DF(); break;
+            case FADD: iset->FADD(); break;
+            case FSUB: iset->FSUB(); break;
+            case FMULT: iset->FMULT(); break;
+            case FDIV: iset->FDIV(); break;
+            case FSLT: iset->FSLT(); break;
+            case DADD: iset->DADD(); break;
+            case DSUB: iset->DSUB(); break;
+            case DMULT: iset->DMULT(); break;
+            case DDIV: iset->DDIV(); break;
+            case DSLT: iset->DSLT(); break;
             default: throw std::runtime_error("VIRTUAL_MACHINE: invalid instruction.");
         }
 

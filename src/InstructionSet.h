@@ -202,6 +202,11 @@ class InstructionSet
         //handle interrupts
         void handleInterrupt(U1 byte) const;
         bool interruptOn;
+        //compare floats to zero
+        static const bool isZero(const F4 A,const F4 B);
+        static const F4 F4_EPSILON;
+        static const bool isZero(const F8 A,const F8 B);
+        static const F8 F8_EPSILON;
         //
         VirtualMachine* vm; //test
         static const std::vector<std::string> _InstructionSetStrings;

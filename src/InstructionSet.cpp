@@ -2,6 +2,10 @@
 #include "InstructionSet.h"
 #include "VirtualMachine.h"
 
+//std includes
+#include <cmath>
+#include <float.h>
+
 // TEMP INCL
 //Logi includes
 //#include "../Stream.h" //for debugging in instructions
@@ -15,6 +19,9 @@ using std::setfill;
 namespace Logi
 {
 
+const F4 InstructionSet::F4_EPSILON {FLT_EPSILON};
+const F8 InstructionSet::F8_EPSILON {DBL_EPSILON};
+
 InstructionSet::InstructionSet(VirtualMachine* vm) : vm{vm} {}
 
 void InstructionSet::setVM(VirtualMachine* vm)
@@ -26,6 +33,16 @@ const std::string& InstructionSet::operator()(OpCodes code) const
 {
     if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("INSTRUCTION_SET: out of range");
     return _InstructionSetStrings.at(code);
+}
+
+const bool InstructionSet::isZero(const F4 A,const F4 B)
+{
+    return fabsf(A-B) < F4_EPSILON;
+}
+
+const bool InstructionSet::isZero(const F8 A,const F8 B)
+{
+    return fabs(A-B) < F8_EPSILON;
 }
 
 void InstructionSet::debug_pre() const
