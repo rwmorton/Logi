@@ -91,12 +91,19 @@ void VirtualMachine::run()
     //registers.RD($D2) = 345343;//0x87bc73fa7c5a8e9b;
 
     //mov
-    registers.R1_24(1) = 0xf;
-    registers.R1_24(2) = 0xff;
-    registers.RF($F1) = 1;
-    registers.RF($F2) = 354343;
-    registers.RD($D1) = 2;
-    registers.RD($D2) = 34354353;
+    //registers.R1_24(1) = 0xf;
+    //registers.R1_24(2) = 0xff;
+    //registers.RF($F1) = 1;
+    //registers.RF($F2) = 354343;
+    //registers.RD($D1) = 2;
+    //registers.RD($D2) = 34354353;
+
+    //jump
+    registers.R1_24(1) = 0x7;
+    registers.R1_24(2) = 0x7;
+    registers.R1_24(3) = 0x22;
+    registers.R1_24(4) = 0x21;
+    registers.R1_24(5) = 0x1;
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
@@ -139,13 +146,13 @@ void VirtualMachine::run()
             case MOV: iset->MOV(); break;
             case MOVF: iset->MOVF(); break;
             case MOVD: iset->MOVD(); break;
-            case JMP: break;
-            case JE: break;
-            case JNE: break;
-            case SLT: break;
-            case INT: break;
-            case DI: break;
-            case EI: break;
+            case JMP: iset->JMP(); break;
+            case JE: iset->JE(); break;
+            case JNE: iset->JNE(); break;
+            case SLT: iset->SLT(); break;
+            case INT: iset->INT(); break;
+            case DI: iset->DI(); break;
+            case EI: iset->EI(); break;
             case HALT: iset->HALT(); break;
             case NOP: break;
             case AND: break;

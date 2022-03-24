@@ -17,7 +17,7 @@ void InstructionSet::SB() const
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 //
@@ -32,7 +32,7 @@ void InstructionSet::SW() const
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 //
@@ -47,7 +47,7 @@ void InstructionSet::SD() const
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 //
@@ -62,7 +62,7 @@ void InstructionSet::SQ() const
         vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 //
@@ -77,7 +77,7 @@ void InstructionSet::SF1() const
         vm->registers.RF((FloatRegisterCodes)((*vm->ram)(vm->registers.RF((FloatRegisterCodes)$IP)+1))),
         &(*vm->ram)(vm->registers.R1_24(($IP+2)))
     );
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 //
@@ -92,7 +92,7 @@ void InstructionSet::SF2() const
         vm->registers.RD((DoubleRegisterCodes)((*vm->ram)(vm->registers.RD((DoubleRegisterCodes)$IP)+1))),
         &(*vm->ram)(vm->registers.R1_24(($IP+2)))
     );
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 } //namespace Logi

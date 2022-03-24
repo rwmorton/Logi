@@ -13,7 +13,7 @@ namespace Logi
 void InstructionSet::MOV() const
 {
     vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2));
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 //
@@ -24,7 +24,7 @@ void InstructionSet::MOV() const
 void InstructionSet::MOVF() const
 {
     vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 //
@@ -35,7 +35,7 @@ void InstructionSet::MOVF() const
 void InstructionSet::MOVD() const
 {
     vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
-    vm->registers.R($IP) = vm->registers.R($IP) + 3; //set next instruction
+    vm->registers.R($IP) += 3; //set next instruction
 }
 
 } //namespace Logi

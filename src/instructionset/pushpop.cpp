@@ -24,7 +24,7 @@ void InstructionSet::PUSHB() const
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP)--; //decrement stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -40,7 +40,7 @@ void InstructionSet::PUSHW() const
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 2; //decrement stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -56,7 +56,7 @@ void InstructionSet::PUSHD() const
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 4; //decrement stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -72,7 +72,7 @@ void InstructionSet::PUSHQ() const
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 8; //decrement stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -88,7 +88,7 @@ void InstructionSet::PUSHF1() const
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 4; //decrement stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -104,7 +104,7 @@ void InstructionSet::PUSHF2() const
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 4; //decrement stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -120,7 +120,7 @@ void InstructionSet::POPB() const
         &(*vm->ram)(vm->registers.R($TOP))
     );
     vm->registers.R($TOP)--; //decrement top-of-stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -136,7 +136,7 @@ void InstructionSet::POPW() const
         &(*vm->ram)(vm->registers.R($TOP))
     );
     vm->registers.R($TOP) -= 2; //decrement top-of-stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -152,7 +152,7 @@ void InstructionSet::POPD() const
         &(*vm->ram)(vm->registers.R($TOP))
     );
     vm->registers.R($TOP) -= 4; //decrement top-of-stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -168,7 +168,7 @@ void InstructionSet::POPQ() const
         &(*vm->ram)(vm->registers.R($TOP))
     );
     vm->registers.R($TOP) -= 8; //decrement top-of-stack pointer
-    vm->registers.R($IP) = vm->registers.R($IP) + 2; //set next instruction
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //

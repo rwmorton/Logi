@@ -158,12 +158,10 @@ class InstructionSet
         void JMP() const;
         void JE() const;
         void JNE() const;
-        //shift instructions
         void SLT() const;
-        //interrupt instructions
         void INT() const;
-        void DI() const;
-        void EI() const;
+        void DI();
+        void EI();
         void HALT() const;
         void NOP() const;
         //bitwise instructions
@@ -202,6 +200,10 @@ class InstructionSet
         void DDIV() const;
         void DSLT() const;
     private:
+        //handle interrupts
+        void handleInterrupt(U1 byte) const;
+        bool interruptOn;
+        //
         VirtualMachine* vm; //test
         static const std::vector<std::string> _InstructionSetStrings;
 };
