@@ -4,6 +4,36 @@
 namespace Logi
 {
 
+void InstructionSet::CAST_IF() const
+{
+    //
+}
+
+void InstructionSet::CAST_ID() const
+{
+    //
+}
+
+void InstructionSet::CAST_FI() const
+{
+    //
+}
+
+void InstructionSet::CAST_FD() const
+{
+    //
+}
+
+void InstructionSet::CAST_DI() const
+{
+    //
+}
+
+void InstructionSet::CAST_DF() const
+{
+    //
+}
+
 void InstructionSet::FADD() const
 {
     //

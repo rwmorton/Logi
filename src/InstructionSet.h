@@ -78,19 +78,19 @@ enum OpCodes
     SUB,        // 0x36 integer subtraction
     MULT,       // 0x37 integer multiplication
     DIV,        // 0x38 integer division
-    //conversion
+    //floating point math
     CAST_IF,    // 0x39 convert a single-precision float to an integer
     CAST_ID,    // 0x3a convert a double-precision float to an integer
     CAST_FI,    // 0x3b convert an integer to a single-precision float
     CAST_FD,    // 0x3c double-precision float to single-precision
     CAST_DI,    // 0x3d integer to double-precision float
     CAST_DF,    // 0x3e single-precision float to double-precision
-    //floating point math
     FADD,       // 0x3f single-precision float addition
     FSUB,       // 0x40 single-precision float subtraction
     FMULT,      // 0x41 single-precision float multiplication
     FDIV,       // 0x42 single-precision float division
     FSLT,       // 0x43 single-precision float set if less than
+    //double math
     DADD,       // 0x44 double-precision float addition
     DSUB,       // 0x45 double-precision float subtraction
     DMULT,      // 0x46 double-precision float multiplication
@@ -180,14 +180,13 @@ class InstructionSet
         void SUB() const;
         void MULT() const;
         void DIV() const;
-        //??
-        void CAST_IF() const {}
-        void CAST_ID() const {}
-        void CAST_FI() const {}
-        void CAST_FD() const {}
-        void CAST_DI() const {}
-        void CAST_DF() const {}
         //float math instructions
+        void CAST_IF() const;
+        void CAST_ID() const;
+        void CAST_FI() const;
+        void CAST_FD() const;
+        void CAST_DI() const;
+        void CAST_DF() const;
         void FADD() const;
         void FSUB() const;
         void FMULT() const;

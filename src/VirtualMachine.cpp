@@ -113,9 +113,16 @@ void VirtualMachine::run()
     //registers.R1_24(5) = 0x5; //test bit 5
 
     //shift
+    //registers.R1_24(1) = 0x0;
+    //registers.R1_24(2) = 0xf0f0f0f0;
+    //registers.R1_24(3) = 0x5; //shift
+
+    //intmath
     registers.R1_24(1) = 0x0;
-    registers.R1_24(2) = 0xf0f0f0f0;
-    registers.R1_24(3) = 0x5; //shift
+    registers.R1_24(2) = 0x3;
+    registers.R1_24(3) = 0x5;
+    registers.R1_24(4) = 0x0; //force division by zero
+    registers.R1_24(5) = 0x1e; //R5 / R2 = 10
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
@@ -176,10 +183,10 @@ void VirtualMachine::run()
             case SRA: iset->SRA(); break;
             case SRL: iset->SRL(); break;
             case SL: iset->SL(); break;
-            case ADD: break;
-            case SUB: break;
-            case MULT: break;
-            case DIV: break;
+            case ADD: iset->ADD(); break;
+            case SUB: iset->SUB(); break;
+            case MULT: iset->MULT(); break;
+            case DIV: iset->DIV(); break;
             case CAST_IF: break;
             case CAST_ID: break;
             case CAST_FI: break;
