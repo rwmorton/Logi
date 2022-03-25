@@ -20,7 +20,8 @@ class Stream
 {
     public:
         static Stream* getInstance();
-        void set(const std::ostream* out);
+        std::ostream& get();
+        void set(std::ostream& out);
         //general stream methods
         const Stream& string(const std::string& str) const;
         const Stream& endl() const;
@@ -47,7 +48,7 @@ class Stream
     private:
         Stream();
         static Stream* instance;
-        std::ostream& out;
+        std::ostream* out;
 };
 
 } //namespace Logi

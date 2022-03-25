@@ -122,6 +122,7 @@ void VirtualMachine::validateBytecode()
             }
             break;
             case LF2: // LF2 $D1,$R1,       BBB
+            case SF2:
             {
                 validate->opcode() /* B */
                     .RD().operand() /* $D */

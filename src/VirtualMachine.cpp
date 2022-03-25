@@ -1,5 +1,6 @@
 //Logi includes
 #include "VirtualMachine.h"
+#include "Debugger.h"
 #include "Stream.h"
 #include "Validator.h"
 
@@ -10,7 +11,7 @@
 namespace Logi
 {
 
-VirtualMachine::VirtualMachine() : executable(*this),debugger{nullptr},registers{},ram{nullptr},validate{nullptr}
+VirtualMachine::VirtualMachine() : executable(*this),debugger{*this},registers{},ram{nullptr},validate{nullptr}
 {
     ram = new Logi::RAM();
     iset = new InstructionSet{this};
@@ -19,7 +20,6 @@ VirtualMachine::VirtualMachine() : executable(*this),debugger{nullptr},registers
 
 VirtualMachine::~VirtualMachine()
 {
-    if(debugger != nullptr) delete debugger;
     if(ram != nullptr) delete ram;
     if(iset != nullptr) delete iset;
     if(validate != nullptr) delete validate;
@@ -127,6 +127,9 @@ void VirtualMachine::run()
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
+        //start debugger?
+        if(debugOn) debugger.read();
+
         iset->debug_pre();
 
         switch((*ram)(registers.R($IP)))

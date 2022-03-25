@@ -6,6 +6,7 @@
 #include "Bytecode.h"
 
 //std includes
+#include <string>
 #include <vector>
 
 namespace Logi
@@ -72,14 +73,32 @@ struct DebugData
     U1* stringTable;
 };
 
-struct HeaderRec {}; //TEMP
+class VirtualMachine;
+class Stream;
 
 class Debugger
 {
     friend class Bytecode;
     public:
+        Debugger(VirtualMachine& vm);
         ~Debugger();
+        void read();
+        void instruction(U8 address) const;
     private:
+        void badCommand(const std::string& command) const;
+        void splitArgs(const std::string& line,std::vector<std::string>& args) const;
+        void help() const;
+        void bytecode() const;
+        void dump() const;
+        void search() const;
+        void symbol() const;
+        void procedure() const;
+        void intRegisters() const;
+        void floatRegisters() const;
+        void doubleRegisters() const;
+        void trace() const;
+        VirtualMachine& vm;     //reference to the VM
+        Stream* stream;
         DebugData data;
 };
 

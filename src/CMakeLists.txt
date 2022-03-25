@@ -10,6 +10,7 @@ add_compile_options(-std=c++2a)
 add_subdirectory(types)
 add_subdirectory(instructionset)
 add_subdirectory(virtualmachine)
+add_subdirectory(debugger)
 
 add_library(Types_obj Types.cpp)
 add_library(Bytecode_obj Bytecode.cpp)
@@ -23,7 +24,9 @@ add_library(VirtualMachine_obj VirtualMachine.cpp)
 add_library(Debugger_obj Debugger.cpp)
 
 add_executable(main main.cpp)
-
+# debugger
+target_link_libraries(main instruction_obj)
+#
 target_link_libraries(main Byte_obj)
 target_link_libraries(main Word_obj)
 target_link_libraries(main DWord_obj)

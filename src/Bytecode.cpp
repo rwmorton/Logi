@@ -77,8 +77,8 @@ std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode)
 //load debug data
 void Bytecode::loadDebugger(std::ifstream& in)
 {
-    vm.debugger = new Debugger();
-    DebugData* debugData = &vm.debugger->data;
+    DebugData* debugData = &vm.debugger.data;
+    vm.debugOn = true; //set vm debugging to true
 
     //read table of contents
     in.read((char*)&debugData->contents.numGlobalVariables,4);     //read in the number of global variables
@@ -171,13 +171,6 @@ void Bytecode::loadDebugger(std::ifstream& in)
     {
         *(&debugData->stringTable[i]) = in.get();
     }
-
-    //if errors, free allocated memory.
-    delete vm.debugger;
-    vm.debugger = nullptr;
-
-    //and throw runtime error.
-    //throw std::runtime_error("BYTECODE: could not load debug data.");
 }
 
 //load stack frame

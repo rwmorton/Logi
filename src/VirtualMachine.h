@@ -2,8 +2,8 @@
 #define __LOGI_VIRTUAL_MACHINE_H__
 
 //Logi includes
-#include "Bytecode.h"
 #include "Debugger.h"
+#include "Bytecode.h"
 #include "Registers.h"
 #include "RAM.h"
 #include "InstructionSet.h"
@@ -63,12 +63,14 @@ STACK SEGMENT
 */
 
 class Stream;
+class Debugger;
 class Validator;
 
 class VirtualMachine
 {
     friend class Stream;
     friend class Bytecode;
+    friend class Debugger;
     friend class InstructionSet;
     public:
         VirtualMachine();
@@ -81,7 +83,8 @@ class VirtualMachine
     private:
         void validateBytecode();
         Bytecode executable;
-        Debugger* debugger;
+        bool debugOn;
+        Debugger debugger;
         Registers registers;
         Logi::RAM* ram;
         InstructionSet* iset;
