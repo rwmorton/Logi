@@ -24,8 +24,6 @@ add_library(VirtualMachine_obj VirtualMachine.cpp)
 add_library(Debugger_obj Debugger.cpp)
 
 add_executable(main main.cpp)
-# debugger
-target_link_libraries(main instruction_obj)
 #
 target_link_libraries(main Byte_obj)
 target_link_libraries(main Word_obj)
@@ -58,5 +56,7 @@ target_link_libraries(main move_obj)
 target_link_libraries(main pushpop_obj)
 target_link_libraries(main shift_obj)
 target_link_libraries(main store_obj)
+# debugger
+target_link_libraries(main instruction_obj)
 
 target_include_directories(main PUBLIC types)

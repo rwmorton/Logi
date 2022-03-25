@@ -89,7 +89,7 @@ class VirtualMachine
         Logi::RAM* ram;
         InstructionSet* iset;
         Validator* validate;
-        const Stream* stream;
+        Stream* stream;
 };
 
 } //namespace Logi

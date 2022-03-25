@@ -2,13 +2,16 @@
 #include "../Debugger.h"
 #include "../VirtualMachine.h"
 
+//temp
+#include <iostream>
+
 namespace Logi
 {
 
 //
 // display in assembler and binary
 //
-void Debugger::instruction(U8 address) const
+void Debugger::instruction(const U8 address) const
 {
     U8 currentByte = address; //lookahead from passed address
     U1 raw[11]; //buffer to hold binary representation

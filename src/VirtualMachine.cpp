@@ -125,12 +125,16 @@ void VirtualMachine::run()
     registers.R1_24(4) = 0x0; //force division by zero
     registers.R1_24(5) = 0x1e; //R5 / R2 = 10
 
+    U8 debugIP;
+
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {
-        //start debugger?
-        if(debugOn) debugger.read();
-
-        iset->debug_pre();
+        //is debugger on?
+        if(debugOn)
+        {
+            debugger.read();
+            debugIP = registers.R($IP); //save current $IP for debug
+        }
 
         switch((*ram)(registers.R($IP)))
         {
@@ -210,7 +214,13 @@ void VirtualMachine::run()
             default: throw std::runtime_error("VIRTUAL_MACHINE: invalid instruction.");
         }
 
-        iset->debug_post();
+        //iset->debug_post();
+
+        if(debugOn)
+        {
+            //print the last executed instruction
+            debugger.instruction(debugIP);
+        }
     }
 }
 

@@ -19,7 +19,7 @@ void InstructionSet::LBI() const
 }
 
 //
-// LQI $R, WORD
+// LWI $R, WORD
 // store WORD constant into $R
 // BBW
 //

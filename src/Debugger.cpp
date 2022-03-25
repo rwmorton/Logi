@@ -43,169 +43,175 @@ void Debugger::read()
 {
     while(true)
     {
-        std::cout << "enter debug command: ";
-
         std::string debugLine{};
+        std::cout << "enter debug command: ";
         std::getline(std::cin,debugLine);
 
-        switch(debugLine.at(0))
+        if(debugLine.size() == 0)
         {
-            case '?':
-            case 'h':
-            case 'H':
+            badCommand("input empty command, try again.");
+        }
+        else
+        {
+            switch(debugLine.at(0))
             {
-                debugLine.size() == 1 ? help() : badCommand(debugLine);
-            }
-            break;
-            case 'q':
-            case 'Q':
-            {
-                if(debugLine.size() > 1)
+                case '?':
+                case 'h':
+                case 'H':
                 {
-                    badCommand(debugLine);
-                    break;
+                    debugLine.size() == 1 ? help() : badCommand(debugLine);
                 }
-
-                //quit debug mode and return control back to run()
-                vm.debugOn = false;
-                return;
-            }
-            break;
-            case 'f':
-            case 'F':
-            {
-                if(debugLine.size() > 1)
+                break;
+                case 'q':
+                case 'Q':
                 {
-                    badCommand(debugLine);
-                    break;
-                }
-
-                //executable information
-                bytecode();
-            }
-            break;
-            case 'd':
-            case 'D':
-            {
-                std::vector<std::string> args{};
-                splitArgs(debugLine,args);
-
-                if(args.size() != 3)
-                {
-                    badCommand(debugLine);
-                    break;
-                }
-
-                //dump memory
-                dump(std::stoull(args[1]),std::stoull(args[2]));
-            }
-            break;
-            //string do not contain whitespace
-            case 's':
-            case 'S':
-            {
-                std::vector<std::string> args{};
-                splitArgs(debugLine,args);
-
-                if(args.size() != 4)
-                {
-                    badCommand(debugLine);
-                    break;
-                }
-
-                //search string
-                search(std::stoull(args[1]),std::stoull(args[2]),args[3]);
-            }
-            break;
-            //symbols do not contain whitespace
-            case 'l':
-            case 'L':
-            {
-                std::vector<std::string> args{};
-                splitArgs(debugLine,args);
-
-                if(args.size() != 2)
-                {
-                    badCommand(debugLine);
-                    break;
-                }
-
-                //symbol lookup
-                symbol(args[1]);
-            }
-            break;
-            case 'p':
-            case 'P':
-            {
-                if(debugLine.size() != 1)
-                {
-                    badCommand(debugLine);
-                    break;
-                }
-
-                //procedure display
-                procedure();
-            }
-            break;
-            case 'r':
-            case 'R':
-            {
-                if(debugLine.size() != 2)
-                {
-                    badCommand(debugLine);
-                    break;
-                }
-                else
-                {
-                    switch(debugLine.at(1))
+                    if(debugLine.size() > 1)
                     {
-                        //print in registers
-                        case 'i':
-                        case 'I':
-                        {
-                            intRegisters();
-                        }
+                        badCommand(debugLine);
                         break;
-                        //print float registers
-                        case 'f':
-                        case 'F':
-                        {
-                            floatRegisters();
-                        }
+                    }
+
+                    //quit debug mode and return control back to run()
+                    vm.debugOn = false;
+                    return;
+                }
+                break;
+                case 'f':
+                case 'F':
+                {
+                    if(debugLine.size() > 1)
+                    {
+                        badCommand(debugLine);
                         break;
-                        //print double registers
-                        case 'd':
-                        case 'D':
-                        {
-                            doubleRegisters();
-                        }
+                    }
+
+                    //executable information
+                    bytecode();
+                }
+                break;
+                case 'd':
+                case 'D':
+                {
+                    std::vector<std::string> args{};
+                    splitArgs(debugLine,args);
+
+                    if(args.size() != 3)
+                    {
+                        badCommand(debugLine);
                         break;
-                        default:
+                    }
+
+                    //dump memory
+                    dump(std::stoull(args[1]),std::stoull(args[2]));
+                }
+                break;
+                //string do not contain whitespace
+                case 's':
+                case 'S':
+                {
+                    std::vector<std::string> args{};
+                    splitArgs(debugLine,args);
+
+                    if(args.size() != 4)
+                    {
+                        badCommand(debugLine);
+                        break;
+                    }
+
+                    //search string
+                    search(std::stoull(args[1]),std::stoull(args[2]),args[3]);
+                }
+                break;
+                //symbols do not contain whitespace
+                case 'l':
+                case 'L':
+                {
+                    std::vector<std::string> args{};
+                    splitArgs(debugLine,args);
+
+                    if(args.size() != 2)
+                    {
+                        badCommand(debugLine);
+                        break;
+                    }
+
+                    //symbol lookup
+                    symbol(args[1]);
+                }
+                break;
+                case 'p':
+                case 'P':
+                {
+                    if(debugLine.size() != 1)
+                    {
+                        badCommand(debugLine);
+                        break;
+                    }
+
+                    //procedure display
+                    procedure();
+                }
+                break;
+                case 'r':
+                case 'R':
+                {
+                    if(debugLine.size() != 2)
+                    {
+                        badCommand(debugLine);
+                        break;
+                    }
+                    else
+                    {
+                        switch(debugLine.at(1))
                         {
-                            badCommand(debugLine);
+                            //print in registers
+                            case 'i':
+                            case 'I':
+                            {
+                                intRegisters();
+                            }
+                            break;
+                            //print float registers
+                            case 'f':
+                            case 'F':
+                            {
+                                floatRegisters();
+                            }
+                            break;
+                            //print double registers
+                            case 'd':
+                            case 'D':
+                            {
+                                doubleRegisters();
+                            }
+                            break;
+                            default:
+                            {
+                                badCommand(debugLine);
+                            }
                         }
                     }
-                }
 
-                //RX - register display (Ri,Rf,Rd)
-            }
-            break;
-            case 't':
-            case 'T':
-            {
-                if(debugLine.size() != 1)
+                    //RX - register display (Ri,Rf,Rd)
+                }
+                break;
+                case 't':
+                case 'T':
+                {
+                    if(debugLine.size() != 1)
+                    {
+                        badCommand(debugLine);
+                        break;
+                    }
+                    //simply return to run(), which
+                    //then returns back to the debugger
+                    return;
+                }
+                break;
+                default:
                 {
                     badCommand(debugLine);
-                    break;
                 }
-                //simply return to run(), which
-                //then returns back to the debugger
-                return;
-            }
-            break;
-            default:
-            {
-                badCommand(debugLine);
             }
         }
     }

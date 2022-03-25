@@ -83,7 +83,7 @@ class Debugger
         Debugger(VirtualMachine& vm);
         ~Debugger();
         void read();
-        void instruction(U8 address) const;
+        void instruction(const U8 address) const;
     private:
         void badCommand(const std::string& command) const;
         void splitArgs(const std::string& line,std::vector<std::string>& args) const;
