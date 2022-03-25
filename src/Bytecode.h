@@ -47,22 +47,28 @@ BYTECODE
 //
 
 class VirtualMachine;
+class StackFrame;
 
 class Bytecode
 {
     public:
-        Bytecode();
+        Bytecode(VirtualMachine& vm);
         ~Bytecode();
-        void load(int argc,char *argv[],VirtualMachine& vm);
+        void load(int argc,char *argv[]);
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode);
     private:
+        void loadDebugger(std::ifstream& in);
+        void readStackFrame(std::ifstream& in,StackFrame* sf);
+        void loadBytecode(std::ifstream& in);
         void parseArgs(int argc,char *argv[]);
         static const bool checkFlag(const char* currentChar,const char prefix,const char flags[],unsigned char numFlags);
+        VirtualMachine& vm;                                 //reference to the VM
         std::string bytecodeFile;                           //the bytecode file to execute
         U2 magic;                                           //magic number
         U8 heapSize;                                        //heap memory to allocate in KB (heap * 1024 bytes)
         U8 stackSize;                                       //stack memory to allocate in KB (stack * 1024 bytes)
+        bool debug;                                         //start in debug mode?
         U8 symbolTableSize;                                 //size of the symbol table in the executable (in bytes)
         U8 stringTableSize;                                 //size of the string table in the executable (in bytes)
         U8 bytecodeSize;                                    //size of the bytecode in the executable (in bytes)

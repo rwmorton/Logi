@@ -17,7 +17,7 @@ class Transform
 {
     public:
         //check system endianess
-        static Endian checkEndian();
+        static Endian checkEndianness();
         //transforms
         static U2 bytecodeToWord(U1 bytes[]);
         static U4 bytecodeToDWord(U1 bytes[]);

@@ -10,7 +10,7 @@
 namespace Logi
 {
 
-VirtualMachine::VirtualMachine() : registers{},ram{nullptr},validate{nullptr}
+VirtualMachine::VirtualMachine() : executable(*this),debugger{nullptr},registers{},ram{nullptr},validate{nullptr}
 {
     ram = new Logi::RAM();
     iset = new InstructionSet{this};
@@ -19,6 +19,7 @@ VirtualMachine::VirtualMachine() : registers{},ram{nullptr},validate{nullptr}
 
 VirtualMachine::~VirtualMachine()
 {
+    if(debugger != nullptr) delete debugger;
     if(ram != nullptr) delete ram;
     if(iset != nullptr) delete iset;
     if(validate != nullptr) delete validate;
@@ -34,7 +35,7 @@ void VirtualMachine::init(int argc,char* argv[])
     stream->string("VM: Initializing virtual machine...\n");
     stream->string("VM: Loading bytecode executable...\n");
     //load the bytecode
-    executable.load(argc,argv,*this);
+    executable.load(argc,argv);
     stream->string("VM: Bytecode executable loaded.\n");
 
     //debug

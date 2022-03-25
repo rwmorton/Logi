@@ -4,7 +4,14 @@
 namespace Logi
 {
 
-Endian Transform::checkEndian()
+//
+// if LSB is placed first followed by the MSB
+// then the system is little-endian.
+//
+// if MSB is placed first followed by LSB
+// then the system is big-endian.
+//
+Endian Transform::checkEndianness()
 {
     int i = 184594741; //0x0B00B135
 

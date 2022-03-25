@@ -20,6 +20,7 @@ add_library(Stream_obj Stream.cpp)
 add_library(Transform_obj Transform.cpp)
 add_library(Validator_obj Validator.cpp)
 add_library(VirtualMachine_obj VirtualMachine.cpp)
+add_library(Debugger_obj Debugger.cpp)
 
 add_executable(main main.cpp)
 
@@ -37,6 +38,7 @@ target_link_libraries(main validatebytecode_obj)
 #
 target_link_libraries(main Validator_obj)
 target_link_libraries(main Bytecode_obj)
+target_link_libraries(main Debugger_obj)
 target_link_libraries(main InstructionSet_obj)
 target_link_libraries(main RAM_obj)
 target_link_libraries(main Stream_obj)

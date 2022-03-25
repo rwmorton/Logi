@@ -3,6 +3,7 @@
 
 //Logi includes
 #include "Bytecode.h"
+#include "Debugger.h"
 #include "Registers.h"
 #include "RAM.h"
 #include "InstructionSet.h"
@@ -80,6 +81,7 @@ class VirtualMachine
     private:
         void validateBytecode();
         Bytecode executable;
+        Debugger* debugger;
         Registers registers;
         Logi::RAM* ram;
         InstructionSet* iset;

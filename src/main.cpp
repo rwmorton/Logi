@@ -33,7 +33,7 @@ int main(int argc,char *argv[])
         vm.shutdown();
     }
 
-    Logi::Transform::checkEndian(); //FORCE LINKER TO WORK
+    Logi::Transform::checkEndianness(); //FORCE LINKER TO WORK    
 
     return 0;
 }

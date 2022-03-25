@@ -27,7 +27,7 @@ class RAM
         friend std::ostream& operator<<(std::ostream& out,RAM& ram);
     private:
         U1* _ram;           //the RAM itself
-        U8 _numBytes;          //number of bytes in RAM
+        U8 _numBytes;       //number of bytes in RAM
         U8 _currentByte;    //index of current byte
 };
 
