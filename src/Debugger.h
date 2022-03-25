@@ -89,14 +89,14 @@ class Debugger
         void splitArgs(const std::string& line,std::vector<std::string>& args) const;
         void help() const;
         void bytecode() const;
-        void dump() const;
-        void search() const;
-        void symbol() const;
+        void dump(const U8 start,const U8 stop) const;
+        void search(const U8 start,const U8 stop,const std::string& str) const;
+        void symbol(const std::string& str) const;
         void procedure() const;
         void intRegisters() const;
         void floatRegisters() const;
         void doubleRegisters() const;
-        void trace() const;
+        const bool checkRange(const U8 start,const U8 stop) const;
         VirtualMachine& vm;     //reference to the VM
         Stream* stream;
         DebugData data;

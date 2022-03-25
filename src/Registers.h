@@ -77,11 +77,6 @@ enum DoubleRegisterCodes
     $D10
 };
 
-//register sizes
-static const U1 NUM_REGISTERS {32};
-static const U1 NUM_FLOAT_REGISTERS {10};
-static const U1 NUM_DOUBLE_REGISTERS {10};
-
 class Registers
 {
     public:
@@ -101,7 +96,11 @@ class Registers
         const std::string& RF_str(const FloatRegisterCodes code) const;
         const std::string& RD_str(const DoubleRegisterCodes code) const;
         //stream output
-        friend std::ostream& operator<<(std::ostream& out,const Registers& registers);
+        friend std::ostream& operator<<(std::ostream& out,const Registers& registers);//register sizes
+        //
+        static const U1 NUM_REGISTERS {32};
+        static const U1 NUM_FLOAT_REGISTERS {10};
+        static const U1 NUM_DOUBLE_REGISTERS {10};
     private:
         U8 _R[NUM_REGISTERS]{};               //integer registers - 64 bit in size
         F4 _RF[NUM_FLOAT_REGISTERS]{};        //single-precision float registers - 32 bit in size

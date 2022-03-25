@@ -9,6 +9,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <iomanip>
 
 namespace Logi
 {
@@ -65,7 +66,7 @@ void Debugger::read()
                     break;
                 }
 
-                //quit debug mode and return control back to vm.run()
+                //quit debug mode and return control back to run()
                 vm.debugOn = false;
                 return;
             }
@@ -96,25 +97,27 @@ void Debugger::read()
                 }
 
                 //dump memory
-                dump();
+                dump(std::stoull(args[1]),std::stoull(args[2]));
             }
             break;
+            //string do not contain whitespace
             case 's':
             case 'S':
             {
                 std::vector<std::string> args{};
                 splitArgs(debugLine,args);
 
-                if(args.size() != 3)
+                if(args.size() != 4)
                 {
                     badCommand(debugLine);
                     break;
                 }
 
                 //search string
-                search();
+                search(std::stoull(args[1]),std::stoull(args[2]),args[3]);
             }
             break;
+            //symbols do not contain whitespace
             case 'l':
             case 'L':
             {
@@ -128,7 +131,7 @@ void Debugger::read()
                 }
 
                 //symbol lookup
-                symbol();
+                symbol(args[1]);
             }
             break;
             case 'p':
@@ -195,9 +198,9 @@ void Debugger::read()
                     badCommand(debugLine);
                     break;
                 }
-
-                //trace
-                trace();
+                //simply return to run(), which
+                //then returns back to the debugger
+                return;
             }
             break;
             default:
@@ -242,47 +245,150 @@ void Debugger::Debugger::help() const
 
 void Debugger::Debugger::bytecode() const
 {
-    //
+    std::ostream& out = stream->get();
+    out << '\n' << vm.executable << '\n';
 }
 
-void Debugger::dump() const
+void Debugger::dump(const U8 start,const U8 stop) const
 {
-    //
+    if(checkRange(start,stop))
+    {
+        std::ostream& out = stream->get();
+        out << "\nMEMORY DUMP [" << start << "," << stop << "]\n";
+        out << std::setw(30) << std::setfill('-') << '\n';
+
+        for(U8 i=start; i<stop; i++)
+        {
+            stream->U1((*vm.ram)(i));
+            if(i < stop-1) out << ' ';
+        }
+        out << '\n';
+    } //else, checkRange will print appropriate message.
 }
 
-void Debugger::search() const
+//
+// TODO: not sure if working properly, need some actual data to test.
+//
+void Debugger::search(const U8 start,const U8 stop,const std::string& str) const
 {
-    //
+    if(checkRange(start,stop))
+    {
+        std::ostream& out = stream->get();
+        out << std::dec;
+        out << "\nSEARCHING FOR STRING [" << str << "] IN RANGE [" << start << "," << stop << "]:\n";
+        out << std::setw(70) << std::setfill('-') << '\n';
+        
+        bool match = false;
+        U8 address{};
+
+        for(int i=start; i<=stop; i++)
+        {
+            if((*vm.ram)(i) == str.at(0))
+            {
+                //does the whole string match what is in RAM?
+                if(i + str.length() > stop)
+                {
+                    out << "\n\nTERMINATED: search goes out of bounds.\n";
+                    return;
+                }
+                else
+                {
+                    for(int j=i; j<str.length(); j++)
+                    {
+                        if((*vm.ram)(j) != str.at(j))
+                        {
+                            match = false;
+                            break;
+                        }
+                        match = true;
+                        address = (*vm.ram)(i);
+                        out << "MATCHED AT ADDRESS: " << address << '\n';
+                        return;
+                    }
+                }
+            }
+        }
+        out << '\n';
+    } //else, checkRange will print appropriate message.
 }
 
-void Debugger::symbol() const
+void Debugger::symbol(const std::string& str) const
 {
+    std::ostream& out = stream->get();
+    out << std::dec;
+    out << "\nSEARCHING FOR SYMBOL [" << str << "]:\n";
+    out << std::setw(30) << std::setfill('-') << '\n';
     //
+    throw std::runtime_error("DEBUGGER: symbol() unimplemented."); //need more data to do this.
 }
 
 void Debugger::procedure() const
 {
-    //
+    throw std::runtime_error("DEBUGGER: procedure() unimplemented.");
 }
 
 void Debugger::intRegisters() const
 {
-    //
+    std::ostream& out = stream->get();
+    out << std::dec << "\nINTEGER REGISTERS:\n";
+    out << std::setw(30) << std::setfill('-') << '\n';
+    for(int i=0; i<static_cast<int>(Registers::NUM_REGISTERS); i++)
+    {
+        out << std::dec << vm.registers.R_str((RegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.R((RegisterCodes)i) << '\n';
+    }
+    out << std::dec << '\n';
 }
 
 void Debugger::floatRegisters() const
 {
-    //
+    std::ostream& out = stream->get();
+    out << std::dec << "\nFLOAT REGISTERS:\n";
+    out << std::setw(30) << std::setfill('-') << '\n';
+    for(int i=$F1; i<=$F10; i++)
+    {
+        out << std::dec << vm.registers.RF_str((FloatRegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.RF((FloatRegisterCodes)i) << '\n';
+    }
+    out << std::dec << '\n';
 }
 
 void Debugger::doubleRegisters() const
 {
-    //
+    std::ostream& out = stream->get();
+    out << std::dec << "\nDOUBLE REGISTERS:\n";
+    out << std::setw(30) << std::setfill('-') << '\n';
+
+    for(int i=$D1; i<=$D10; i++)
+    {
+        out << std::dec << vm.registers.RD_str((DoubleRegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.RD((DoubleRegisterCodes)i) << '\n';
+    }
+    out << std::dec << '\n';
 }
 
-void Debugger::trace() const
+const bool Debugger::checkRange(const U8 start,const U8 stop) const
 {
-    //
+    std::ostream& out = stream->get();
+    out << std::dec;
+    std::string badInput = "Bad input to dump: ";
+
+    if(start > stop)
+    {
+        out << badInput << "start > stop.\n";
+        return false;
+    }
+
+    if(start > vm.registers.R($TOP))
+    {
+        out << badInput << "start > $TOP.\n";
+        return false;
+    }
+
+    if(stop > vm.registers.R($TOP))
+    {
+        out << badInput << "stop > $TOP.\n";
+        return false;
+    }
+
+    return true;
 }
 
 } //namespace Logi

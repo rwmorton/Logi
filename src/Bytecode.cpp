@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <iomanip>
 
 namespace Logi
 {
@@ -63,14 +64,16 @@ void Bytecode::load(int argc,char* argv[])
 
 std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode)
 {
-    out << "stack size = " << bytecode.stackSize << " KB." << std::endl;
-    out << "heap size = " << bytecode.heapSize << " KB."  << std::endl;
-    out << "bytecode size = " << bytecode.bytecodeSize << " bytes." << std::endl;
-    out << "total bytes allocated = " << bytecode.totalSize << " bytes." << std::endl;
+    out << std::dec << "BYTECODE:\n";
+    out << std::setw(30) << std::setfill('-') << '\n';
+    out << "filename = " << bytecode.bytecodeFile << '\n';
+    out << "stack size = " << bytecode.stackSize << " KB.\n";
+    out << "heap size = " << bytecode.heapSize << " KB.\n";
+    out << "bytecode size = " << bytecode.bytecodeSize << " bytes.\n";
+    out << "total bytes allocated = " << bytecode.totalSize << " bytes.\n";
     out << std::showbase << std::hex;
-    out << "bytecode start address = " << bytecode.bytecodeStartAddress << std::endl;
-    out << "bytecode end address = " << bytecode.bytecodeEndAddress << std::endl;
-    out << std::dec;
+    out << "bytecode start address = " << bytecode.bytecodeStartAddress << '\n';
+    out << "bytecode end address = " << bytecode.bytecodeEndAddress << '\n' << std::dec;
     return out;
 }
 
