@@ -50,7 +50,7 @@ void Bytecode::load(int argc,char* argv[])
     //header looks good, continue.
 
     //is debug on? and do we have the neccessary data?
-    if(debug && symbolTableSize > 0 && stringTableSize > 0)
+    if(debug == true && symbolTableSize > 0 && stringTableSize > 0)
     {
         loadDebugger(in);
     }

@@ -11,7 +11,7 @@
 namespace Logi
 {
 
-VirtualMachine::VirtualMachine() : executable(*this),debugger{*this},registers{},ram{nullptr},validate{nullptr}
+VirtualMachine::VirtualMachine() : executable(*this),debugger{*this},debugOn(false),registers{},ram{nullptr},validate{nullptr}
 {
     ram = new Logi::RAM();
     iset = new InstructionSet{this};
@@ -37,13 +37,6 @@ void VirtualMachine::init(int argc,char* argv[])
     //load the bytecode
     executable.load(argc,argv);
     stream->string("VM: Bytecode executable loaded.\n");
-
-    //debug
-    std::cout << this->registers;
-    std::cout << this->executable << std::endl;
-    //std::cout << this->executable;
-    std::cout << (*this->ram);
-    //std::cout << std::endl;
 
     //validate the bytecode
     validateBytecode();
@@ -125,7 +118,16 @@ void VirtualMachine::run()
     registers.R1_24(4) = 0x0; //force division by zero
     registers.R1_24(5) = 0x1e; //R5 / R2 = 10
 
+    //////////////// TEMP!!!!!!
+    // force debug on until I can build a proper executable
+    debugOn = true;
+
     U8 debugIP;
+
+    if(debugOn)
+    {
+        stream->string("Debugger started, enter command:\n");
+    }
 
     while((*ram)(registers.R($IP)) != OpCodes::HALT)
     {

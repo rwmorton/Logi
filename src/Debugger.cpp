@@ -44,7 +44,6 @@ void Debugger::read()
     while(true)
     {
         std::string debugLine{};
-        std::cout << "enter debug command: ";
         std::getline(std::cin,debugLine);
 
         if(debugLine.size() == 0)

@@ -22,20 +22,8 @@ void VirtualMachine::validateBytecode()
 
     validate = new Validator(currentByte,stopByte,iset,registers,ram);
 
-    cout << endl;
-    //cout << "RAM: " << *ram << endl;
-    cout << endl;
-
-    stream->string("stopByte = ").U8(stopByte).endl();
-
     while(currentByte < stopByte)
     {
-        stream->endl();
-        stream->string("while() : currentByte = ").U8(currentByte).endl();
-        stream->string("RAM(currentByte) = ").U1((*ram)(currentByte)).endl();
-        cout << "RAM(currentByte) = RAM(" << currentByte << ") = " << std::hex << static_cast<int>((*ram)(currentByte)) << std::dec << endl;
-        stream->endl();
-
         switch((*ram)(currentByte))
         {
             case LBI: //LBI $R1, BBB

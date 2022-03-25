@@ -16,11 +16,16 @@ void Debugger::instruction(const U8 address) const
     U8 currentByte = address; //lookahead from passed address
     U1 raw[11]; //buffer to hold binary representation
 
+    std::ostream& out = stream->get();
+
     switch((*vm.ram)(currentByte))
     {
         case LBI: //LBI $R1, BBB
         {
-            //
+            std::string inst = (*vm.iset)((OpCodes)currentByte);
+            std::string reg = vm.registers.R_str((RegisterCodes)(currentByte+1));
+            U1 byte = (U1)(*vm.ram)(currentByte+2);
+            out << "$IP= " << inst << ", $R1= " << reg << ", byte= " << static_cast<int>(byte) << '\n';
         }
         break;
         case LWI: //LWI $R1, BBW
