@@ -89,7 +89,7 @@ void Bytecode::load(int argc,char* argv[])
 std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode)
 {
     out << std::dec << "BYTECODE:\n";
-    out << std::setw(30) << std::setfill('-') << '\n';
+    out << std::setw(10) << std::setfill('-') << '\n';
     out << "filename = " << bytecode.filename << '\n';
     out << "stack size = " << bytecode.stackSize << " KB.\n";
     out << "heap size = " << bytecode.heapSize << " KB.\n";

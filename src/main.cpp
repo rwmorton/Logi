@@ -26,6 +26,12 @@ int main(int argc,char *argv[])
         //vm.init(argc,argv);
         //vm.run();
         //vm.shutdown();
+
+        //test Assembler
+        Logi::Assembler* file = new Logi::Assembler();
+        file->load(argc,argv);
+        std::cout << *file << std::endl;
+        delete file;
     }
     catch(const std::exception& e)
     {
@@ -34,11 +40,6 @@ int main(int argc,char *argv[])
     }
 
     Logi::Transform::checkEndianness(); //FORCE LINKER TO WORK
-
-    //test LoadASM
-    Logi::LoadFile* file = new Logi::Assembler();
-    file->load(argc,argv);
-    delete file;
 
     return 0;
 }
