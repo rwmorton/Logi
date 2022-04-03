@@ -163,23 +163,26 @@ void Debugger::read()
                     {
                         switch(debugLine.at(1))
                         {
-                            //print in registers
+                            //print basic registers
+                            case 'b':
+                            {
+                                basicRegisters();
+                            }
+                            break;
+                            //print int registers
                             case 'i':
-                            case 'I':
                             {
                                 intRegisters();
                             }
                             break;
                             //print float registers
                             case 'f':
-                            case 'F':
                             {
                                 floatRegisters();
                             }
                             break;
                             //print double registers
                             case 'd':
-                            case 'D':
                             {
                                 doubleRegisters();
                             }
@@ -239,6 +242,7 @@ void Debugger::Debugger::help() const
     helpString += "f/F:\t\t\tdisplay executable file information.\n";
     helpString += "l/L string:\t\tquery meta-data for a program identifier [string].\n";
     helpString += "q/Q:\t\t\texit debug mode and return to production mode.\n";
+    helpString += "r/R{b}:\t\t\tdispay basic registers.\n";
     helpString += "r/R{i}:\t\t\tdispay integer registers.\n";
     helpString += "r/R{f}:\t\t\tdispay float registers.\n";
     helpString += "r/R{d}:\t\t\tdispay double registers.\n";
@@ -332,12 +336,24 @@ void Debugger::procedure() const
     throw std::runtime_error("DEBUGGER: procedure() unimplemented.");
 }
 
+void Debugger::basicRegisters() const
+{
+    std::ostream& out = stream->get();
+    out << std::dec << "\nBASIC REGISTERS:\n";
+    out << std::setw(30) << std::setfill('-') << '\n';
+    for(int i=$IP; i<=$TOP; i++)
+    {
+        out << std::dec << vm.registers.R_str((RegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.R((RegisterCodes)i) << '\n';
+    }
+    out << std::dec << '\n';
+}
+
 void Debugger::intRegisters() const
 {
     std::ostream& out = stream->get();
     out << std::dec << "\nINTEGER REGISTERS:\n";
     out << std::setw(30) << std::setfill('-') << '\n';
-    for(int i=0; i<static_cast<int>(Registers::NUM_REGISTERS); i++)
+    for(int i=$R1; i<=$R24; i++)
     {
         out << std::dec << vm.registers.R_str((RegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.R((RegisterCodes)i) << '\n';
     }

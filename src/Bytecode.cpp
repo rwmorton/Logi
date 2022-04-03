@@ -16,24 +16,48 @@ const unsigned int Bytecode::MAGIC_NUMBER {57069}; //0xDEED
 const unsigned int Bytecode::HEADER_SIZE {26};
 const unsigned int Bytecode::DEFAULT_STACK_SIZE {1};//{64};
 const unsigned int Bytecode::DEFAULT_HEAP_SIZE {1};//{64};
-const std::string Bytecode::DEFAULT_EXECUTABLE_FILE {"bytecode.RUN"};
+
+const Flag Bytecode::STACK_FLAG(Bytecode::FlagID::STACK,{"-","sS"},1);
+const Flag Bytecode::HEAP_FLAG(Bytecode::FlagID::HEAP,{"-","hH"},1);
+const Flag Bytecode::DEBUG_FLAG(Bytecode::FlagID::DEBUG,{"-","dD"},0);
 
 Bytecode::Bytecode(VirtualMachine& vm) :
-    vm(vm),
-    stackSize(Bytecode::DEFAULT_STACK_SIZE),
-    heapSize(Bytecode::DEFAULT_HEAP_SIZE),
-    debug(false),
-    bytecodeFile(Bytecode::DEFAULT_EXECUTABLE_FILE) {}
+    vm{vm},
+    stackSize{Bytecode::DEFAULT_STACK_SIZE},
+    heapSize{Bytecode::DEFAULT_HEAP_SIZE},
+    debug{false}
+{
+    //populate flags
+    addFlag(STACK_FLAG);
+    addFlag(HEAP_FLAG);
+    addFlag(DEBUG_FLAG);
+}
 
 Bytecode::~Bytecode() {}
 
 //load the bytecode from command line args
 void Bytecode::load(int argc,char* argv[])
 {
-    parseArgs(argc,argv);
+    std::vector<Flag> flags = parseArgs(argc,argv);
+    std::vector<Flag>::iterator flags_it = flags.begin();
+    while(flags_it != flags.end())
+    {
+        switch(flags_it->getId())
+        {
+            case FlagID::STACK: stackSize = std::stoul(flags_it->arg(0));
+            break;
+            case FlagID::HEAP: heapSize = std::stoul(flags_it->arg(0));
+            break;
+            case FlagID::DEBUG: debug = true;
+            break;
+            default: throw std::runtime_error("BYTECODE: invalid flag id.");
+        }
+
+        ++flags_it;
+    }
 
     //load the bytecode file
-    std::ifstream in(bytecodeFile,std::ios::in | std::ios::binary);
+    std::ifstream in(filename,std::ios::in | std::ios::binary);
     if(!in.is_open())
     {
         throw std::runtime_error("BYTECODE: could not load file.");
@@ -66,7 +90,7 @@ std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode)
 {
     out << std::dec << "BYTECODE:\n";
     out << std::setw(30) << std::setfill('-') << '\n';
-    out << "filename = " << bytecode.bytecodeFile << '\n';
+    out << "filename = " << bytecode.filename << '\n';
     out << "stack size = " << bytecode.stackSize << " KB.\n";
     out << "heap size = " << bytecode.heapSize << " KB.\n";
     out << "bytecode size = " << bytecode.bytecodeSize << " bytes.\n";
@@ -221,60 +245,6 @@ void Bytecode::loadBytecode(std::ifstream& in)
         (*vm.ram)(i++) = byte;
         in.peek(); //make sure we don't go past EOF
     }
-}
-
-//parse the command line args
-void Bytecode::parseArgs(int argc,char* argv[])
-{
-    std::vector<std::string> args;
-    for(int i=0; i<argc; i++) args.push_back(argv[i]);
-
-    std::vector<std::string>::iterator i = args.begin();
-    ++i; //skip the first argument
-
-    const char stackFlags[]{'s','S'};
-    const char heapFlags[]{'h','H'};
-    const char debugFlags[]{'d','D'};
-
-    while(i != args.end())
-    {
-        char* c = &(*i)[0]; //get first character of current argument
-
-        //stack?
-        if(Bytecode::checkFlag(c,'-',stackFlags,2))
-        {
-            //start of stack arg
-            stackSize = std::stoul((*i).replace(0,3,std::string(""))); //replace first three characters of the argument
-        }
-        //heap?
-        else if(Bytecode::checkFlag(c,'-',heapFlags,2))
-        {
-            //start of heap arg
-            heapSize = std::stoul((*i).replace(0,3,std::string("")));
-        }
-        //debug?
-        else if(Bytecode::checkFlag(c,'-',debugFlags,2))
-        {
-            debug = true;
-        }
-        else
-        {
-            //should then be the bytecode file itself
-            bytecodeFile = std::string(*i);
-        }
-
-        ++i; //next arg
-    }
-}
-
-//assumes bounds checks have been done first
-const bool Bytecode::checkFlag(const char* currentChar,const char prefix,const char flags[],unsigned char numFlags)
-{
-    for(int i=0; i<numFlags; i++)
-    {
-        if(*currentChar == prefix && *(currentChar+1) == flags[i]) return true;
-    }
-    return false;
 }
 
 } //namespace Logi

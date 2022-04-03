@@ -218,6 +218,11 @@ void VirtualMachine::run()
 
         //iset->debug_post();
 
+        std::ostream& out = stream->get();
+        out << "\n\nR($IP) = " << static_cast<int>(registers.R($IP)) << "\n";
+        out << "RAM[R($IP)) = " << static_cast<int>((*ram)($IP)) << "\n\n";
+        out << static_cast<int>((*ram)(3)) << '\n';
+
         if(debugOn)
         {
             //print the last executed instruction

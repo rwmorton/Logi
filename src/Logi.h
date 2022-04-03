@@ -8,7 +8,9 @@
 #include "DWord.h"
 #include "QWord.h"
 #include "Float.h"
+#include "LoadFile.h"
 #include "Bytecode.h"
+#include "Assembler.h"
 #include "InstructionSet.h"
 #include "RAM.h"
 #include "Registers.h"
@@ -16,6 +18,7 @@
 #include "Transform.h"
 #include "VirtualMachine.h"
 #include "Validator.h"
+#include "BST.h"
 
 namespace Logi
 {

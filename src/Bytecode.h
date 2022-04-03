@@ -3,6 +3,7 @@
 
 //Logi includes
 #include "Types.h"
+#include "LoadFile.h"
 #include "RAM.h"
 
 //std includes
@@ -49,8 +50,14 @@ BYTECODE
 class VirtualMachine;
 class StackFrame;
 
-class Bytecode
+class Bytecode : public LoadFile
 {
+    enum FlagID
+    {
+        STACK,
+        HEAP,
+        DEBUG
+    };
     public:
         Bytecode(VirtualMachine& vm);
         ~Bytecode();
@@ -61,10 +68,7 @@ class Bytecode
         void loadDebugger(std::ifstream& in);
         void readStackFrame(std::ifstream& in,StackFrame* sf);
         void loadBytecode(std::ifstream& in);
-        void parseArgs(int argc,char *argv[]);
-        static const bool checkFlag(const char* currentChar,const char prefix,const char flags[],unsigned char numFlags);
         VirtualMachine& vm;                                 //reference to the VM
-        std::string bytecodeFile;                           //the bytecode file to execute
         U2 magic;                                           //magic number
         U8 heapSize;                                        //heap memory to allocate in KB (heap * 1024 bytes)
         U8 stackSize;                                       //stack memory to allocate in KB (stack * 1024 bytes)
@@ -79,7 +83,10 @@ class Bytecode
         static const unsigned int HEADER_SIZE;              //header size for the bytecode format
         static const unsigned int DEFAULT_STACK_SIZE;       //default stack size if no size supplied
         static const unsigned int DEFAULT_HEAP_SIZE;        //default heap size if no size supplied
-        static const std::string DEFAULT_EXECUTABLE_FILE;   //default executable file if none supplied
+        //flags
+        static const Flag STACK_FLAG;
+        static const Flag HEAP_FLAG;
+        static const Flag DEBUG_FLAG;
 };
 
 } //namespace Logi
