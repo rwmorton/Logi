@@ -35,16 +35,15 @@ BYTECODE
 
 //
 // options:
-//      -h=XYZ      set heap size to XYZ * 1024 bytes
-//      -s=XYZ      set stack size to XYZ * 1024 bytes
+//      -h XYZ      set heap size to XYZ * 1024 bytes
+//      -s XYZ      set stack size to XYZ * 1024 bytes
 //      -d          start in debug mode
 //
 
 //
 // Default values:
-//      -s=DEFAULT_STACK_SIZE
-//      -h=DEFAULT_HEAP_SIZE
-//      DEFAULT_EXECUTABLE_FILE (name of the executable)
+//      -s DEFAULT_STACK_SIZE
+//      -h DEFAULT_HEAP_SIZE
 //
 
 class VirtualMachine;

@@ -30,7 +30,9 @@ int main(int argc,char *argv[])
         //test Assembler
         Logi::Assembler* file = new Logi::Assembler();
         file->load(argc,argv);
+        //
         std::cout << *file << std::endl;
+        //
         delete file;
     }
     catch(const std::exception& e)

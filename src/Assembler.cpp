@@ -3,15 +3,37 @@
 
 //std includes
 #include <fstream>
+#include <sstream>
 #include <iomanip>
 
 namespace Logi
 {
 
+Line::Line(const U4 pos) : pos{pos} {}
+
+std::ostream& operator<<(std::ostream& out,const Line& line)
+{
+    out << line.pos << ": ";
+    std::vector<Token>::const_iterator i = line.tokens.begin();
+    while(i != line.tokens.end())
+    {
+        out << i->str;
+        ++i;
+        if(i != line.tokens.end()) out << ',';
+    }
+    return out;
+}
+
 const Flag Assembler::DEBUG_FLAG(Assembler::FlagID::DEBUG,{"-","dD"},0);
 const Flag Assembler::ALLOW_ERRORS_FLAG(Assembler::FlagID::ALLOW_ERRORS,{"-","eE"},1);
 const Flag Assembler::CREATE_LISTING_FLAG(Assembler::FlagID::CREATE_LISTING,{"-","lL"},0);
 const Flag Assembler::OUTPUT_FILE_FLAG(Assembler::FlagID::OUTPUT_FILE,{"-","oO"},1);
+
+const std::string Assembler::WHITESPACE {" \n\r\t"};
+const unsigned char Assembler::SPACE {' '};
+const unsigned char Assembler::COMMA {','};
+const unsigned char Assembler::EOL {'\0'};
+const unsigned char Assembler::ASM_COMMENT {'#'};
 
 Assembler::Assembler() : omitDebug{false}, numErrors{0}, createListing{false}
 {
@@ -56,15 +78,22 @@ void Assembler::load(int argc,char* argv[])
     std::ifstream in(filename,std::ios::in | std::ios::binary);
     if(!in.is_open())
     {
-        throw std::runtime_error("LOAD_ASM: could not load file.");
+        throw std::runtime_error("ASSEMBLER: could not load file.");
     }
+    
+    std::string line{};
+    int lineCount{0};
 
-    //
-    // TODO
-    //
+    while(std::getline(in,line))
+    {
+        rawLines.push_back(line);
+    }
 
     //all done, close the file stream
     in.close();
+
+    //remove whitespace, comments etc.
+    preProcessRaw();
 }
 
 std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
@@ -78,7 +107,107 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
     out << "creating listing file? ";
     asmb.createListing ? out << "yes\n" : out << "no\n";
     out << "output file = " << asmb.outputFile << '\n';
+
+    //TEMP
+    out << "\nRAW LINES:\n";
+    std::vector<std::string>::const_iterator i = asmb.rawLines.begin();
+    while(i != asmb.rawLines.end())
+    {
+        out << *i;
+        ++i;
+        if(i != asmb.rawLines.end()) out << '\n';
+    }
+
+    out << "\n\nTOKENIZED LINES:\n";
+    std::vector<Line>::const_iterator j = asmb.tokenizedLines.begin();
+    while(j != asmb.tokenizedLines.end())
+    {
+        out << *j;
+        ++j;
+        if(j != asmb.tokenizedLines.end()) out << '\n';
+    }
+
     return out;
+}
+
+//
+// Do pre-processing of the vector of raw lines
+//
+// Remove all leading and trailing whitespace.
+// If line begins with a # remove that line (comment).
+//
+// Also creates a vector of Lines which have all relevant
+// information such as the tokens and line number etc.
+//
+void Assembler::preProcessRaw()
+{
+    std::vector<std::string>::iterator i = rawLines.begin();
+    int count {0}; //keep track of line count in file
+    while(i != rawLines.end())
+    {
+        //strip leading/trailing whitespace
+        i->erase(0,i->find_first_not_of(WHITESPACE));
+        i->erase(i->find_last_not_of(WHITESPACE)+1);
+
+        //remove empty lines
+        if(i->length() == 0)
+        {
+            i = rawLines.erase(i);
+        }
+        //remove comments
+        else if(i->at(0) == ASM_COMMENT)
+        {
+            i = rawLines.erase(i);
+        }
+        else
+        {
+            //save line number and
+            //split the line into tokens.
+            Line line(count);
+            tokenize(line,*i);
+            tokenizedLines.push_back(line);
+            ++i; //next line
+        }
+
+        count++;
+    }
+}
+
+//
+// Split line into tokens, removing commas, whitespace etc.
+//
+void Assembler::tokenize(Line& line,const std::string& rawLine)
+{
+    int i {0};
+    std::string tokenStr {};
+    char c;
+    while(i < rawLine.length())
+    {
+        c = rawLine.at(i);
+        switch(c)
+        {
+            case SPACE:
+            case COMMA:
+            {
+                //save the token if not empty (in case of extra spaces/commas)
+                if(tokenStr.length() > 0)
+                {
+                    line.tokens.push_back({tokenStr});
+                }
+                tokenStr.clear();
+            }
+            break;
+            default:
+            {
+                tokenStr.push_back(rawLine.at(i));
+            }
+            break;
+        }
+
+        i++;
+    }
+
+    line.tokens.push_back({tokenStr}); //save final token
 }
 
 } //namespace Logi
