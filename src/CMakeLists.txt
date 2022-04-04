@@ -69,7 +69,7 @@ target_link_libraries(main store_obj)
 # debugger
 target_link_libraries(main instruction_obj)
 # assembler
-target_link_libraries(main assignTokenIds_obj)
+target_link_libraries(main identifyTokens_obj)
 target_link_libraries(main ValidateASM_obj)
 
 target_include_directories(main PUBLIC types)

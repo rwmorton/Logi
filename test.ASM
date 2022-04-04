@@ -21,14 +21,14 @@
 LBI $R1, -23
 LWI $R2, 280
 LDI $R3, -70000
-LQI $R4, 1234567890123
+LQI $R4, 1234567890123 ### SOME COMMENT ####
 LF1I $F1, -2.3e-4
 LF2I $D1, 100e2
 LAD $R5, myproc2
 #
 # CHECK!!!
 #
-LAI $R6, $TOP, gvar4        # double check this, $TOP allowed?
+LAI $R6, $TOP, gvar4        # balh balh balh
 #
 LWI $R7, 600
 SB $R1, $R7
@@ -38,7 +38,7 @@ LW $R9, $R7
 SD $R3, $R7
 LD $R10, $R7
 SQ $R4, $R7
-LQ $R11, $R7
+LQ $R11, $R7        #   SOME OTHER DCOMMENT ####
 SF1 $F1, $R7
 LF1 $F2, $R7
 SF2 $D1, $R7

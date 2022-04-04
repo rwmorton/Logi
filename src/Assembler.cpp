@@ -17,9 +17,30 @@ std::ostream& operator<<(std::ostream& out,const Line& line)
     std::vector<Token>::const_iterator i = line.tokens.begin();
     while(i != line.tokens.end())
     {
-        out << i->str;
+        
+        out << (*i)() << " (" << i->str << ')';
+
+        switch(i->type)
+        {
+            case CHAR_CONSTANT:
+            {
+                out << ", char_val = " << i->val.S8_val;
+            }
+            break;
+            case INTEGER_CONSTANT:
+            {
+                out << ", int_val = " << i->val.S8_val;
+            }
+            break;
+            case FLOAT_CONSTANT:
+            {
+                out << ", float_val = " << i->val.F8_val;
+            }
+            break;
+        }
+
         ++i;
-        if(i != line.tokens.end()) out << ',';
+        if(i != line.tokens.end()) out << ", ";
     }
     return out;
 }
@@ -40,6 +61,20 @@ const std::vector<std::string> Assembler::ASMIdentifierStrings
     ".GB",".GW",".GD",".GQ",
     ".PB",".PE",
     ".PR",".PA",".PV",".PL"
+};
+
+const std::vector<std::string> Token::TokenTypeStrings
+{
+    "inst",
+    "dir",
+    "id",
+    "int_reg",
+    "flt_reg",
+    "dbl_reg",
+    "char_const",
+    "int_const",
+    "flt_const",
+    "BAD_TOKEN"
 };
 
 Assembler::Assembler() : omitDebug{false}, numErrors{0}, createListing{false}
@@ -102,7 +137,7 @@ void Assembler::load(int argc,char* argv[])
 
     //assign correct identity to each token
     //and check for logical errors etc.
-    assignTokenIds();
+    identifyTokens();
 }
 
 std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
@@ -119,6 +154,7 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
 
     //TEMP
     out << "\nRAW LINES:\n";
+    out << std::setw(11) << std::setfill('-') << '\n';
     std::vector<std::string>::const_iterator i = asmb.rawLines.begin();
     while(i != asmb.rawLines.end())
     {
@@ -128,6 +164,7 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
     }
 
     out << "\n\nTOKENIZED LINES:\n";
+    out << std::setw(17) << std::setfill('-') << '\n';
     std::vector<Line>::const_iterator j = asmb.tokenizedLines.begin();
     while(j != asmb.tokenizedLines.end())
     {

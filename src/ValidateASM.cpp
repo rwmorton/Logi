@@ -59,10 +59,7 @@ const unsigned int ValidateASM::count(const int start,const int end)
 //
 ValidateASM& ValidateASM::assign()
 {
-    token_it->type = defaultAssignType;
-    ++token_it;
-
-    return *this;
+    return assign(defaultAssignType);
 }
 
 //
@@ -71,6 +68,26 @@ ValidateASM& ValidateASM::assign()
 ValidateASM& ValidateASM::assign(const TokenType type)
 {
     token_it->type = type;
+
+    switch(type)
+    {
+        case CHAR_CONSTANT:
+        {
+            throw std::runtime_error("VALIDATE_ASM: unimplemented CHAR_CONSTANT assign.");
+            token_it->val.S8_val = static_cast<S8>(token_it->str.at(0));
+        }
+        break;
+        case INTEGER_CONSTANT:
+        {
+            token_it->val.S8_val = std::stol(token_it->str);
+        }
+        break;
+        case FLOAT_CONSTANT:
+        {
+            token_it->val.F8_val = std::stod(token_it->str);
+        }
+    }
+
     ++token_it;
 
     return *this;

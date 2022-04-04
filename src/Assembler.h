@@ -103,10 +103,14 @@ union TokenVal
 
 struct Token
 {
-    Token(const std::string& str,const Line& line) : str{str} {};
-    std::string str;        //the token string
-    TokenType type;         //type of token
-    TokenVal val;           //token value
+    public:
+        Token(const std::string& str,const Line& line) : str{str} {};
+        const std::string& operator()() const { return TokenTypeStrings.at(type); }
+        std::string str;        //the token string
+        TokenType type;         //type of token
+        TokenVal val;           //token value
+    private:
+        static const std::vector<std::string> TokenTypeStrings;
 };
 
 //
@@ -142,7 +146,7 @@ class Assembler : public LoadFile
     private:
         void preProcessRaw();
         void tokenizePreProcess(Line& line,const std::string& rawLine);
-        void assignTokenIds();
+        void identifyTokens();
         //
         //checks
         //if checks fail a runtime error is thrown.

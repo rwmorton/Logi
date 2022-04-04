@@ -9,14 +9,14 @@ namespace Logi
 // Here we give each token the correct identity and also
 // check for logical errors in the assembler.
 //
-void Assembler::assignTokenIds()
+void Assembler::identifyTokens()
 {
     std::vector<Line>::iterator tokenizedLines_it = tokenizedLines.begin();
     bool match;
 
     while(tokenizedLines_it != tokenizedLines.end())
     {
-        std::vector<Token>::iterator token_it = tokenizedLines_it->tokens.begin(); //get first token
+        std::vector<Token>::iterator token_it = tokenizedLines_it->tokens.begin(); //get first token on line
 
         //begin validator for current line
         ValidateASM validator {*tokenizedLines_it,token_it};
@@ -25,7 +25,7 @@ void Assembler::assignTokenIds()
         match = checkOpCodes(validator);
 
         //check against possible assembler identifiers
-        //if(!match) checkASMIds(validator);
+        if(!match) checkASMIds(validator);
 
         ++tokenizedLines_it;
     }
@@ -59,7 +59,7 @@ const bool Assembler::checkOpCodes(ValidateASM& validator)
         break;
         case LAD: //LAD $R1, address = BBQ
         {
-            validator.count(3).assign().R().assign(INTEGER_CONSTANT);
+            validator.count(3).assign().R().assign(IDENTIFIER);
         }
         break;
         case LAI: //LAI $R1,$R2,qword,  BBBQ

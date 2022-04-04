@@ -43,9 +43,9 @@ class LoadFile
 {
     public:
         virtual ~LoadFile();
-        LoadFile& addFlag(const Flag& flag);
         virtual void load(int argc,char *argv[]) = 0;
     protected:
+        LoadFile& addFlag(const Flag& flag);
         std::vector<Flag> parseArgs(int argc,char* argv[]);
         static const bool checkFlag(const char* currentChar,const char prefix,const char flags[],unsigned char numFlags);
         std::string filename;
