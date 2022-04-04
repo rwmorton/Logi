@@ -11,6 +11,7 @@ add_subdirectory(types)
 add_subdirectory(instructionset)
 add_subdirectory(virtualmachine)
 add_subdirectory(debugger)
+add_subdirectory(assembler)
 
 add_library(Types_obj Types.cpp)
 add_library(LoadFile_obj LoadFile.cpp)
@@ -66,5 +67,7 @@ target_link_libraries(main shift_obj)
 target_link_libraries(main store_obj)
 # debugger
 target_link_libraries(main instruction_obj)
+# assembler
+target_link_libraries(main assignTokenIds_obj)
 
 target_include_directories(main PUBLIC types)

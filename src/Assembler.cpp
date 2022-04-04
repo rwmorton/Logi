@@ -35,6 +35,13 @@ const unsigned char Assembler::COMMA {','};
 const unsigned char Assembler::EOL {'\0'};
 const unsigned char Assembler::ASM_COMMENT {'#'};
 
+const std::vector<std::string> Assembler::ASMIdentifierStrings
+{
+    ".GB",".GW",".GD",".GQ",
+    ".PB",".PE",
+    ".PR",".PA",".PV",".PL"
+};
+
 Assembler::Assembler() : omitDebug{false}, numErrors{0}, createListing{false}
 {
     addFlag(DEBUG_FLAG);
@@ -43,10 +50,7 @@ Assembler::Assembler() : omitDebug{false}, numErrors{0}, createListing{false}
     addFlag(OUTPUT_FILE_FLAG);
 }
 
-Assembler::~Assembler()
-{
-    //
-}
+Assembler::~Assembler() {}
 
 //
 // Load ASM file from command line args
@@ -93,7 +97,12 @@ void Assembler::load(int argc,char* argv[])
     in.close();
 
     //remove whitespace, comments etc.
+    //and generate preliminary tokens.
     preProcessRaw();
+
+    //assign correct identity to each token
+    //and check for logical errors etc.
+    assignTokenIds();
 }
 
 std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
@@ -133,11 +142,16 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
 //
 // Do pre-processing of the vector of raw lines
 //
+/////////////////////////////////////////////////////////////
+////////////// MAY REMOVE THIS //////////////////////////////
 // Remove all leading and trailing whitespace.
 // If line begins with a # remove that line (comment).
+/////////////////////////////////////////////////////////////
 //
 // Also creates a vector of Lines which have all relevant
 // information such as the tokens and line number etc.
+// This will be the first stage of token generation and will
+// require further refinement.
 //
 void Assembler::preProcessRaw()
 {
@@ -149,6 +163,11 @@ void Assembler::preProcessRaw()
         i->erase(0,i->find_first_not_of(WHITESPACE));
         i->erase(i->find_last_not_of(WHITESPACE)+1);
 
+        /*
+        DO NOT REMOVE EMPTY LINES OR COMMENTED LINES
+        AS WE WANT A REFERENCE TO THE ORIGINAL RAW
+        ASSEMBLER DOWN THE LINE.
+        
         //remove empty lines
         if(i->length() == 0)
         {
@@ -168,6 +187,20 @@ void Assembler::preProcessRaw()
             tokenizedLines.push_back(line);
             ++i; //next line
         }
+        */
+
+        // REMOVE BEGIN
+        // see above section
+        if(i->length() != 0 && i->at(0) != ASM_COMMENT)
+        {
+            //save line number and
+            //split the line into tokens.
+            Line line(count);
+            tokenizePreProcess(line,*i);
+            tokenizedLines.push_back(line);
+        }
+        ++i;
+        // REMOVE END.
 
         count++;
     }
@@ -175,8 +208,9 @@ void Assembler::preProcessRaw()
 
 //
 // Split line into tokens, removing commas, whitespace etc.
+// These will be the "raw" tokens and will require further processing.
 //
-void Assembler::tokenize(Line& line,const std::string& rawLine)
+void Assembler::tokenizePreProcess(Line& line,const std::string& rawLine)
 {
     int i {0};
     std::string tokenStr {};
@@ -192,7 +226,7 @@ void Assembler::tokenize(Line& line,const std::string& rawLine)
                 //save the token if not empty (in case of extra spaces/commas)
                 if(tokenStr.length() > 0)
                 {
-                    line.tokens.push_back({tokenStr});
+                    line.tokens.push_back({tokenStr,line});
                 }
                 tokenStr.clear();
             }
@@ -207,7 +241,25 @@ void Assembler::tokenize(Line& line,const std::string& rawLine)
         i++;
     }
 
-    line.tokens.push_back({tokenStr}); //save final token
+    line.tokens.push_back({tokenStr,line}); //save final token
+}
+
+const ASMIdentifier Assembler::FIRST_ASM_ID {ASMIdentifier::GB};
+
+//
+// Get ASM identifier from string.
+//
+const ASMIdentifier Assembler::ASMIdentifier_fromStr(const std::string& str)
+{
+    std::vector<std::string>::const_iterator i = ASMIdentifierStrings.begin();
+    ASMIdentifier index = FIRST_ASM_ID;
+    while(i != ASMIdentifierStrings.end())
+    {
+        if(*i == str) return index;
+        ++i;
+    }
+
+    return ASMIdentifier::BAD_ID;
 }
 
 } //namespace Logi

@@ -129,7 +129,7 @@ void VirtualMachine::run()
         stream->string("Debugger started, enter command:\n");
     }
 
-    while((*ram)(registers.R($IP)) != OpCodes::HALT)
+    while((*ram)(registers.R($IP)) != OpCode::HALT)
     {
         //is debugger on?
         if(debugOn)

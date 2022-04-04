@@ -22,7 +22,7 @@ void Debugger::instruction(const U8 address) const
     {
         case LBI: //LBI $R1, BBB
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             U1 byte = (U1)(*vm.ram)(currentByte+2);
@@ -31,7 +31,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case LWI: //LWI $R1, BBW
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             U2 word = Transform::bytecodeToWord(&(*vm.ram)(currentByte+2));
@@ -40,7 +40,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case LDI: //LDI $R1, BBD
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             U4 dword = Transform::bytecodeToDWord(&(*vm.ram)(currentByte+2));
@@ -49,7 +49,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case LQI: //LQI $R1, BBQ
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             U8 qword = Transform::bytecodeToQWord(&(*vm.ram)(currentByte+2));
@@ -58,7 +58,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case LF1I: //LF1I $R1, BBD
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             F4 float_ = Transform::bytecodeToFloat(&(*vm.ram)(currentByte+2));
@@ -67,7 +67,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case LF2I: //LF2I $R1, BBQ
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             F8 double_ = Transform::bytecodeToDouble(&(*vm.ram)(currentByte+2));
@@ -76,7 +76,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case LAD: //LAD $R1, address = BBQ
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             U8 addr = Transform::bytecodeToQWord(&(*vm.ram)(currentByte+2));
@@ -85,7 +85,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case LAI: //LAI $R1,$R2,qword,  BBBQ
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{},R2{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             Transform::byteToRegister((*vm.ram)(currentByte+2),R2);
@@ -103,7 +103,7 @@ void Debugger::instruction(const U8 address) const
         case SQ:
         case MOV:
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 R1{},R2{};
             Transform::byteToRegister((*vm.ram)(currentByte+1),R1);
             Transform::byteToRegister((*vm.ram)(currentByte+2),R2);
@@ -113,7 +113,7 @@ void Debugger::instruction(const U8 address) const
         case LF1: // LF1 $F1,$R1,       BBB
         case SF1:
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 F1{},R1{};
             Transform::floatToRegister(&(*vm.ram)(currentByte+1),F1);
             Transform::byteToRegister((*vm.ram)(currentByte+2),R1);
@@ -123,7 +123,7 @@ void Debugger::instruction(const U8 address) const
         case LF2: // LF2 $D1,$R1,       BBB
         case SF2:
         {
-            std::string inst = (*vm.iset)((OpCodes)((*vm.ram)(currentByte)));
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 D1{},R1{};
             Transform::doubleToRegister(&(*vm.ram)(currentByte+1),D1);
             Transform::byteToRegister((*vm.ram)(currentByte+2),R1);
@@ -249,7 +249,7 @@ void Debugger::instruction(const U8 address) const
             //
         }
         break;
-        case DADD: // FADD $F1,$F2,$F3 BBBB
+        case DADD: // DADD $D1,$D2,$D3 BBBB
         case DSUB:
         case DMULT:
         case DDIV:

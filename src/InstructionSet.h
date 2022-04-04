@@ -14,7 +14,7 @@
 namespace Logi
 {
 
-enum OpCodes
+enum OpCode
 {
     //data transfer
     LBI = 0,    // 0x00 load byte immediate
@@ -111,7 +111,9 @@ class InstructionSet
     public:
         InstructionSet(VirtualMachine* vm);
         void setVM(VirtualMachine* vm);
-        const std::string& operator()(OpCodes code) const;
+        const std::string& operator()(OpCode code) const;
+        const OpCode operator()(const std::string& str) const;
+        static const OpCode OpCode_fromStr(const std::string& str);
         // debug
         void debug_pre() const;
         void debug_post() const;
@@ -210,6 +212,7 @@ class InstructionSet
         //
         VirtualMachine* vm; //test
         static const std::vector<std::string> _InstructionSetStrings;
+        static const OpCode FIRST_OPCODE;
 };
 
 } //namespace Logi

@@ -22,6 +22,8 @@ namespace Logi
 const F4 InstructionSet::F4_EPSILON {FLT_EPSILON};
 const F8 InstructionSet::F8_EPSILON {DBL_EPSILON};
 
+const OpCode InstructionSet::FIRST_OPCODE {OpCode::LBI};
+
 InstructionSet::InstructionSet(VirtualMachine* vm) : vm{vm} {}
 
 void InstructionSet::setVM(VirtualMachine* vm)
@@ -29,10 +31,35 @@ void InstructionSet::setVM(VirtualMachine* vm)
     this->vm = vm;
 }
 
-const std::string& InstructionSet::operator()(OpCodes code) const
+const std::string& InstructionSet::operator()(OpCode code) const
 {
     if(code >= NUM_INSTRUCTIONS) throw std::out_of_range("INSTRUCTION_SET: out of range");
     return _InstructionSetStrings.at(code);
+}
+
+//
+// Get string version of opcode
+//
+const OpCode InstructionSet::operator()(const std::string& str) const
+{
+    return InstructionSet::OpCode_fromStr(str);
+}
+
+//
+// static version of above
+//
+const OpCode InstructionSet::OpCode_fromStr(const std::string& str)
+{
+    std::vector<std::string>::const_iterator i = _InstructionSetStrings.begin();
+    int index = FIRST_OPCODE;
+    while(i != _InstructionSetStrings.end())
+    {
+        if(*i == str) return (OpCode)index;
+        ++i;
+        index++;
+    }
+
+    return OpCode::BAD;
 }
 
 const bool InstructionSet::isZero(const F4 A,const F4 B)

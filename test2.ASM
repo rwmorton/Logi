@@ -16,9 +16,9 @@
 
 LBI $R1, -23
 LWI $R2, 280
-LDI $R3, -70000
+LDI $R3,        -70000
 LQI $R4, 1234567890123
-LF1I $F1,, , -2.3e-4
+LF1I $F1,,       , -2.3e-4
 LF2I $D1, 100e2
 LAD $R5, myproc2
-LAI $R6 , , , $TOP, gvar4
+LAI $R6 ,       , , $TOP, gvar4
