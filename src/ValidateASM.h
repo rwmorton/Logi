@@ -14,17 +14,20 @@ class ValidateASM
 {
     public:
         ValidateASM(Line& line,std::vector<Token>::iterator& token_it);
+        void setDefaultAssign(const TokenType type);
         const OpCode getInstr() const;
         const ASMIdentifier getId() const;
         ValidateASM& count(const int expectedCount);
-        ValidateASM& count(const int start,const int end);
+        const unsigned int count(const int start,const int end);
+        ValidateASM& assign();
         ValidateASM& assign(const TokenType type);
-        ValidateASM& R();
-        ValidateASM& RF();
-        ValidateASM& RD();
+        ValidateASM& R(unsigned int count=1);
+        ValidateASM& RF(unsigned int count=1);
+        ValidateASM& RD(unsigned int count=1);
     private:
         Line& line;
         std::vector<Token>::iterator& token_it;
+        TokenType defaultAssignType;
 };
 
 }
