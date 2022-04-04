@@ -32,16 +32,21 @@ const std::vector<std::string> Registers::_DoubleRegisterStrings
     "$D6","$D7","$D8","$D9","$D10"
 };
 
+const RegisterCodes Registers::FIRST_REGISTER {RegisterCodes::$IP};
+const RegisterCodes Registers::FIRST_INTEGER_REGISTER {RegisterCodes::$R1};
+const FloatRegisterCodes Registers::FIRST_FLOAT_REGISTER {FloatRegisterCodes::$F1};
+const DoubleRegisterCodes Registers::FIRST_DOUBLE_REGISTER {DoubleRegisterCodes::$D1};
+
 U8& Registers::R(const RegisterCodes code)
 {
-    if(code < RegisterCodes::$IP || code >= (NUM_FLOAT_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code > (NUM_REGISTERS + NUM_INTEGER_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
 U8& Registers::R1_24(unsigned int code)
 {
-    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _R[(code-1) + 8];
+    if(code < 1 || code > 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _R[(code-1) + NUM_REGISTERS];
 }
 
 F4& Registers::RF(const FloatRegisterCodes code)
@@ -52,20 +57,20 @@ F4& Registers::RF(const FloatRegisterCodes code)
 
 F8& Registers::RD(const DoubleRegisterCodes code)
 {
-    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_FLOAT_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_DOUBLE_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RD[code-1];
 }
 
 const U8 Registers::R(const RegisterCodes code) const
 {
-    if(code < RegisterCodes::$IP || code >= (NUM_FLOAT_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code > (NUM_REGISTERS + NUM_INTEGER_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
 const U8 Registers::R1_24(unsigned int code) const
 {
-    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _R[(code-1) + 8];
+    if(code < 1 || code > 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _R[(code-1) + NUM_REGISTERS];
 }
 
 const F4 Registers::RF(const FloatRegisterCodes code) const
@@ -76,20 +81,20 @@ const F4 Registers::RF(const FloatRegisterCodes code) const
 
 const F8 Registers::RD(const DoubleRegisterCodes code) const
 {
-    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_FLOAT_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_DOUBLE_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RD[code-1];
 }
 
 const std::string& Registers::R_str(const RegisterCodes code) const
 {
-    if(code < RegisterCodes::$IP || code >= (NUM_FLOAT_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code > (NUM_REGISTERS + NUM_INTEGER_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RegisterStrings.at(code);
 }
 
 const std::string& Registers::R1_24_str(unsigned int code) const
 {
-    if(code < 1 || code > NUM_REGISTERS) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _RegisterStrings.at((code-1) + 8);
+    if(code < 1 || code > 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _RegisterStrings.at((code-1) + NUM_REGISTERS);
 }
 
 const std::string& Registers::RF_str(const FloatRegisterCodes code) const
@@ -100,7 +105,7 @@ const std::string& Registers::RF_str(const FloatRegisterCodes code) const
 
 const std::string& Registers::RD_str(const DoubleRegisterCodes code) const
 {
-    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_FLOAT_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_DOUBLE_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _DoubleRegisterStrings.at(code-1);
 }
 
@@ -160,6 +165,48 @@ std::ostream& operator<<(std::ostream& out,const Registers& registers)
 
     out << std::dec;
     return out;
+}
+
+const RegisterCodes Registers::R_fromStr(const std::string& str)
+{
+    std::vector<std::string>::const_iterator i = _RegisterStrings.begin();
+    int index = FIRST_REGISTER;
+    while(i != _RegisterStrings.end())
+    {
+        if(*i == str) return (RegisterCodes)index;
+        ++i;
+        index++;
+    }
+    
+    throw std::runtime_error("REGISTERS: bad register string.");
+}
+
+const FloatRegisterCodes Registers::RF_fromStr(const std::string& str)
+{
+    std::vector<std::string>::const_iterator i = _FloatRegisterStrings.begin();
+    int index = FIRST_FLOAT_REGISTER;
+    while(i != _FloatRegisterStrings.end())
+    {
+        if(*i == str) return (FloatRegisterCodes)index;
+        ++i;
+        index++;
+    }
+    
+    throw std::runtime_error("REGISTERS: bad float register string.");
+}
+
+const DoubleRegisterCodes Registers::RD_fromStr(const std::string& str)
+{
+    std::vector<std::string>::const_iterator i = _DoubleRegisterStrings.begin();
+    int index = FIRST_DOUBLE_REGISTER;
+    while(i != _DoubleRegisterStrings.end())
+    {
+        if(*i == str) return (DoubleRegisterCodes)index;
+        ++i;
+        index++;
+    }
+    
+    throw std::runtime_error("REGISTERS: bad double register string.");
 }
 
 } //namespace Logi

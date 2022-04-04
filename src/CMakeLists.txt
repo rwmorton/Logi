@@ -26,6 +26,7 @@ add_library(VirtualMachine_obj VirtualMachine.cpp)
 add_library(Debugger_obj Debugger.cpp)
 add_library(BST_obj BST.cpp)
 add_library(Assembler_obj Assembler.cpp)
+add_library(ValidateASM_obj ValidateASM.cpp)
 add_library(SymbolRepository_obj SymbolRepository.cpp)
 
 add_executable(main main.cpp)
@@ -69,5 +70,6 @@ target_link_libraries(main store_obj)
 target_link_libraries(main instruction_obj)
 # assembler
 target_link_libraries(main assignTokenIds_obj)
+target_link_libraries(main ValidateASM_obj)
 
 target_include_directories(main PUBLIC types)

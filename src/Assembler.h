@@ -15,17 +15,21 @@ namespace Logi
 {
 
 class Assembler;
+class ValidateASM;
+class Line;
 
 /*
 Token types are:
 
-identifiers (eg. instructions like MOV, function names etc.)
-integer registers (e.g. $R5)
-float registers (e.g. $F2)
-double registers (e.g $D7)
-character constants enclosed in single quotes (e.g. 'x')
-integer constants (e.g. 123)
-floating-point constants (e.g. 0.3141e2)
+instruction (e.g. MOV, POP etc.)
+directive (e.g. .PB)
+identifier (e.g. function names etc.)
+integer register (e.g. $R5)
+float register (e.g. $F2)
+double register (e.g $D7)
+character constant enclosed in single quotes (e.g. 'x')
+integer constant (e.g. 123)
+floating-point constant (e.g. 0.3141e2)
 */
 
 /*
@@ -41,6 +45,17 @@ float constant ---->|                   |-> .digits (e|E) [+|-] digits
                     |-> 0 ->|
                             |
                             |-> .digits (e|E) [+|-] digits
+*/
+
+/*
+DIRECTIVE   IDENTIFIER  NUM ELS IF ARRAY
+.G(B,W,D,Q) identifier  [integer]
+.PB         idenfitier
+.PR         identifier  +integer
+.PA         identifier  +integer
+.PV         identifier  -integer
+.PL         identifier
+.PE
 */
 
 enum ASMIdentifier
@@ -60,7 +75,9 @@ enum ASMIdentifier
 
 enum TokenType
 {
-    IDENTIFIER = 0,         // (a-z,A-Z,_,.,?,@) -> (a-z,A-Z,_,.,?,@,0-9)
+    INSTRUCTION = 0,
+    DIRECTIVE,
+    IDENTIFIER,             // (a-z,A-Z,_,.,?,@) -> (a-z,A-Z,_,.,?,@,0-9)
     INTEGER_REGISTER,       // $R[1-24]
     FLOAT_REGISTER,         // $F[1-10]
     DOUBLE_REGISTER,        // $D[1-10]
@@ -78,18 +95,18 @@ enum TokenType
     BAD_TOKEN
 };
 
-class Line;
+union TokenVal
+{
+    S8 S8_val;          //register bytecode val, char val, integer const
+    F8 F8_val;          //floating point val
+};
 
 struct Token
 {
     Token(const std::string& str,const Line& line) : str{str} {};
     std::string str;        //the token string
     TokenType type;         //type of token
-    union Val
-    {
-        S8 val;             //register bytecode val, char val, integer const
-        F8 fval;            //floating point val
-    };
+    TokenVal val;           //token value
 };
 
 //
@@ -98,6 +115,7 @@ struct Token
 class Line
 {
     friend class Assembler;
+    friend class ValidateASM;
     public:
         Line(const U4 pos);
         friend std::ostream& operator<<(std::ostream& out,const Line& line);
@@ -108,6 +126,7 @@ class Line
 
 class Assembler : public LoadFile
 {
+    friend class ValidateASM;
     enum FlagID
     {
         DEBUG = 0,
@@ -128,13 +147,8 @@ class Assembler : public LoadFile
         //checks
         //if checks fail a runtime error is thrown.
         //
-        const bool checkOpCodes(Line& line,Token& token);
-        void checkASMIds(Line& line,Token& token);
-        static void checkTokenCount(const Line& line,const int expectedCount);
-        static void checkTokenCountWithinRange(const Line& line,const int start,const int end);
-        static const RegisterCodes checkIntRegister(const std::string& str);
-        static const FloatRegisterCodes checkFloatRegister(const std::string& str);
-        static const DoubleRegisterCodes checkDoubleRegister(const std::string& str);
+        const bool checkOpCodes(ValidateASM& validator);
+        void checkASMIds(ValidateASM& validator);
         static const ASMIdentifier ASMIdentifier_fromStr(const std::string& str);
         //data
         bool omitDebug;

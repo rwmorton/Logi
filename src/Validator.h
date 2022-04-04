@@ -16,13 +16,9 @@ class Validator
 {
     public:
         Validator(U8& currentByte,U8& stopByte,const InstructionSet* iset,Registers& registers,RAM* ram);
-        //
-        // implement a fluent interface
-        //
         Validator& R(const U1 count);
         Validator& RF(const U1 count);
         Validator& RD(const U1 count);
-        //
         Validator& R();
         Validator& RF();
         Validator& RD();

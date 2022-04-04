@@ -156,7 +156,7 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
 void Assembler::preProcessRaw()
 {
     std::vector<std::string>::iterator i = rawLines.begin();
-    int count {0}; //keep track of line count in file
+    unsigned int count {0}; //keep track of line count in file
     while(i != rawLines.end())
     {
         //strip leading/trailing whitespace
@@ -195,7 +195,7 @@ void Assembler::preProcessRaw()
         {
             //save line number and
             //split the line into tokens.
-            Line line(count);
+            Line line{count};
             tokenizePreProcess(line,*i);
             tokenizedLines.push_back(line);
         }
@@ -231,6 +231,17 @@ void Assembler::tokenizePreProcess(Line& line,const std::string& rawLine)
                 tokenStr.clear();
             }
             break;
+            case ASM_COMMENT:
+            {
+                //save token if not empty (once at comment anything to end of line is discarded)
+                if(tokenStr.length() > 0)
+                {
+                    line.tokens.push_back({tokenStr,line});
+                }
+                tokenStr.clear();
+                return;
+            }
+            break;
             default:
             {
                 tokenStr.push_back(rawLine.at(i));
@@ -252,11 +263,12 @@ const ASMIdentifier Assembler::FIRST_ASM_ID {ASMIdentifier::GB};
 const ASMIdentifier Assembler::ASMIdentifier_fromStr(const std::string& str)
 {
     std::vector<std::string>::const_iterator i = ASMIdentifierStrings.begin();
-    ASMIdentifier index = FIRST_ASM_ID;
+    int index = FIRST_ASM_ID;
     while(i != ASMIdentifierStrings.end())
     {
-        if(*i == str) return index;
+        if(*i == str) return (ASMIdentifier)index;
         ++i;
+        index++;
     }
 
     return ASMIdentifier::BAD_ID;

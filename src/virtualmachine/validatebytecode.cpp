@@ -54,17 +54,17 @@ void VirtualMachine::validateBytecode()
                     .end_qword(); /* Q */
             }
             break;
-            case LF1I: //LF1I $R1, BBD
+            case LF1I: //LF1I $F1, BBD
             {
                 validate->opcode() /* B */
-                    .R().operand() /* $R1 */
+                    .RF().operand() /* $R1 */
                     .end_dword(); /* D */
             }
             break;
-            case LF2I: //LF2I $R1, BBQ
+            case LF2I: //LF2I $D1, BBQ
             {
                 validate->opcode() /* B */
-                    .R().operand() /* $R1 */
+                    .RD().operand() /* $R1 */
                     .end_qword(); /* Q */
             }
             break;

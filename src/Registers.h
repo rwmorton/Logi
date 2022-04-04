@@ -97,8 +97,14 @@ class Registers
         const std::string& RD_str(const DoubleRegisterCodes code) const;
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const Registers& registers);//register sizes
+        //get register from string
+        static const RegisterCodes R_fromStr(const std::string& str);
+        static const FloatRegisterCodes RF_fromStr(const std::string& str);
+        static const DoubleRegisterCodes RD_fromStr(const std::string& str);
         //
-        static const U1 NUM_REGISTERS {32};
+        //static const U1 NUM_REGISTERS {32};
+        static const U1 NUM_REGISTERS {8};
+        static const U1 NUM_INTEGER_REGISTERS {24};
         static const U1 NUM_FLOAT_REGISTERS {10};
         static const U1 NUM_DOUBLE_REGISTERS {10};
     private:
@@ -108,6 +114,10 @@ class Registers
         static const std::vector<std::string> _RegisterStrings;
         static const std::vector<std::string> _FloatRegisterStrings;
         static const std::vector<std::string> _DoubleRegisterStrings;
+        static const RegisterCodes FIRST_REGISTER;
+        static const RegisterCodes FIRST_INTEGER_REGISTER;
+        static const FloatRegisterCodes FIRST_FLOAT_REGISTER;
+        static const DoubleRegisterCodes FIRST_DOUBLE_REGISTER;
 };
 
 } //namespace Logi

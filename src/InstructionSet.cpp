@@ -127,7 +127,7 @@ const std::vector<std::string> InstructionSet::_InstructionSetStrings
     "CAST_IF","CAST_ID","CAST_FI","CAST_FD","CAST_DI","CAST_DF",
     //floating point math
     "FADD","FSUB","FMULT","FDIV","FSLT",
-    "DADD","DSUB","DMULT","DDIV","DSLT"
+    "DADD","DSUB","DMULT","DDIV","DSLT",
     //not an instruction
     "BAD"
 };

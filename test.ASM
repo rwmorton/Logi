@@ -3,8 +3,8 @@
 #
 .GB gvar1
 .GW gvar2
-.GD gvar3 10
-.GD gvar4 15
+.GD gvar3 10    # array with 10 elements
+.GD gvar4 15    # array with 15 elements
 
 #
 # myproc1 begin
@@ -25,7 +25,11 @@ LQI $R4, 1234567890123
 LF1I $F1, -2.3e-4
 LF2I $D1, 100e2
 LAD $R5, myproc2
-LAI $R6, $TOP, gvar4
+#
+# CHECK!!!
+#
+LAI $R6, $TOP, gvar4        # double check this, $TOP allowed?
+#
 LWI $R7, 600
 SB $R1, $R7
 LB $R8, $R7
