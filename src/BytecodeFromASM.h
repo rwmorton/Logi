@@ -29,10 +29,15 @@ class BytecodeFromASM
         BytecodeFromASM& I();
         BytecodeFromASM& A();
         BytecodeFromASM& B();
+        BytecodeFromASM& W();
+        BytecodeFromASM& D();
+        BytecodeFromASM& Q();
+        BytecodeFromASM& F1();
+        BytecodeFromASM& F2();
         BytecodeFromASM& C();
         BytecodeFromASM& R(unsigned int count=1);
-        BytecodeFromASM& F(unsigned int count=1);
-        BytecodeFromASM& D(unsigned int count=1);
+        BytecodeFromASM& RF(unsigned int count=1);
+        BytecodeFromASM& RD(unsigned int count=1);
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const BytecodeFromASM& li);
     private:

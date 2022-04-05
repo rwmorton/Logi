@@ -51,7 +51,7 @@ enum RegisterCodes
 
 enum FloatRegisterCodes
 {
-    $F1 = 1,
+    $F1 = 0,
     $F2,
     $F3,
     $F4,
@@ -65,7 +65,7 @@ enum FloatRegisterCodes
 
 enum DoubleRegisterCodes
 {
-    $D1 = 1,
+    $D1 = 0,
     $D2,
     $D3,
     $D4,

@@ -25,31 +25,44 @@ void BytecodeFromASM::begin(const Line& line)
     switch(InstructionSet::OpCode_fromStr(token_it->str))
     {
         case LBI: //LBI $R1, BBB
+        {
+            I().R().B();
+        }
+        break;
         case LWI: //LWI $R1, BBW
+        {
+            I().R().W();
+        }
+        break;
         case LDI: //LDI $R1, BBD
+        {
+            I().R().D();
+        }
+        break;
         case LQI: //LQI $R1, BBQ
         {
-            I().R().C();
+            I().R().Q();
         }
         break;
         case LF1I: //LF1I $F1, BBD
         {
-            I().F().C();
+            I().RF().F1();
         }
         break;
         case LF2I: //LF2I $D1, BBQ
         {
-            I().D().C();
+            I().RD().F2();
         }
         break;
         case LAD: //LAD $R1, address = BBQ
         {
+            throw std::runtime_error("LEFT OFF HERE...");
             I().R().A();
         }
         break;
         case LAI: //LAI $R1,$R2,qword,  BBBQ
         {
-            I().R(2).C();
+            I().R(2).Q();
         }
         break;
         case LB: // LB $R1,$R2,     BBB
@@ -67,13 +80,13 @@ void BytecodeFromASM::begin(const Line& line)
         case LF1: // LF1 $F1,$R1,       BBB
         case SF1:
         {
-            I().F().R();
+            I().RF().R();
         }
         break;
         case LF2: // LF2 $D1,$R1,       BBB
         case SF2:
         {
-            I().D().R();
+            I().RD().R();
         }
         break;
         case PUSHB: // PUSHB $R1, BB
@@ -92,23 +105,23 @@ void BytecodeFromASM::begin(const Line& line)
         case PUSHF1: // PUSHF1 $F
         case POPF1:
         {
-            I().F();
+            I().RF();
         }
         break;
         case PUSHF2:
         case POPF2:
         {
-            I().D();
+            I().RD();
         }
         break;
         case MOVF: // MOVF $F1,$F2
         {
-            I().F(2);
+            I().RF(2);
         }
         break;
         case MOVD: // MOVD $D1,$D2
         {
-            I().D(2);
+            I().RD(2);
         }
         break;
         case MOV: // MOV $R1,$R2
@@ -137,7 +150,7 @@ void BytecodeFromASM::begin(const Line& line)
         break;
         case INT: // INT #vector BB
         {
-            I().C();
+            I().B();
         }
         break;
         case EI:
@@ -155,32 +168,32 @@ void BytecodeFromASM::begin(const Line& line)
         break;
         case CAST_IF: // CAST_IF $R,$F
         {
-            I().R().F();
+            I().R().RF();
         }
         break;
         case CAST_ID: // CAST_ID $R,$D
         {
-            I().R().D();
+            I().R().RD();
         }
         break;
         case CAST_FI: // CAST_FI $F,$R
         {
-            I().F().R();
+            I().RF().R();
         }
         break;
         case CAST_FD: // CAST_FD $F,$D
         {
-            I().F().D();
+            I().RF().RD();
         }
         break;
         case CAST_DI: // CAST_DI $D,$R
         {
-            I().D().R();
+            I().RD().R();
         }
         break;
         case CAST_DF: // CAST_DF $D,$F
         {
-            I().D().F();
+            I().RD().RF();
         }
         break;
         case FADD: // FADD $F1,$F2,$F3 BBBB
@@ -189,7 +202,7 @@ void BytecodeFromASM::begin(const Line& line)
         case FDIV:
         case FSLT:
         {
-            I().F(3);
+            I().RF(3);
         }
         break;
         case DADD: // DADD $D1,$D2,$D3 BBBB
@@ -198,7 +211,7 @@ void BytecodeFromASM::begin(const Line& line)
         case DDIV:
         case DSLT:
         {
-            I().D(3);
+            I().RD(3);
         }
         break;
         case BAD:
@@ -249,19 +262,103 @@ BytecodeFromASM& BytecodeFromASM::A()
 }
 
 //
-// Load byte constant (byte constant is 8 bytes long).
+// Load single byte.
 //
 BytecodeFromASM& BytecodeFromASM::B()
 {
-    U1 qword_bytes[8];
-    Transform::qwordToBytecode(token_it->val.S8_val,&qword_bytes[0]);
-    
-    for(int i=0; i<8; i++)
+    U1 byte = static_cast<U1>(token_it->val.S8_val);
+    bytecode.push_back(byte);
+    token_it++; //next token
+    currentByte++;
+
+    return *this;
+}
+
+//
+// Load word (2 bytes)
+//
+BytecodeFromASM& BytecodeFromASM::W()
+{
+    U2 word = static_cast<U2>(token_it->val.S8_val);
+    U1 bytes[2];
+    Transform::wordToBytecode(word,&bytes[0]);
+    for(int i=0; i<2; i++)
     {
-        bytecode.push_back(qword_bytes[i]);
+        bytecode.push_back(bytes[i]);
         currentByte++;
     }
+    token_it++; //next token
 
+    return *this;
+}
+
+//
+// Load dword (4 bytes)
+//
+BytecodeFromASM& BytecodeFromASM::D()
+{
+    U4 dword = static_cast<U4>(token_it->val.S8_val);
+    U1 bytes[4];
+    Transform::dwordToBytecode(dword,&bytes[0]);
+    for(int i=0; i<4; i++)
+    {
+        bytecode.push_back(bytes[i]);
+        currentByte++;
+    }
+    token_it++; //next token
+
+    return *this;
+}
+
+//
+// Load qword (8 bytes)
+//
+BytecodeFromASM& BytecodeFromASM::Q()
+{
+    U8 qword = static_cast<U8>(token_it->val.S8_val);
+    U1 bytes[8];
+    Transform::qwordToBytecode(qword,&bytes[0]);
+    for(int i=0; i<8; i++)
+    {
+        bytecode.push_back(bytes[i]);
+        currentByte++;
+    }
+    token_it++; //next token
+
+    return *this;
+}
+
+//
+// Load single-precision float (4 bytes).
+//
+BytecodeFromASM& BytecodeFromASM::F1()
+{
+    F4 float_ = static_cast<F4>(token_it->val.F8_val);
+    U1 bytes[4];
+    Transform::floatToBytecode(float_,&bytes[0]);
+    for(int i=0; i<4; i++)
+    {
+        bytecode.push_back(bytes[i]);
+        currentByte++;
+    }
+    token_it++; //next token
+
+    return *this;
+}
+
+//
+// Load double-precision float (8 bytes).
+//
+BytecodeFromASM& BytecodeFromASM::F2()
+{
+    F8 double_ = token_it->val.F8_val;
+    U1 bytes[8];
+    Transform::doubleToBytecode(double_,&bytes[0]);
+    for(int i=0; i<8; i++)
+    {
+        bytecode.push_back(bytes[i]);
+        currentByte++;
+    }
     token_it++; //next token
 
     return *this;
@@ -304,7 +401,7 @@ BytecodeFromASM& BytecodeFromASM::R(unsigned int count)
 //
 // Load float register (single byte up to count times).
 //
-BytecodeFromASM& BytecodeFromASM::F(unsigned int count)
+BytecodeFromASM& BytecodeFromASM::RF(unsigned int count)
 {
     for(int i=0; i<count; i++)
     {
@@ -319,7 +416,7 @@ BytecodeFromASM& BytecodeFromASM::F(unsigned int count)
 //
 // Load double register (single byte up to count times).
 //
-BytecodeFromASM& BytecodeFromASM::D(unsigned int count)
+BytecodeFromASM& BytecodeFromASM::RD(unsigned int count)
 {
     for(int i=0; i<count; i++)
     {
@@ -339,7 +436,8 @@ std::ostream& operator<<(std::ostream& out,const BytecodeFromASM& li)
     std::vector<U1>::const_iterator i = li.bytecode.begin();
     while(i != li.bytecode.end())
     {
-        out << std::hex << std::showbase << static_cast<int>(*i) << ' ';
+        //out << std::hex << std::showbase << static_cast<int>(*i) << ' ';
+        out << static_cast<int>(*i) << ' ';
         ++i;
     }
 
