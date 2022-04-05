@@ -1,3 +1,5 @@
 add_library(identifyTokens_obj identifyTokens.cpp)
+add_library(buildSymbolRepository_obj buildSymbolRepository.cpp)
 
 target_include_directories(identifyTokens_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(buildSymbolRepository_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -84,6 +84,10 @@ void Flag::loadArgs(std::vector<std::string>::iterator& it)
     while(i < expectedArgs)
     {
         ++it; //next arg
+
+        //if argument is an empty string throw error
+        if(it->length() == 0) throw std::runtime_error("FLAG: cannot load empty argument.");
+
         args.push_back(*it);
         i++;
     }

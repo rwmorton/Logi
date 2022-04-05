@@ -5,6 +5,7 @@
 #include "LoadFile.h"
 #include "Types.h"
 #include "Registers.h"
+#include "SymbolRepository.h"
 
 //std includes
 #include <string>
@@ -101,6 +102,9 @@ union TokenVal
     F8 F8_val;          //floating point val
 };
 
+//
+// A single atomic portion of the assembly code.
+//
 struct Token
 {
     public:
@@ -124,10 +128,16 @@ class Line
         Line(const U4 pos);
         friend std::ostream& operator<<(std::ostream& out,const Line& line);
     private:
+        TokenType type;                 //type of token the line begins with
         U4 pos;                         //line number in original source file
         std::vector<Token> tokens;
 };
 
+//
+// The assembler itself, loads a file containing assembly code
+// and transforms it into a SymbolRepository and a bytecode
+// executable which is then written to file.
+//
 class Assembler : public LoadFile
 {
     friend class ValidateASM;
@@ -144,15 +154,26 @@ class Assembler : public LoadFile
         void load(int argc,char *argv[]);
         friend std::ostream& operator<<(std::ostream& out,const Assembler& asmb);
     private:
+        //from load:
+        //step 1
         void preProcessRaw();
+        //step 2 (from preProcessRaw)
         void tokenizePreProcess(Line& line,const std::string& rawLine);
+        //step 3
         void identifyTokens();
-        //
-        //checks
-        //if checks fail a runtime error is thrown.
-        //
         const bool checkOpCodes(ValidateASM& validator);
         void checkASMIds(ValidateASM& validator);
+        //step 4
+        void buildSymbolRepository();
+        void loadDirective(std::vector<Line>::const_iterator& line_it);
+        void loadGlobalVariable(std::vector<Token>::const_iterator& line_it);
+        void loadProcedure(std::vector<Line>::const_iterator& line_it);
+        void loadProcedureReturn(std::vector<Token>::const_iterator& token_it);
+        void loadProcedureArgument(std::vector<Token>::const_iterator& token_it);
+        void loadProcedureLocalVariable(std::vector<Token>::const_iterator& token_it);
+        void loadProcedureLabel(std::vector<Token>::const_iterator& token_it);
+        void loadInstruction(std::vector<Token>::const_iterator& token_it);
+        //
         static const ASMIdentifier ASMIdentifier_fromStr(const std::string& str);
         //data
         bool omitDebug;
@@ -161,6 +182,7 @@ class Assembler : public LoadFile
         std::string outputFile;
         std::vector<std::string> rawLines;              //vector containing all the raw lines from the ASM file
         std::vector<Line> tokenizedLines;               //vector containing all the tokens per line
+        SymbolRepository symbolRepository;              //the symbol repository
         //static flags
         static const Flag DEBUG_FLAG;
         static const Flag ALLOW_ERRORS_FLAG;

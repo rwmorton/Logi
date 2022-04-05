@@ -138,6 +138,9 @@ void Assembler::load(int argc,char* argv[])
     //assign correct identity to each token
     //and check for logical errors etc.
     identifyTokens();
+
+    //now build the symbol repository
+    buildSymbolRepository();
 }
 
 std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
@@ -150,7 +153,8 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
     asmb.omitDebug ? out << "yes\n" : out << "no\n";
     out << "creating listing file? ";
     asmb.createListing ? out << "yes\n" : out << "no\n";
-    out << "output file = " << asmb.outputFile << '\n';
+    out << "output file? ";
+    asmb.outputFile.length() == 0 ? out << "no\n" : out << asmb.outputFile << '\n';
 
     //TEMP
     out << "\nRAW LINES:\n";
@@ -178,17 +182,12 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
 
 //
 // Do pre-processing of the vector of raw lines
-//
-/////////////////////////////////////////////////////////////
-////////////// MAY REMOVE THIS //////////////////////////////
-// Remove all leading and trailing whitespace.
-// If line begins with a # remove that line (comment).
-/////////////////////////////////////////////////////////////
-//
-// Also creates a vector of Lines which have all relevant
+// which creates a vector of Lines which have all relevant
 // information such as the tokens and line number etc.
 // This will be the first stage of token generation and will
 // require further refinement.
+//
+// The vector of raw lines is cleared after this.
 //
 void Assembler::preProcessRaw()
 {
@@ -200,34 +199,6 @@ void Assembler::preProcessRaw()
         i->erase(0,i->find_first_not_of(WHITESPACE));
         i->erase(i->find_last_not_of(WHITESPACE)+1);
 
-        /*
-        DO NOT REMOVE EMPTY LINES OR COMMENTED LINES
-        AS WE WANT A REFERENCE TO THE ORIGINAL RAW
-        ASSEMBLER DOWN THE LINE.
-        
-        //remove empty lines
-        if(i->length() == 0)
-        {
-            i = rawLines.erase(i);
-        }
-        //remove comments
-        else if(i->at(0) == ASM_COMMENT)
-        {
-            i = rawLines.erase(i);
-        }
-        else
-        {
-            //save line number and
-            //split the line into tokens.
-            Line line(count);
-            tokenize(line,*i);
-            tokenizedLines.push_back(line);
-            ++i; //next line
-        }
-        */
-
-        // REMOVE BEGIN
-        // see above section
         if(i->length() != 0 && i->at(0) != ASM_COMMENT)
         {
             //save line number and
@@ -237,10 +208,11 @@ void Assembler::preProcessRaw()
             tokenizedLines.push_back(line);
         }
         ++i;
-        // REMOVE END.
 
         count++;
     }
+
+    rawLines.clear(); //clear all the raw lines
 }
 
 //

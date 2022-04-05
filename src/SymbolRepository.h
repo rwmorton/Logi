@@ -101,7 +101,7 @@ class SymbolTable
 };
 
 //
-// stringVector is used to store identifier names
+// stringTable is used to store identifier names
 // symbolTable stores all the global variables
 // and procedures used by the program.
 //
@@ -110,9 +110,10 @@ class SymbolRepository
     public:
         //add identifier to the string vector
         void addIdentifier(const std::string& id);
+        const std::string& getIdentifier(const int index) const;
         friend std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr);
     private:
-        std::vector<std::string> stringVector;
+        std::vector<std::string> stringTable;
         SymbolTable symbolTable;
 };
 

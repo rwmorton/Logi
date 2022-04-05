@@ -80,6 +80,7 @@ const unsigned int ValidateASM::count(const int start,const int end)
 //
 ValidateASM& ValidateASM::assign()
 {
+    line.type = defaultAssignType;
     return assign(defaultAssignType);
 }
 

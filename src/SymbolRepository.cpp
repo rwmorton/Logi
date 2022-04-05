@@ -81,11 +81,11 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
     //output labels
     out << "LABELS:\n";
     out << std::setw(8) << std::setfill('-') << '\n';
-    i = p.labels.begin();
-    while(i != p.labels.end())
+    std::vector<Label>::const_iterator j = p.labels.begin();
+    while(j != p.labels.end())
     {
-        out << *i << '\n';
-        ++i;
+        out << *j << '\n';
+        ++j;
     }
     return out;
 }
@@ -129,7 +129,13 @@ std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
 
 void SymbolRepository::addIdentifier(const std::string& id)
 {
-    stringVector.push_back(id);
+    stringTable.push_back(id);
+}
+
+const std::string& SymbolRepository::getIdentifier(const int index) const
+{
+    if(index < 0 || index >= stringTable.size()) throw std::runtime_error("SYMBOL_REPOSITORY: index into string table is out of range.");
+    return stringTable.at(index);
 }
 
 std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)
@@ -139,8 +145,8 @@ std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)
     //
     out << "\nSTRING VECTOR:\n";
     out << std::setw(15) << std::setfill('-') << '\n';
-    std::vector<std::string>::const_iterator i = sr.stringVector.begin();
-    while(i != sr.stringVector.end())
+    std::vector<std::string>::const_iterator i = sr.stringTable.begin();
+    while(i != sr.stringTable.end())
     {
         out << *i << '\n';
         ++i;
