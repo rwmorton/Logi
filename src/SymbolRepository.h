@@ -54,6 +54,22 @@ struct StackFrame
     friend std::ostream& operator<<(std::ostream& out,const StackFrame& sf);
 };
 
+/*
+.PL mylabel
+LQI $R1,-62
+MOV $R2,$R1
+LAI $R3, mylabel
+
+Given the above series of statements, the address of mylabel
+will be the address of the first byte of the instruction
+following the label directive. In the above case the label
+mylabel will represent the address of the LQI opcode in the
+instruction directly beneath it.
+
+When this labels identifier is encountered elsewhere in the
+source file the assembler will replace the identifier with
+the address associated with the label (e.g. address of LQI).
+*/
 struct Label
 {
     U8 text;            //index to stringTable of where identifier begins
@@ -69,6 +85,28 @@ enum ProcedureReturn
     VALUE
 };
 
+/*
+.PB myfunction
+LQI $R1,24
+INT 0
+.PL myfunction_L1
+LQI $R1,20
+INT 0
+.PE
+
+The procedures identifier represents the address
+of the first byte of the first instruction in the
+procedure. In the example above when the identifier
+myfunction is used as an operand in an instruction
+it will be replaced by the address of the first byte
+of the LQI $R1,24 instruction.
+
+The label myfunction_L1 represents the address of
+the first byte of the LQI $R1,20 instruction. When
+this label is encountered as an operand in an
+instruction the assembler will replace it with the
+corresponding address.
+*/
 struct Procedure
 {
     U8 text;                            //index to stringTable of where identifier begins

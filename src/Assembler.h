@@ -6,6 +6,7 @@
 #include "Types.h"
 #include "Registers.h"
 #include "SymbolRepository.h"
+#include "BytecodeFromASM.h"
 
 //std includes
 #include <string>
@@ -126,6 +127,7 @@ class Line
     friend class ValidateASM;
     public:
         Line(const U4 pos);
+        std::vector<Token>::const_iterator token_iter() const;
         friend std::ostream& operator<<(std::ostream& out,const Line& line);
     private:
         TokenType type;                 //type of token the line begins with
@@ -184,6 +186,7 @@ class Assembler : public LoadFile
         std::vector<std::string> rawLines;              //vector containing all the raw lines from the ASM file
         std::vector<Line> tokenizedLines;               //vector containing all the tokens per line
         SymbolRepository symbolRepository;              //the symbol repository
+        BytecodeFromASM bytecodeLoader;                 //interface for loading instructions on a per line basis
         //static flags
         static const Flag DEBUG_FLAG;
         static const Flag ALLOW_ERRORS_FLAG;

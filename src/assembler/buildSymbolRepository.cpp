@@ -11,6 +11,8 @@ namespace Logi
 void Assembler::buildSymbolRepository()
 {
     std::vector<Line>::const_iterator line = tokenizedLines.begin();
+    
+    bytecodeLoader.init(); //initialize bytecode loader
 
     while(line != tokenizedLines.end())
     {
@@ -122,15 +124,12 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
     proc.line = line_it->pos; //save line in source file
     proc.text = symbolRepository.addIdentifier(line_it->tokens.at(1).str);
 
-    //
-    // TOOD: procedure address
-    //
-
     //get next line
     ++line_it;
 
     bool firstLoad = true;
     bool retLoad = false;
+    bool firstInst = true;
 
     while(line_it != tokenizedLines.end())
     {
@@ -184,6 +183,16 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
             {
                 //must be an instruction
                 //within the procedure.
+
+                //if the first instruction
+                if(firstInst)
+                {
+                    //then we assign it as the address
+                    //of the procedure.
+                    proc.address = bytecodeLoader.getCurrentByte();
+                    firstInst = false;
+                }
+
                 loadInstruction(*line_it);
             }
             break;
@@ -262,7 +271,7 @@ void Assembler::loadProcedureLabel(Procedure& proc,const Line& line)
 //
 void Assembler::loadInstruction(const Line& line)
 {
-    //
+    bytecodeLoader.begin(line);
 }
 
 } //namespace Logi

@@ -28,6 +28,7 @@ add_library(BST_obj BST.cpp)
 add_library(Assembler_obj Assembler.cpp)
 add_library(ValidateASM_obj ValidateASM.cpp)
 add_library(SymbolRepository_obj SymbolRepository.cpp)
+add_library(BytecodeFromASM_obj BytecodeFromASM.cpp)
 
 add_executable(main main.cpp)
 #
@@ -72,5 +73,6 @@ target_link_libraries(main identifyTokens_obj)
 target_link_libraries(main buildSymbolRepository_obj)
 target_link_libraries(main ValidateASM_obj)
 target_link_libraries(main SymbolRepository_obj)
+target_link_libraries(main BytecodeFromASM_obj)
 
 target_include_directories(main PUBLIC types)

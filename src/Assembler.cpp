@@ -11,6 +11,11 @@ namespace Logi
 
 Line::Line(const U4 pos) : pos{pos} {}
 
+std::vector<Token>::const_iterator Line::token_iter() const
+{
+    return tokens.begin();
+}
+
 std::ostream& operator<<(std::ostream& out,const Line& line)
 {
     out << line.pos << ": ";
@@ -180,6 +185,9 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
     out << "\nSYMBOL REPOSITORY:\n";
     out << std::setw(19) << std::setfill('-') << '\n';
     out << asmb.symbolRepository << '\n';
+
+    out << "\n\n\n\n";
+    out << asmb.bytecodeLoader;
 
     return out;
 }
