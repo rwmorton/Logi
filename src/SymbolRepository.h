@@ -23,10 +23,10 @@ struct Contents
 
 enum GVType
 {
-    BYTE = 0,
-    WORD,
-    DWORD,
-    QWORD
+    BYTE    = 1,
+    WORD    = 2,
+    DWORD   = 4,
+    QWORD   = 8
 };
 
 //
@@ -37,13 +37,12 @@ struct GlobalVariable
 {
     U8 text;        //index to stringTable of where identifier begins
     GVType type;    //BYTE, WORD, DWORD or QWORD
-    U8 len;         //number of elements if an array
+    U8 len;         //number of elements if an array (defaults to 1)
     U8 size;        //total byte size
     S8 offset;      //offset below $TOP, address(g) = $TOP - offset
     U4 line;        //line in source code containing declaration
     //stream output
     friend std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv);
-    static const std::vector<std::string> GVTypeStrings;
 };
 
 struct StackFrame
@@ -109,8 +108,9 @@ class SymbolRepository
 {
     public:
         //add identifier to the string vector
-        void addIdentifier(const std::string& id);
+        const U8 addIdentifier(const std::string& id);
         const std::string& getIdentifier(const int index) const;
+        SymbolTable& getSymbolTable();
         friend std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr);
     private:
         std::vector<std::string> stringTable;

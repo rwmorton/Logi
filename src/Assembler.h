@@ -166,13 +166,14 @@ class Assembler : public LoadFile
         //step 4
         void buildSymbolRepository();
         void loadDirective(std::vector<Line>::const_iterator& line_it);
-        void loadGlobalVariable(std::vector<Token>::const_iterator& line_it);
+        void loadGlobalVariable(const Line& line);
         void loadProcedure(std::vector<Line>::const_iterator& line_it);
-        void loadProcedureReturn(std::vector<Token>::const_iterator& token_it);
-        void loadProcedureArgument(std::vector<Token>::const_iterator& token_it);
-        void loadProcedureLocalVariable(std::vector<Token>::const_iterator& token_it);
-        void loadProcedureLabel(std::vector<Token>::const_iterator& token_it);
-        void loadInstruction(std::vector<Token>::const_iterator& token_it);
+        void loadStackFrame(StackFrame& stackFrame,const Line& line);
+        void loadProcedureReturn(Procedure& proc,const Line& line);
+        void loadProcedureArgument(Procedure& proc,const Line& line);
+        void loadProcedureLocalVariable(Procedure& proc,const Line& line);
+        void loadProcedureLabel(Procedure& proc,const Line& line);
+        void loadInstruction(const Line& line);
         //
         static const ASMIdentifier ASMIdentifier_fromStr(const std::string& str);
         //data

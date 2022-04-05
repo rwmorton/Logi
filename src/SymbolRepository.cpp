@@ -7,21 +7,27 @@
 namespace Logi
 {
 
-const std::vector<std::string> GlobalVariable::GVTypeStrings
-{
-    "BYTE","WORD","DWORD","QWORD"
-};
-
 std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv)
 {
     out << "GLOBAL VARIABLE:\n";
     out << std::setw(17) << std::setfill('-') << '\n';
-    out << "text:\t" << gv.text << '\n';
-    out << "line:\t" << gv.line << '\n';
-    out << "type:\t" << GlobalVariable::GVTypeStrings.at(gv.type) << '\n';
-    if(gv.len > 0) out << "array count: \t" << gv.len << '\n';
-    out << "size:\t" << gv.size << '\n';
-    out << "offset:\t" << gv.offset << '\n';
+    out << "text: " << gv.text << '\n';
+    out << "line: " << gv.line << '\n';
+    out << "type: ";
+    switch(gv.type)
+    {
+        case BYTE: out << "BYTE\n"; break;
+        case WORD: out << "WORD\n"; break;
+        case DWORD: out << "DWORD\n"; break;
+        case QWORD: out << "QWORD\n"; break;
+        default:
+        {
+            throw std::runtime_error("SYMBOL_REPOSITORY: not a valid global variable type.");
+        }
+    }
+    if(gv.len > 1) out << "array count: " << gv.len << '\n';
+    out << "size: " << gv.size << '\n';
+    out << "offset: " << gv.offset << '\n';
 
     return out;
 }
@@ -30,9 +36,9 @@ std::ostream& operator<<(std::ostream& out,const StackFrame& sf)
 {
     out << "STACK FRAME:\n";
     out << std::setw(13) << std::setfill('-') << '\n';
-    out << "text:\t" << sf.text << '\n';
-    out << "FP offset:\t" << sf.fpOffset << '\n';
-    out << "line:\t" << sf.line << '\n';
+    out << "text: " << sf.text << '\n';
+    out << "FP offset: " << sf.fpOffset << '\n';
+    out << "line: " << sf.line << '\n';
 
     return out;
 }
@@ -41,9 +47,9 @@ std::ostream& operator<<(std::ostream& out,const Label& l)
 {
     out << "LABEL:\n";
     out << std::setw(7) << std::setfill('-') << '\n';
-    out << "text:\t" << l.text << '\n';
-    out << "address:\t" << l.address << '\n';
-    out << "line:\t" << l.line << '\n';
+    out << "text: " << l.text << '\n';
+    out << "address: " << l.address << '\n';
+    out << "line: " << l.line << '\n';
 
     return out;
 }
@@ -52,11 +58,11 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
 {
     out << "PROCEDURE:\n";
     out << std::setw(11) << std::setfill('-') << '\n';
-    out << "text:\t" << p.text << '\n';
-    out << "line:\t" << p.line << '\n';
-    out << "address:\t" << p.address << '\n';
+    out << "text: " << p.text << '\n';
+    out <<"line: " << p.line << '\n';
+    out <<"address: " << p.address << '\n';
     //output return
-    out << "RETURN:\n";
+    out << "\nRETURN:\n";
     out << std::setw(8) << std::setfill('-') << '\n';
     if(p.retVal == ProcedureReturn::VOID) out << "VOID\n";
     else out << p.ret << '\n';
@@ -102,11 +108,10 @@ void SymbolTable::addProcedure(const Procedure& proc)
 
 std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
 {
-    out << "\nSYMBOL TABLE:\n";
-    out << std::setw(14) << std::setfill('-') << '\n';
     //output global variables
     out << "\nGLOBAL VARIABLES:\n";
     out << std::setw(18) << std::setfill('-') << '\n';
+
     std::vector<GlobalVariable>::const_iterator iv = st.globalVariables.begin();
     while(iv != st.globalVariables.end())
     {
@@ -127,9 +132,10 @@ std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
     return out;
 }
 
-void SymbolRepository::addIdentifier(const std::string& id)
+const U8 SymbolRepository::addIdentifier(const std::string& id)
 {
     stringTable.push_back(id);
+    return stringTable.size()-1;
 }
 
 const std::string& SymbolRepository::getIdentifier(const int index) const
@@ -138,13 +144,20 @@ const std::string& SymbolRepository::getIdentifier(const int index) const
     return stringTable.at(index);
 }
 
+SymbolTable& SymbolRepository::getSymbolTable()
+{
+    return symbolTable;
+}
+
 std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)
 {
-    //
-    // output the string vector contents.
-    //
-    out << "\nSTRING VECTOR:\n";
-    out << std::setw(15) << std::setfill('-') << '\n';
+    // output the symbol table contents.
+    out << "\nSYMBOL TABLE:\n";
+    out << std::setw(14) << std::setfill('-') << '\n';
+    out << sr.symbolTable << '\n';
+    // output the string table contents.
+    out << "\nSTRING TABLE:\n";
+    out << std::setw(14) << std::setfill('-') << '\n';
     std::vector<std::string>::const_iterator i = sr.stringTable.begin();
     while(i != sr.stringTable.end())
     {

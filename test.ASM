@@ -6,6 +6,9 @@
 .GD gvar3 10    # array with 10 elements
 .GD gvar4 15    # array with 15 elements
 
+.GQ gvar5
+.GQ gvar6 10
+
 #
 # myproc1 begin
 #

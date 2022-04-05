@@ -17,12 +17,7 @@ void Assembler::buildSymbolRepository()
         switch(line->type)
         {
             case DIRECTIVE: loadDirective(line); break;
-            case INSTRUCTION:
-            {
-                std::vector<Token>::const_iterator token_it = line->tokens.begin();
-                loadInstruction(token_it);
-            }
-            break;
+            case INSTRUCTION: loadInstruction(*line); break;
             default:
             {
                 std::string errorStr {"ASSEMBLER: not a valid instruction or directive (line: "};
@@ -56,7 +51,7 @@ void Assembler::loadDirective(std::vector<Line>::const_iterator& line_it)
         case GD:
         case GQ:
         {
-            loadGlobalVariable(token_it);
+            loadGlobalVariable(*line_it);
         }   
         break;
         default:
@@ -70,11 +65,51 @@ void Assembler::loadDirective(std::vector<Line>::const_iterator& line_it)
 }
 
 //
-// Load global variable from token iterator.
+// Load global variable from line (so we can see whether an array or not).
 //
-void Assembler::loadGlobalVariable(std::vector<Token>::const_iterator& line_it)
+void Assembler::loadGlobalVariable(const Line& line)
 {
+    GlobalVariable g;
+    g.line = line.pos; //save line in source code that this variable is declared
+
+    std::vector<Token>::const_iterator token_it = line.tokens.begin();
+
+    //set type of variable
+    switch(Assembler::ASMIdentifier_fromStr(token_it->str))
+    {
+        case GB: g.type = BYTE; break;
+        case GW: g.type = WORD; break;
+        case GD: g.type = DWORD; break;
+        case GQ: g.type = QWORD; break;
+        default:
+        {
+            throw std::runtime_error("ASSEMBLER: not a valid global variable directive"); //this should never happen
+        }
+    }
+
+    //move onto next token
+    ++token_it;
+    g.text = symbolRepository.addIdentifier(token_it->str); //save identifier to stringTable
+
+    //is this an array?
+    if(line.tokens.size() == 3)
+    {
+        //yes, is an array
+        ++token_it;
+        g.len = token_it->val.S8_val;
+    }
+    else g.len = 1; //not an array
+
+    //set total size in bytes
+    g.size = g.len * g.type;
+
+    //set offset
     //
+    // TODO
+    //
+    g.offset = 0;
+
+    symbolRepository.getSymbolTable().addGlobalVariable(g);
 }
 
 //
@@ -83,19 +118,49 @@ void Assembler::loadGlobalVariable(std::vector<Token>::const_iterator& line_it)
 //
 void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
 {
+    Procedure proc;
+    proc.line = line_it->pos; //save line in source file
+    proc.text = symbolRepository.addIdentifier(line_it->tokens.at(1).str);
+
+    //
+    // TOOD: procedure address
+    //
+
+    //get next line
+    ++line_it;
+
     bool firstLoad = true;
+    bool retLoad = false;
+
     while(line_it != tokenizedLines.end())
     {
-        std::vector<Token>::const_iterator token_it = line_it->tokens.begin();
-        switch(Assembler::ASMIdentifier_fromStr(token_it->str))
+        switch(Assembler::ASMIdentifier_fromStr(line_it->tokens.at(0).str))
         {
-            case PR: loadProcedureReturn(token_it); break;
-            case PA: loadProcedureArgument(token_it); break;
-            case PV: loadProcedureLocalVariable(token_it); break;
-            case PL: loadProcedureLabel(token_it); break;
+            case PR:
+            {
+                //if we have already loaded a procedure retval
+                //then this is an error as a procedure can only
+                //have one retval.
+                if(retLoad)
+                {
+                    std::string errorStr {"ASSEMBLER: line "};
+                    errorStr += std::to_string(line_it->pos);
+                    errorStr += " : cannot have more than one .PR directive.";
+                    throw std::runtime_error(errorStr);
+                }
+                retLoad = true;
+                loadProcedureReturn(proc,*line_it);
+            }
+            break;
+            case PA: loadProcedureArgument(proc,*line_it); break;
+            case PV: loadProcedureLocalVariable(proc,*line_it); break;
+            case PL: loadProcedureLabel(proc,*line_it); break;
             case PE:
             {
                 //end of procedure.
+                //save procedure
+                symbolRepository.getSymbolTable().addProcedure(proc);
+                //and return
                 return;
             }
             break;
@@ -108,18 +173,18 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
                 {
                     std::string errorStr {"ASSEMBLER: line "};
                     errorStr += std::to_string(line_it->pos);
-                    errorStr += " is not part of a valid procedure.";
+                    errorStr += " : is not part of a valid procedure.";
                     throw std::runtime_error(errorStr);
                 }
 
-                firstLoad = false;;
+                firstLoad = false;
             }
             break;
             default:
             {
-                //must have an instruction
+                //must be an instruction
                 //within the procedure.
-                loadInstruction(token_it);
+                loadInstruction(*line_it);
             }
             break;
         }
@@ -129,41 +194,73 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
 }
 
 //
-// Load procedure return from token iterator.
+// Load stack frame from given line.
 //
-void Assembler::loadProcedureReturn(std::vector<Token>::const_iterator& token_it)
+void Assembler::loadStackFrame(StackFrame& stackFrame,const Line& line)
 {
-    //
+    stackFrame.line = line.pos; //save line position in source code
+
+    std::vector<Token>::const_iterator token_it = line.tokens.begin();
+
+    //move onto next token
+    ++token_it;
+    stackFrame.text = symbolRepository.addIdentifier(token_it->str); //save identifier to string table
+
+    //move onto next token
+    ++token_it;
+    //and get the offset
+    stackFrame.fpOffset = token_it->val.S8_val;
 }
 
 //
-// Load procedure argument from token iterator.
+// Load procedure return from line.
 //
-void Assembler::loadProcedureArgument(std::vector<Token>::const_iterator& token_it)
+void Assembler::loadProcedureReturn(Procedure& proc,const Line& line)
 {
-    //
+    loadStackFrame(proc.ret,line);
 }
 
 //
-// Load procedure local variable from token iterator.
+// Load procedure argument from line.
 //
-void Assembler::loadProcedureLocalVariable(std::vector<Token>::const_iterator& token_it)
+void Assembler::loadProcedureArgument(Procedure& proc,const Line& line)
 {
-    //
+    StackFrame arg;
+    loadStackFrame(arg,line);
+    proc.args.push_back(arg);
 }
 
 //
-// Load procedure label from token iterator.
+// Load procedure local variable from line.
 //
-void Assembler::loadProcedureLabel(std::vector<Token>::const_iterator& token_it)
+void Assembler::loadProcedureLocalVariable(Procedure& proc,const Line& line)
 {
-    //
+    StackFrame local;
+    loadStackFrame(local,line);
+    proc.locals.push_back(local);
 }
 
 //
-// Load instruction from token iterator.
+// Load procedure label from line.
 //
-void Assembler::loadInstruction(std::vector<Token>::const_iterator& token_it)
+void Assembler::loadProcedureLabel(Procedure& proc,const Line& line)
+{
+    Label label;
+    label.line = line.pos;
+    label.text = symbolRepository.addIdentifier(line.tokens.at(1).str); //save identifier to string table
+
+    //
+    // TODO : address
+    //
+    label.address = 0;
+
+    proc.labels.push_back(label);
+}
+
+//
+// Load instruction from line.
+//
+void Assembler::loadInstruction(const Line& line)
 {
     //
 }

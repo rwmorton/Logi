@@ -177,6 +177,10 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
         if(j != asmb.tokenizedLines.end()) out << '\n';
     }
 
+    out << "\nSYMBOL REPOSITORY:\n";
+    out << std::setw(19) << std::setfill('-') << '\n';
+    out << asmb.symbolRepository << '\n';
+
     return out;
 }
 
