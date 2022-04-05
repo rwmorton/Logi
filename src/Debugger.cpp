@@ -19,25 +19,7 @@ Debugger::Debugger(VirtualMachine& vm) : vm{vm}
     stream = Stream::getInstance();
 }
 
-Debugger::~Debugger()
-{
-    //free all global variables
-    if(data.globalVariables != nullptr)
-    {
-        delete[] data.globalVariables;
-    }
-
-    //free all procedures and associated
-    //ret, arg, local and labels
-    if(data.procedures != nullptr)
-    {
-        if(data.procedures->ret != nullptr) delete data.procedures->ret;
-        if(data.procedures->args != nullptr) delete[] data.procedures->args;
-        if(data.procedures->locals != nullptr) delete[] data.procedures->locals;
-        if(data.procedures->labels != nullptr) delete[] data.procedures->labels;
-        delete[] data.procedures;
-    }
-}
+Debugger::~Debugger() {}
 
 void Debugger::read()
 {

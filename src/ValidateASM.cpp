@@ -4,11 +4,26 @@
 #include "Registers.h"
 #include "InstructionSet.h"
 
+//std includes
+#include <sstream>
+
 #include <iostream>
 using namespace std;
 
 namespace Logi
 {
+
+//
+// Util for checking whether a string is a valid numeric type.
+//
+template<typename T>
+const bool isNumeric(const std::string& s)
+{
+    std::istringstream iss(s);
+    T dummy;
+    iss >> std::skipws >> dummy;
+    return (iss && iss.eof());
+}
 
 ValidateASM::ValidateASM(Line& line,std::vector<Token>::iterator& token_it) : line{line}, token_it{token_it} {}
 
@@ -34,7 +49,10 @@ ValidateASM& ValidateASM::count(const int expectedCount)
 {
     if(expectedCount != line.tokens.size())
     {
-        throw std::runtime_error("ASSEMBLER: invalid number of tokens on line.");
+        std::string errorStr {"ASSEMBLER: invalid number of tokens on line: "};
+        errorStr += std::to_string(line.pos);
+        errorStr += '.';
+        throw std::runtime_error(errorStr);
     }
 
     return *this;
@@ -47,7 +65,10 @@ const unsigned int ValidateASM::count(const int start,const int end)
 {
     if(line.tokens.size() < start || line.tokens.size() > end)
     {
-        throw std::runtime_error("ASSEMBLER: invalid number of tokens on line.");
+        std::string errorStr {"ASSEMBLER: invalid number of tokens on line: "};
+        errorStr += std::to_string(line.pos);
+        errorStr += '.';
+        throw std::runtime_error(errorStr);
     }
     
     return line.tokens.size();
@@ -79,11 +100,31 @@ ValidateASM& ValidateASM::assign(const TokenType type)
         break;
         case INTEGER_CONSTANT:
         {
+            if(!isNumeric<S8>(token_it->str))
+            {
+                std::string errorStr {"VALIDATE_ASM: cast to S8 from ("};
+                errorStr += token_it->str;
+                errorStr += ") failed, line: ";
+                errorStr += std::to_string(line.pos);
+                errorStr += '.';
+                throw std::runtime_error(errorStr);
+            }
+
             token_it->val.S8_val = std::stol(token_it->str);
         }
         break;
         case FLOAT_CONSTANT:
         {
+            if(!isNumeric<F8>(token_it->str))
+            {
+                std::string errorStr {"VALIDATE_ASM: cast to S8 from ("};
+                errorStr += token_it->str;
+                errorStr += ") failed, line: ";
+                errorStr += std::to_string(line.pos);
+                errorStr += '.';
+                throw std::runtime_error(errorStr);
+            }
+            
             token_it->val.F8_val = std::stod(token_it->str);
         }
     }
@@ -102,7 +143,9 @@ ValidateASM& ValidateASM::R(unsigned int count)
         {
             std::string errorStr {"ASSEMBLER: not a valid integer register ("};
             errorStr += str;
-            errorStr += ").";
+            errorStr += "), line: ";
+            errorStr += std::to_string(line.pos);
+            errorStr += '.';
             throw std::runtime_error(errorStr);
         }
 
@@ -123,7 +166,9 @@ ValidateASM& ValidateASM::RF(unsigned int count)
         {
             std::string errorStr {"ASSEMBLER: not a valid float register ("};
             errorStr += str;
-            errorStr += ").";
+            errorStr += "), line: ";
+            errorStr += std::to_string(line.pos);
+            errorStr += '.';
             throw std::runtime_error(errorStr);
         }
 
@@ -144,7 +189,9 @@ ValidateASM& ValidateASM::RD(unsigned int count)
         {
             std::string errorStr {"ASSEMBLER: not a valid double register ("};
             errorStr += str;
-            errorStr += ").";
+            errorStr += "), line: ";
+            errorStr += std::to_string(line.pos);
+            errorStr += '.';
             throw std::runtime_error(errorStr);
         }
 

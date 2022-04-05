@@ -122,81 +122,81 @@ void Bytecode::loadDebugger(std::ifstream& in)
     //if there are global variables
     if(numGlobalVariables > 0)
     {
-        //allocate memory for global variable records
-        debugData->globalVariables = new GlobalVariable[numGlobalVariables]{};
-
-        //read in global variables
-        GlobalVariable* g {nullptr};
         for(int i=0; i<numGlobalVariables; i++)
         {
-            g = &debugData->globalVariables[i];
-            in.read((char*)&g->text,8);
-            in.read((char*)&g->type,1);
-            in.read((char*)&g->len,8);
-            in.read((char*)&g->size,8);
-            in.read((char*)&g->offset,8);
-            in.read((char*)&g->line,4);
+            GlobalVariable g;
+            in.read((char*)&g.text,8);
+            in.read((char*)&g.type,1);
+            in.read((char*)&g.len,8);
+            in.read((char*)&g.size,8);
+            in.read((char*)&g.offset,8);
+            in.read((char*)&g.line,4);
+            debugData->globalVariables.push_back(g);
         }
     }
 
     //if there are procedures
     if(numProcedures > 0)
     {
-        //allocate memory for procedure records
-        debugData->procedures = new Procedure[numProcedures];
-
-        //read in procedures
-        Procedure* p {nullptr};
         for(int i=0; i<numProcedures; i++)
         {
-            p = &debugData->procedures[i];
-            in.read((char*)&p->text,8);
-            in.read((char*)&p->address,8);
-            in.read((char*)&p->line,4);
-            in.read((char*)&p->nRet,1);
-            in.read((char*)&p->nArgs,1);
-            in.read((char*)&p->nLocals,1);
-            in.read((char*)&p->nLabels,2);
+            Procedure p;
+            in.read((char*)&p.text,8);
+            in.read((char*)&p.address,8);
+            in.read((char*)&p.line,4);
+
+            int nRet{0},nArgs{0},nLocals{0},nLabels{0};
+            in.read((char*)&nRet,1);
+            in.read((char*)&nArgs,1);
+            in.read((char*)&nLocals,1);
+            in.read((char*)&nLabels,2);
 
             //read ret
-            if(p->nRet)
+            if(nRet)
             {
-                p->ret = new StackFrame{};
-                readStackFrame(in,p->ret);
+                p.retVal = ProcedureReturn::VALUE; //does return a value
+                readStackFrame(in,&p.ret);
+            }
+            else
+            {
+                p.retVal = ProcedureReturn::VOID;
             }
             
-            //if args, allocate and read in args
-            if(p->nArgs > 0) p->args = new StackFrame[p->nArgs]{};
-            for(int i=0; i<p->nArgs; i++)
+            //if args, read in args and push onto the args vector
+            for(int i=0; i<nArgs; i++)
             {
-                readStackFrame(in,&p->args[i]);
+                StackFrame sf;
+                readStackFrame(in,&sf);
+                p.args.push_back(sf);
             }
 
-            //if locals, allocate and read in locals
-            if(p->nLocals > 0) p->locals = new StackFrame[p->nLocals]{};
-            for(int i=0; i<p->nLocals; i++)
+            //if locals, read in locals and push onto the locals vector
+            for(int i=0; i<nLocals; i++)
             {
-                readStackFrame(in,&p->locals[i]);
+                StackFrame sf;
+                readStackFrame(in,&sf);
+                p.locals.push_back(sf);
             }
 
-            //if labels, allocate and read in labels
-            if(p->nLabels > 0) p->labels = new Label[p->nLabels]{};
-            for(int i=0; i<p->nLabels; i++)
+            //if labels, read in labels and push onto the labels vector
+            for(int i=0; i<nLabels; i++)
             {
-                in.read((char*)&p->labels[i].text,8);
-                in.read((char*)&p->labels[i].address,8);
-                in.read((char*)&p->labels[i].text,4);
+                Label label;
+                in.read((char*)&label.text,8);
+                in.read((char*)&label.address,8);
+                in.read((char*)&label.text,4);
+
+                p.labels.push_back(label);
             }
+
+            debugData->procedures.push_back(p); //save procedure
         }
     }
 
-    //allocate memory for string table
-    //and read it in.
-    debugData->stringTable = new U1[stringTableSize]{};
-    U1 byte;
+    //read in string table
     for(int i=0; i<stringTableSize; i++)
     {
-        *(&debugData->stringTable[i]) = in.get();
+        debugData->stringTable.push_back(in.get());
     }
 }
 

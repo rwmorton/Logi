@@ -24,7 +24,7 @@ void Assembler::identifyTokens()
         //and check it against the possible opcodes
         match = checkOpCodes(validator);
 
-        //check against possible assembler identifiers
+        //if no match check against possible assembler identifiers
         if(!match) checkASMIds(validator);
 
         ++tokenizedLines_it;

@@ -16,9 +16,9 @@ namespace Logi
 struct DebugData
 {
     struct Contents contents;
-    struct GlobalVariable* globalVariables {nullptr};
-    struct Procedure* procedures {nullptr};
-    U1* stringTable;
+    std::vector<GlobalVariable> globalVariables;
+    std::vector<Procedure> procedures;
+    std::vector<U1> stringTable;
 };
 
 class VirtualMachine;

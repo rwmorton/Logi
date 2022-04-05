@@ -4,6 +4,10 @@
 //Logi includes
 #include "Types.h"
 
+//std includes
+#include <vector>
+#include <string>
+
 namespace Logi
 {
 
@@ -17,6 +21,14 @@ struct Contents
     U4 numProcedures;        //number of procedure records in string table
 };
 
+enum GVType
+{
+    BYTE = 0,
+    WORD,
+    DWORD,
+    QWORD
+};
+
 //
 // information in Contents is used to allocate an
 // array of GlobalVarRec and ProcRec structures
@@ -24,11 +36,14 @@ struct Contents
 struct GlobalVariable
 {
     U8 text;        //index to stringTable of where identifier begins
-    U1 type;        //SZ_BYTE, SZ_WORD, SZ_DWORD, SZ_QWORD
+    GVType type;    //BYTE, WORD, DWORD or QWORD
     U8 len;         //number of elements if an array
     U8 size;        //total byte size
     S8 offset;      //offset below $TOP, address(g) = $TOP - offset
     U4 line;        //line in source code containing declaration
+    //stream output
+    friend std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv);
+    static const std::vector<std::string> GVTypeStrings;
 };
 
 struct StackFrame
@@ -36,6 +51,8 @@ struct StackFrame
     U8 text;            //index to stringTable of where identifier begins
     S4 fpOffset;        //+n or -n from $FP
     U4 line;            //line in source code containing declaration
+    //stream output
+    friend std::ostream& operator<<(std::ostream& out,const StackFrame& sf);
 };
 
 struct Label
@@ -43,21 +60,60 @@ struct Label
     U8 text;            //index to stringTable of where identifier begins
     U8 address;         //address of label
     U4 line;            //line in source code containing declaration
+    //stream output
+    friend std::ostream& operator<<(std::ostream& out,const Label& l);
+};
+
+enum ProcedureReturn
+{
+    VOID = 0,
+    VALUE
 };
 
 struct Procedure
 {
-    U8 text;                //index to stringTable of where identifier begins
-    U8 address;             //address of procedure
-    U4 line;                //line in source code containing declaration
-    U1 nRet;                //0 = void return, 1 = returns a value
-    U1 nArgs;               //number of arguments
-    U1 nLocals;             //number of local variables
-    U2 nLabels;             //number of labels
-    StackFrame* ret {nullptr};
-    StackFrame* args {nullptr};
-    StackFrame* locals {nullptr};
-    Label* labels;
+    U8 text;                            //index to stringTable of where identifier begins
+    U8 address;                         //address of procedure
+    U4 line;                            //line in source code containing declaration
+    ProcedureReturn retVal;             //VOID or VALUE
+    StackFrame ret;                     //return (if any)
+    std::vector<StackFrame> args;       //arguments
+    std::vector<StackFrame> locals;     //local variables
+    std::vector<Label> labels;          //labels
+    friend std::ostream& operator<<(std::ostream& out,const Procedure& p);
+};
+
+//
+// Maintains a list of global variables and procedures.
+//
+class SymbolTable
+{
+    public:
+        //add global variable
+        void addGlobalVariable(const GlobalVariable& gv);
+        //add procedure
+        void addProcedure(const Procedure& proc);
+        //stream output
+        friend std::ostream& operator<<(std::ostream& out,const SymbolTable& st);
+    private:
+        std::vector<GlobalVariable> globalVariables;
+        std::vector<Procedure> procedures;
+};
+
+//
+// stringVector is used to store identifier names
+// symbolTable stores all the global variables
+// and procedures used by the program.
+//
+class SymbolRepository
+{
+    public:
+        //add identifier to the string vector
+        void addIdentifier(const std::string& id);
+        friend std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr);
+    private:
+        std::vector<std::string> stringVector;
+        SymbolTable symbolTable;
 };
 
 } //namespace Logi
