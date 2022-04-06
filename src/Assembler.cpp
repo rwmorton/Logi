@@ -150,7 +150,7 @@ void Assembler::load(int argc,char* argv[])
     //resolve symbol addresses
     resolveAddresses();
 
-    //and finally build the bytecode
+    //finally, build the bytecode
     buildBytecode();
 }
 
@@ -281,6 +281,49 @@ void Assembler::tokenizePreProcess(Line& line,const std::string& rawLine)
     }
 
     line.tokens.push_back({tokenStr,line}); //save final token
+}
+
+//
+// Save bytecode executable.
+//
+void Assembler::save()
+{
+    if(!outputFile.length()) throw std::runtime_error("ASSEMBLER: no output file to save the bytecode executable to.");
+
+    std::ofstream out(outputFile,std::ios::out | std::ios::binary);
+    if(!out.is_open())
+    {
+        std::string errorStr = {"ASSEMBLER: could not open file ("};
+        errorStr += outputFile;
+        errorStr += ").";
+        throw std::runtime_error(errorStr);
+    }
+
+    // write the header
+    //
+    // TODO
+    //
+
+    // write the symbol table
+    //
+    // TODO
+    //
+
+    // write the string table
+    //
+    // TODO
+    //
+
+    //write the bytecode
+    std::vector<U1>::const_iterator i = bytecodeLoader.getBytecode().begin();
+    while(i != bytecodeLoader.getBytecode().end())
+    {
+        out.put(*i); //write byte
+        ++i;
+    }
+
+    //all done, close file
+    out.close();
 }
 
 const ASMIdentifier Assembler::FIRST_ASM_ID {ASMIdentifier::GB};

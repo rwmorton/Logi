@@ -70,7 +70,7 @@ target_link_libraries(main store_obj)
 target_link_libraries(main instruction_obj)
 # assembler
 target_link_libraries(main identifyTokens_obj)
-target_link_libraries(main buildSymbolRepository_obj)
+target_link_libraries(main loadASM_obj)
 target_link_libraries(main ValidateASM_obj)
 target_link_libraries(main SymbolRepository_obj)
 target_link_libraries(main BytecodeFromASM_obj)
