@@ -167,6 +167,11 @@ class Assembler : public LoadFile
         void checkASMIds(ValidateASM& validator);
         //step 4
         void buildSymbolRepository();
+        //set 5
+        void resolveAddresses();
+        //step 6
+        void buildBytecode();
+        //
         void loadDirective(std::vector<Line>::const_iterator& line_it);
         void loadGlobalVariable(const Line& line);
         void loadProcedure(std::vector<Line>::const_iterator& line_it);

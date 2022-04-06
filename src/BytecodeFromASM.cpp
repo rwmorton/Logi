@@ -2,24 +2,36 @@
 #include "BytecodeFromASM.h"
 #include "Assembler.h"
 
+//std includes
+#include <map>
+
+//TEMP
+#include <iostream>
+using std::cout;
+using std::endl;
+
 namespace Logi
 {
 
-BytecodeFromASM::BytecodeFromASM() : currentByte{0} {}
+BytecodeFromASM::BytecodeFromASM() : currentByte{0}, symbolRepository{nullptr} {}
 
 //
 // initialize
 //
-void BytecodeFromASM::init()
+void BytecodeFromASM::init(SymbolRepository* symbolRepository,const bool skip)
 {
-    currentByte = 0;
+    currentByte = 0;    
+    this->symbolRepository = symbolRepository;
+    this->skip = skip;
 }
 
 //
-// begin at given line.
+// load bytecode at given line.
 //
-void BytecodeFromASM::begin(const Line& line)
+void BytecodeFromASM::load(const Line& line)
 {
+    if(symbolRepository == nullptr) throw std::runtime_error("BYTECODE_FROM_ASM: null pointer to SymbolRepository.");
+
     token_it = line.token_iter();
 
     switch(InstructionSet::OpCode_fromStr(token_it->str))
@@ -56,13 +68,12 @@ void BytecodeFromASM::begin(const Line& line)
         break;
         case LAD: //LAD $R1, address = BBQ
         {
-            throw std::runtime_error("LEFT OFF HERE...");
             I().R().A();
         }
         break;
         case LAI: //LAI $R1,$R2,qword,  BBBQ
         {
-            I().R(2).Q();
+            I().R(2).A();
         }
         break;
         case LB: // LB $R1,$R2,     BBB
@@ -235,7 +246,8 @@ const U8 BytecodeFromASM::getCurrentByte() const
 //
 BytecodeFromASM& BytecodeFromASM::I()
 {
-    bytecode.push_back(InstructionSet::OpCode_fromStr(token_it->str));
+    if(!skip) bytecode.push_back(InstructionSet::OpCode_fromStr(token_it->str));
+
     ++token_it;
     currentByte++;
 
@@ -247,16 +259,39 @@ BytecodeFromASM& BytecodeFromASM::I()
 //
 BytecodeFromASM& BytecodeFromASM::A()
 {
-    U1 addr[8];
-    Transform::qwordToBytecode(token_it->val.S8_val,&addr[0]);
-    
-    for(int i=0; i<8; i++)
+    //as we cannot be guaranteed to get the correct
+    //addresses we save an id/byte pair for later
+    //assignment once all the assembler has been loaded.
+
+    //first address resolution stage
+    if(skip)
     {
-        bytecode.push_back(addr[i]);
-        currentByte++;
+        //first save the string label of this addressable
+        //as well as the byte it begins on.
+        addressesToResolve.insert(std::pair<std::string,U8>(token_it->str,currentByte));
+
+        cout << "adding (" << token_it->str << ") to the list of addresses to resolve at (" << currentByte << ")" << endl;
+
+        currentByte += 8;
+    }
+    else //save bytecode
+    {
+        //get address of identifier
+        const int index = symbolRepository->getIdentifier(token_it->str);
+        U8 addr = symbolRepository->getSymbolTable().getAddressable(index)->address;
+
+        cout << "found identifier (" << token_it->str << ") with address (" << addr << ")" << endl;
+
+        U1 bytes[8];
+        Transform::qwordToBytecode(addr,&bytes[0]);
+        for(int i=0; i<8; i++)
+        {
+            bytecode.push_back(bytes[i]);
+            currentByte++;
+        }
     }
 
-    token_it++; //next token
+    ++token_it; //next token
 
     return *this;
 }
@@ -266,9 +301,13 @@ BytecodeFromASM& BytecodeFromASM::A()
 //
 BytecodeFromASM& BytecodeFromASM::B()
 {
-    U1 byte = static_cast<U1>(token_it->val.S8_val);
-    bytecode.push_back(byte);
-    token_it++; //next token
+    if(!skip)
+    {
+        U1 byte = static_cast<U1>(token_it->val.S8_val);
+        bytecode.push_back(byte);
+    }
+
+    ++token_it; //next token
     currentByte++;
 
     return *this;
@@ -279,15 +318,23 @@ BytecodeFromASM& BytecodeFromASM::B()
 //
 BytecodeFromASM& BytecodeFromASM::W()
 {
-    U2 word = static_cast<U2>(token_it->val.S8_val);
-    U1 bytes[2];
-    Transform::wordToBytecode(word,&bytes[0]);
-    for(int i=0; i<2; i++)
+    if(!skip)
     {
-        bytecode.push_back(bytes[i]);
-        currentByte++;
+        U2 word = static_cast<U2>(token_it->val.S8_val);
+        U1 bytes[2];
+        Transform::wordToBytecode(word,&bytes[0]);
+        for(int i=0; i<2; i++)
+        {
+            bytecode.push_back(bytes[i]);
+            currentByte++;
+        }
     }
-    token_it++; //next token
+    else
+    {
+        currentByte += 2;
+    }
+
+    ++token_it; //next token
 
     return *this;
 }
@@ -297,15 +344,23 @@ BytecodeFromASM& BytecodeFromASM::W()
 //
 BytecodeFromASM& BytecodeFromASM::D()
 {
-    U4 dword = static_cast<U4>(token_it->val.S8_val);
-    U1 bytes[4];
-    Transform::dwordToBytecode(dword,&bytes[0]);
-    for(int i=0; i<4; i++)
+    if(!skip)
     {
-        bytecode.push_back(bytes[i]);
-        currentByte++;
+        U4 dword = static_cast<U4>(token_it->val.S8_val);
+        U1 bytes[4];
+        Transform::dwordToBytecode(dword,&bytes[0]);
+        for(int i=0; i<4; i++)
+        {
+            bytecode.push_back(bytes[i]);
+            currentByte++;
+        }
     }
-    token_it++; //next token
+    else
+    {
+        currentByte += 4;
+    }
+
+    ++token_it; //next token
 
     return *this;
 }
@@ -315,15 +370,23 @@ BytecodeFromASM& BytecodeFromASM::D()
 //
 BytecodeFromASM& BytecodeFromASM::Q()
 {
-    U8 qword = static_cast<U8>(token_it->val.S8_val);
-    U1 bytes[8];
-    Transform::qwordToBytecode(qword,&bytes[0]);
-    for(int i=0; i<8; i++)
+    if(!skip)
     {
-        bytecode.push_back(bytes[i]);
-        currentByte++;
+        U8 qword = static_cast<U8>(token_it->val.S8_val);
+        U1 bytes[8];
+        Transform::qwordToBytecode(qword,&bytes[0]);
+        for(int i=0; i<8; i++)
+        {
+            bytecode.push_back(bytes[i]);
+            currentByte++;
+        }
     }
-    token_it++; //next token
+    else
+    {
+        currentByte += 8;
+    }
+
+    ++token_it; //next token
 
     return *this;
 }
@@ -333,15 +396,23 @@ BytecodeFromASM& BytecodeFromASM::Q()
 //
 BytecodeFromASM& BytecodeFromASM::F1()
 {
-    F4 float_ = static_cast<F4>(token_it->val.F8_val);
-    U1 bytes[4];
-    Transform::floatToBytecode(float_,&bytes[0]);
-    for(int i=0; i<4; i++)
+    if(!skip)
     {
-        bytecode.push_back(bytes[i]);
-        currentByte++;
+        F4 float_ = static_cast<F4>(token_it->val.F8_val);
+        U1 bytes[4];
+        Transform::floatToBytecode(float_,&bytes[0]);
+        for(int i=0; i<4; i++)
+        {
+            bytecode.push_back(bytes[i]);
+            currentByte++;
+        }
     }
-    token_it++; //next token
+    else
+    {
+        currentByte += 4;
+    }
+
+    ++token_it; //next token
 
     return *this;
 }
@@ -351,15 +422,23 @@ BytecodeFromASM& BytecodeFromASM::F1()
 //
 BytecodeFromASM& BytecodeFromASM::F2()
 {
-    F8 double_ = token_it->val.F8_val;
-    U1 bytes[8];
-    Transform::doubleToBytecode(double_,&bytes[0]);
-    for(int i=0; i<8; i++)
+    if(!skip)
     {
-        bytecode.push_back(bytes[i]);
-        currentByte++;
+        F8 double_ = token_it->val.F8_val;
+        U1 bytes[8];
+        Transform::doubleToBytecode(double_,&bytes[0]);
+        for(int i=0; i<8; i++)
+        {
+            bytecode.push_back(bytes[i]);
+            currentByte++;
+        }
     }
-    token_it++; //next token
+    else
+    {
+        currentByte += 8;
+    }
+
+    ++token_it; //next token
 
     return *this;
 }
@@ -369,16 +448,23 @@ BytecodeFromASM& BytecodeFromASM::F2()
 //
 BytecodeFromASM& BytecodeFromASM::C()
 {
-    U1 qword_bytes[8];
-    Transform::qwordToBytecode(token_it->val.S8_val,&qword_bytes[0]);
-    
-    for(int i=0; i<8; i++)
+    if(!skip)
     {
-        bytecode.push_back(qword_bytes[i]);
-        currentByte++;
+        U1 qword_bytes[8];
+        Transform::qwordToBytecode(token_it->val.S8_val,&qword_bytes[0]);
+        
+        for(int i=0; i<8; i++)
+        {
+            bytecode.push_back(qword_bytes[i]);
+            currentByte++;
+        }
+    }
+    else
+    {
+        currentByte += 8;
     }
 
-    token_it++; //next token
+    ++token_it; //next token
 
     return *this;
 }
@@ -390,7 +476,7 @@ BytecodeFromASM& BytecodeFromASM::R(unsigned int count)
 {
     for(int i=0; i<count; i++)
     {
-        bytecode.push_back(Registers::R_fromStr(token_it->str));
+        if(!skip) bytecode.push_back(Registers::R_fromStr(token_it->str));
         ++token_it;
         currentByte++;
     }
@@ -405,7 +491,7 @@ BytecodeFromASM& BytecodeFromASM::RF(unsigned int count)
 {
     for(int i=0; i<count; i++)
     {
-        bytecode.push_back(Registers::RF_fromStr(token_it->str));
+        if(!skip) bytecode.push_back(Registers::RF_fromStr(token_it->str));
         ++token_it;
         currentByte++;
     }
@@ -420,12 +506,28 @@ BytecodeFromASM& BytecodeFromASM::RD(unsigned int count)
 {
     for(int i=0; i<count; i++)
     {
-        bytecode.push_back(Registers::RD_fromStr(token_it->str));
+        if(!skip) bytecode.push_back(Registers::RD_fromStr(token_it->str));
         ++token_it;
         currentByte++;
     }
 
     return *this;
+}
+
+//
+// Get the addresses to resolve.
+//
+std::map<std::string,U8>& BytecodeFromASM::getAddressesToResolve()
+{
+    return addressesToResolve;
+}
+
+//
+// Get the bytecode vector.
+//
+std::vector<U1>& BytecodeFromASM::getBytecode()
+{
+    return bytecode;
 }
 
 //

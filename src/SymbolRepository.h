@@ -7,6 +7,7 @@
 //std includes
 #include <vector>
 #include <string>
+#include <map>
 
 namespace Logi
 {
@@ -30,10 +31,21 @@ enum GVType
 };
 
 //
+// Allows us to resolve addresses to global variables, procedures and labels
+// once the initial assembly has been loaded and bytecode is being generated.
+//
+struct Addressable
+{
+    virtual ~Addressable() {}
+    U8 address;
+    U8 atByte;      //which byte does this addressable begin at?
+};
+
+//
 // information in Contents is used to allocate an
 // array of GlobalVarRec and ProcRec structures
 //
-struct GlobalVariable
+struct GlobalVariable : public Addressable
 {
     U8 text;        //index to stringTable of where identifier begins
     GVType type;    //BYTE, WORD, DWORD or QWORD
@@ -70,10 +82,10 @@ When this labels identifier is encountered elsewhere in the
 source file the assembler will replace the identifier with
 the address associated with the label (e.g. address of LQI).
 */
-struct Label
+struct Label : public Addressable
 {
     U8 text;            //index to stringTable of where identifier begins
-    U8 address;         //address of label
+    //U8 address;         //address of label
     U4 line;            //line in source code containing declaration
     //stream output
     friend std::ostream& operator<<(std::ostream& out,const Label& l);
@@ -107,10 +119,10 @@ this label is encountered as an operand in an
 instruction the assembler will replace it with the
 corresponding address.
 */
-struct Procedure
+struct Procedure : public Addressable
 {
     U8 text;                            //index to stringTable of where identifier begins
-    U8 address;                         //address of procedure
+    //U8 address;                         //address of procedure
     U4 line;                            //line in source code containing declaration
     ProcedureReturn retVal;             //VOID or VALUE
     StackFrame ret;                     //return (if any)
@@ -130,11 +142,20 @@ class SymbolTable
         void addGlobalVariable(const GlobalVariable& gv);
         //add procedure
         void addProcedure(const Procedure& proc);
+        //add label that is not a procedure
+        void addLabel(const Label& label);
+        //get addressable at index
+        Addressable* getAddressable(const int index)
+        {
+            return addressablesMap.find(index)->second;
+        }
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const SymbolTable& st);
     private:
         std::vector<GlobalVariable> globalVariables;
         std::vector<Procedure> procedures;
+        std::vector<Label> labels; //that are not procedures
+        std::map<int,Addressable*> addressablesMap; //key is index in string table
 };
 
 //
@@ -148,11 +169,17 @@ class SymbolRepository
         //add identifier to the string vector
         const U8 addIdentifier(const std::string& id);
         const std::string& getIdentifier(const int index) const;
+        const int getIdentifier(const std::string& id) const;
+        //add label address to the symbol map
+        void addLabelAddr(const std::string& id,const U8 addr);
+        const U8 getAddress(const std::string& id) const;
         SymbolTable& getSymbolTable();
+        const int indexInStringTable(const std::string& id) const;
         friend std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr);
     private:
         std::vector<std::string> stringTable;
         SymbolTable symbolTable;
+        std::map<std::string,U8> symbolMap;
 };
 
 } //namespace Logi

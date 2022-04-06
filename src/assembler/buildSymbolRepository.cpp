@@ -1,6 +1,10 @@
 //Logi includes
 #include "../Assembler.h"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 namespace Logi
 {
 
@@ -12,7 +16,8 @@ void Assembler::buildSymbolRepository()
 {
     std::vector<Line>::const_iterator line = tokenizedLines.begin();
     
-    bytecodeLoader.init(); //initialize bytecode loader
+    //initialize bytecode loader (skip loading bytecode)
+    bytecodeLoader.init(&symbolRepository,true);
 
     while(line != tokenizedLines.end())
     {
@@ -31,6 +36,63 @@ void Assembler::buildSymbolRepository()
 
         ++line;
     }
+}
+
+//
+// Resolve all addresses from the symbol repository stage.
+//
+void Assembler::resolveAddresses()
+{
+    //resolve addresses
+    std::map<std::string,U8>::const_iterator i = bytecodeLoader.getAddressesToResolve().begin();
+    while(i != bytecodeLoader.getAddressesToResolve().end())
+    {
+        //find address of this identifier
+        U8 addr = symbolRepository.getAddress(i->first);
+
+        //get the addressable itself (an identifier)
+        const int index = symbolRepository.indexInStringTable(i->first);
+        Addressable* addressable = symbolRepository.getSymbolTable().getAddressable(index);
+
+        addressable->address = addr; //set to correct address
+
+        cout << "resolving address of identifier (" << i->first << ") to the correct address (" << addr << ") at byte (" << i->second << ")" << endl;
+
+        ++i;
+    }
+}
+
+//
+// Now the  symbol repository has been built
+// generate the bytecode from assembler.
+//
+void Assembler::buildBytecode()
+{
+    std::vector<Line>::const_iterator line = tokenizedLines.begin();
+
+    //initialize bytecode loader, this time load bytecode.
+    bytecodeLoader.init(&symbolRepository,false);
+
+    while(line != tokenizedLines.end())
+    {
+        switch(line->type)
+        {
+            case DIRECTIVE: break;
+            case INSTRUCTION: loadInstruction(*line); break;
+            default:
+            {
+                std::string errorStr {"ASSEMBLER: not a valid instruction or directive (line: "};
+                errorStr += std::to_string(line->pos);
+                errorStr += ").";
+                throw std::runtime_error(errorStr);
+            }
+        }
+
+        ++line;
+    }
+
+    //no further need for the vector of tokenized lines
+    tokenizedLines.clear();
 }
 
 //
@@ -91,7 +153,8 @@ void Assembler::loadGlobalVariable(const Line& line)
 
     //move onto next token
     ++token_it;
-    g.text = symbolRepository.addIdentifier(token_it->str); //save identifier to stringTable
+    std::string gvStr = token_it->str;
+    g.text = symbolRepository.addIdentifier(gvStr); //save identifier to stringTable
 
     //is this an array?
     if(line.tokens.size() == 3)
@@ -122,7 +185,9 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
 {
     Procedure proc;
     proc.line = line_it->pos; //save line in source file
-    proc.text = symbolRepository.addIdentifier(line_it->tokens.at(1).str);
+    std::string procStr = line_it->tokens.at(1).str;
+    proc.text = symbolRepository.addIdentifier(procStr);
+    U8 procByteBegin = bytecodeLoader.getCurrentByte();
 
     //get next line
     ++line_it;
@@ -191,6 +256,10 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
                     //of the procedure.
                     proc.address = bytecodeLoader.getCurrentByte();
                     firstInst = false;
+
+                    //save to the symbol map
+                    //note: will always resolve to the correct address
+                    symbolRepository.addLabelAddr(procStr,proc.address);
                 }
 
                 loadInstruction(*line_it);
@@ -250,19 +319,23 @@ void Assembler::loadProcedureLocalVariable(Procedure& proc,const Line& line)
 }
 
 //
-// Load procedure label from line.
+// Load procedure label from line iterator (so we can get access to next instruction).
 //
 void Assembler::loadProcedureLabel(Procedure& proc,const Line& line)
 {
     Label label;
     label.line = line.pos;
-    label.text = symbolRepository.addIdentifier(line.tokens.at(1).str); //save identifier to string table
+    std::string labelStr = line.tokens.at(1).str;
+    label.text = symbolRepository.addIdentifier(labelStr); //save identifier to string table
 
-    //
-    // TODO : address
-    //
-    label.address = 0;
+    //label address is the instruction immediately after this line
+    label.address = bytecodeLoader.getCurrentByte();
 
+    //add to the symbol map
+    symbolRepository.addLabelAddr(line.tokens.at(1).str,label.address);
+
+    //save label
+    symbolRepository.getSymbolTable().addLabel(label);
     proc.labels.push_back(label);
 }
 
@@ -271,7 +344,7 @@ void Assembler::loadProcedureLabel(Procedure& proc,const Line& line)
 //
 void Assembler::loadInstruction(const Line& line)
 {
-    bytecodeLoader.begin(line);
+    bytecodeLoader.load(line);
 }
 
 } //namespace Logi

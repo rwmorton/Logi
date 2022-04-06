@@ -3,6 +3,12 @@
 
 //std includes
 #include <iomanip>
+#include <map>
+
+//TEMP
+#include <iostream>
+using std::cout;
+using std::endl;
 
 namespace Logi
 {
@@ -98,12 +104,23 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
 
 void SymbolTable::addGlobalVariable(const GlobalVariable& gv)
 {
+    int index = globalVariables.size();
     globalVariables.push_back(gv);
+    addressablesMap.insert(std::pair<int,Addressable*>(gv.text,&globalVariables.at(index)));
 }
 
 void SymbolTable::addProcedure(const Procedure& proc)
 {
+    int index = procedures.size();
     procedures.push_back(proc);
+    addressablesMap.insert(std::pair<int,Addressable*>(proc.text,&procedures.at(index)));
+}
+
+void SymbolTable::addLabel(const Label& label)
+{
+    int index = labels.size();
+    labels.push_back(label);
+    addressablesMap.insert(std::pair<int,Addressable*>(label.text,&labels.at(index)));
 }
 
 std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
@@ -144,9 +161,51 @@ const std::string& SymbolRepository::getIdentifier(const int index) const
     return stringTable.at(index);
 }
 
+const int SymbolRepository::getIdentifier(const std::string& id) const
+{
+    std::vector<std::string>::const_iterator i = stringTable.begin();
+    int index {0};
+    while(i != stringTable.end())
+    {
+        if(*i == id) return index;
+        ++i;
+        index++;
+    }
+
+    throw std::runtime_error("SYMBOL_REPOSITORY: no match for identifier found in string table.");
+}
+
+void SymbolRepository::addLabelAddr(const std::string& id,const U8 addr)
+{
+    symbolMap.insert(std::pair<std::string,const U8>(id,addr));
+}
+
+const U8 SymbolRepository::getAddress(const std::string& id) const
+{
+    return symbolMap.find(id)->second;
+}
+
 SymbolTable& SymbolRepository::getSymbolTable()
 {
     return symbolTable;
+}
+
+const int SymbolRepository::indexInStringTable(const std::string& id) const
+{
+    std::vector<std::string>::const_iterator i = stringTable.begin();
+    int index {0};
+    while(i != stringTable.end())
+    {
+        if(*i == id) return index;
+
+        ++i;
+        index++;
+    }
+
+    std::string errorStr = {"SYMBOL_REPOSITORY: no match to string ("};
+    errorStr += id;
+    errorStr += ')';
+    throw std::runtime_error(errorStr);
 }
 
 std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)
@@ -154,7 +213,7 @@ std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)
     // output the symbol table contents.
     out << "\nSYMBOL TABLE:\n";
     out << std::setw(14) << std::setfill('-') << '\n';
-    out << sr.symbolTable << '\n';
+    out << sr.symbolTable;
     // output the string table contents.
     out << "\nSTRING TABLE:\n";
     out << std::setw(14) << std::setfill('-') << '\n';

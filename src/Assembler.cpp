@@ -144,8 +144,14 @@ void Assembler::load(int argc,char* argv[])
     //and check for logical errors etc.
     identifyTokens();
 
-    //now build the symbol repository
+    //build the symbol repository
     buildSymbolRepository();
+
+    //resolve symbol addresses
+    resolveAddresses();
+
+    //and finally build the bytecode
+    buildBytecode();
 }
 
 std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
@@ -172,7 +178,7 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
         if(i != asmb.rawLines.end()) out << '\n';
     }
 
-    out << "\n\nTOKENIZED LINES:\n";
+    out << "\nTOKENIZED LINES:\n";
     out << std::setw(17) << std::setfill('-') << '\n';
     std::vector<Line>::const_iterator j = asmb.tokenizedLines.begin();
     while(j != asmb.tokenizedLines.end())
@@ -184,9 +190,10 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
 
     out << "\nSYMBOL REPOSITORY:\n";
     out << std::setw(19) << std::setfill('-') << '\n';
-    out << asmb.symbolRepository << '\n';
+    out << asmb.symbolRepository;
 
-    out << "\n\n\n\n";
+    out << "\nBYTECODE:\n";
+    out << std::setw(10) << std::setfill('-') << '\n';
     out << asmb.bytecodeLoader;
 
     return out;

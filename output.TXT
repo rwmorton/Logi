@@ -1,0 +1,89 @@
+LBI         0 8 233
+LWI         1 9 1 24
+LDI         2 10 255 254 238 144
+LQI         3 11 0 0 1 31 113 251 4 203
+LF1I        4 0 185 113 44 40
+LF2I        5 0 64 195 136 0 0 0 0 0
+LAD         6 12 0 0 0 0 0 0 0 124
+LAI         7 13 7 0 0 86 3 181 186 37 208
+LAI         7 13 7 0 0 0 0 0 0 0 1
+LWI         1 14 2 88
+SB          14 8 14
+LB          8 15 14
+SW          15 9 14
+LW          9 16 14
+SD          16 10 14
+LD          10 17 14
+SQ          17 11 14
+LQ          11 18 14
+SF1         18 0 14
+LF1         12 1 14
+SF2         19 0 14
+LF2         13 1 14
+PUSHB       20 11
+PUSHW       21 11
+PUSHD       22 11
+PUSHQ       23 11
+PUSHF1      24 0
+PUSHF2      25 0
+POPB        26 11
+POPW        27 11
+POPD        28 11
+POPQ        29 11
+POPF1       30 2
+POPF2       31 2
+MOV         32 11 19
+MOVF        33 2 3
+MOVD        34 2 3
+LAD         6 20 0 0 0 0 0 0 0 148
+JMP         35 20
+NOP         43
+NOP         43
+NOP         43
+LAD         6 20 0 0 0 0 0 0 0 163
+JE          36 11 19 20
+NOP         43
+JNE         37 11 19 20
+SLT         38 8 11 20
+INT         39 12
+DI          40
+EI          41
+LBI         0 9 10
+LBI         0 10 112
+AND         44 8 9 10
+OR          45 8 9 10
+XOR         46 8 9 10
+NOT         47 8 9
+LBI         0 9 4
+BT          48 8 10 9
+BS          49 8 9
+SRA         50 8 10 9
+SRL         51 8 10 9
+SL          52 8 10 9
+LBI         0 9 10
+LBI         0 10 56
+ADD         53 8 9 10
+SUB         54 8 9 10
+MULT        55 8 9 10
+DIV         56 8 11 9 10
+CAST_IF     57 8 2
+CAST_ID     58 8 2
+CAST_FI     59 0 10
+CAST_FD     60 0 2
+CAST_DI     61 2 8
+CAST_DF     62 2 2
+LF1I        4 1 47 187 49 29
+LF1I        4 2 65 71 75 199
+FADD        63 0 1 2
+FSUB        64 0 1 2
+FMULT       65 0 1 2
+FDIV        66 0 1 2
+FSLT        67 0 1 2
+LF2I        5 1 64 129 191 30 184 81 235 133
+LF2I        5 2 65 92 178 174 0 0 0 0
+DADD        68 0 1 2
+DSUB        69 0 1 2
+DMULT       70 0 1 2
+DDIV        71 0 1 2
+DSLT        72 0 1 2
+HALT        42 
