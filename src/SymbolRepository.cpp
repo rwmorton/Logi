@@ -15,66 +15,89 @@ namespace Logi
 
 std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv)
 {
-    out << "GLOBAL VARIABLE:\n";
-    out << std::setw(17) << std::setfill('-') << '\n';
-    out << "text: " << gv.text << '\n';
+    //out << "GLOBAL VARIABLE:\n";
+    //out << std::setw(50) << std::setfill('-') << '\n';
+    
+    /*out << "text: " << gv.text << '\n';
     out << "line: " << gv.line << '\n';
-    out << "type: ";
+    out << "type: ";*/
+
+    //out << "line\ttext\ttype\tlen\tsize\toffset\n";
+
+    out << gv.line << '\t' << gv.text << '\t';
+
     switch(gv.type)
     {
-        case BYTE: out << "BYTE\n"; break;
-        case WORD: out << "WORD\n"; break;
-        case DWORD: out << "DWORD\n"; break;
-        case QWORD: out << "QWORD\n"; break;
+        case BYTE: out << "BYTE\t"; break;
+        case WORD: out << "WORD\t"; break;
+        case DWORD: out << "DWORD\t"; break;
+        case QWORD: out << "QWORD\t"; break;
         default:
         {
             throw std::runtime_error("SYMBOL_REPOSITORY: not a valid global variable type.");
         }
     }
-    if(gv.len > 1) out << "array count: " << gv.len << '\n';
-    out << "size: " << gv.size << '\n';
-    out << "offset: " << gv.offset << '\n';
+
+    out << gv.len << '\t' << gv.size << '\t' << gv.offset;
+
+    //if(gv.len > 1) out << "array count: " << gv.len << '\n';
+    //out << "size: " << gv.size << '\n';
+    //out << "offset: " << gv.offset << '\n';
 
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out,const StackFrame& sf)
 {
-    out << "STACK FRAME:\n";
+    /*out << "STACK FRAME:\n";
     out << std::setw(13) << std::setfill('-') << '\n';
     out << "text: " << sf.text << '\n';
     out << "FP offset: " << sf.fpOffset << '\n';
-    out << "line: " << sf.line << '\n';
+    out << "line: " << sf.line << '\n';*/
+
+    out << sf.line << '\t' << sf.text << '\t' << sf.fpOffset;
 
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out,const Label& l)
 {
-    out << "LABEL:\n";
+    /*out << "LABEL:\n";
     out << std::setw(7) << std::setfill('-') << '\n';
     out << "text: " << l.text << '\n';
     out << "address: " << l.address << '\n';
-    out << "line: " << l.line << '\n';
+    out << "line: " << l.line << '\n';*/
+
+    out << l.text << '\t' << l.line << '\t' << l.address;
 
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out,const Procedure& p)
 {
+    const int W = 24;
     out << "PROCEDURE:\n";
-    out << std::setw(11) << std::setfill('-') << '\n';
-    out << "text: " << p.text << '\n';
+    out << std::setw(W) << std::setfill('-') << '\n';
+    out << "line\ttext\taddress\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
+    out << p.line << '\t' << p.text << '\t' << p.address << '\n';
+
+    /*out << "text: " << p.text << '\n';
     out <<"line: " << p.line << '\n';
-    out <<"address: " << p.address << '\n';
+    out <<"address: " << p.address << '\n';*/
+
     //output return
     out << "\nRETURN:\n";
-    out << std::setw(8) << std::setfill('-') << '\n';
+    out << std::setw(W) << std::setfill('-') << '\n';
+    out << "line\ttext\taddress\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
     if(p.retVal == ProcedureReturn::VOID) out << "VOID\n";
     else out << p.ret << '\n';
     //output arguments
-    out << "ARGUMENTS:\n";
-    out << std::setw(11) << std::setfill('-') << '\n';
+    out << "\nARGUMENTS:\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
+    out << "line\ttext\taddress\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
     std::vector<StackFrame>::const_iterator i = p.args.begin();
     while(i != p.args.end())
     {
@@ -82,8 +105,10 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
         ++i;
     }
     //output locals
-    out << "LOCALS:\n";
-    out << std::setw(8) << std::setfill('-') << '\n';
+    out << "\nLOCALS:\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
+    out << "line\ttext\taddress\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
     i = p.locals.begin();
     while(i != p.locals.end())
     {
@@ -91,14 +116,19 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
         ++i;
     }
     //output labels
-    out << "LABELS:\n";
-    out << std::setw(8) << std::setfill('-') << '\n';
+    out << "\nLABELS:\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
+    out << "line\ttext\taddress\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
     std::vector<Label>::const_iterator j = p.labels.begin();
     while(j != p.labels.end())
     {
         out << *j << '\n';
         ++j;
     }
+
+    out << std::setw(W) << std::setfill('-') << '\n';
+
     return out;
 }
 
@@ -125,9 +155,12 @@ void SymbolTable::addLabel(const Label& label)
 
 std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
 {
+    const int W = 48;
     //output global variables
     out << "\nGLOBAL VARIABLES:\n";
-    out << std::setw(18) << std::setfill('-') << '\n';
+    out << std::setw(W) << std::setfill('-') << '\n';
+    out << "line\ttext\ttype\tlen\tsize\toffset\n";
+    out << std::setw(W) << std::setfill('-') << '\n';
 
     std::vector<GlobalVariable>::const_iterator iv = st.globalVariables.begin();
     while(iv != st.globalVariables.end())
