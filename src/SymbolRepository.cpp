@@ -5,11 +5,6 @@
 #include <iomanip>
 #include <map>
 
-//TEMP
-#include <iostream>
-using std::cout;
-using std::endl;
-
 namespace Logi
 {
 
@@ -273,6 +268,30 @@ const int SymbolRepository::indexInStringTable(const std::string& id) const
 std::vector<std::string>& SymbolRepository::getStringTable()
 {
     return stringTable;
+}
+
+//
+// Get total size of the string table in bytes.
+// For each string we add a byte for the null-
+// termination character '\0' so we can read
+// the string in with std::getline(...)
+//
+const int SymbolRepository::stringTableSize() const
+{
+    int size {0};
+
+    std::vector<std::string>::const_iterator i = stringTable.begin();
+
+    while(i != stringTable.end())
+    {
+        size += i->length();
+        ++i;
+    }
+
+    //now add all the null-termination characters
+    size += stringTable.size();
+
+    return size;
 }
 
 std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)

@@ -21,13 +21,13 @@ int main(int argc,char *argv[])
 
     Logi::VirtualMachine vm;
 
-    bool testAssembler = false;
+    bool runAssembler = false;
 
     try
     {
-        if(testAssembler)
+        if(runAssembler)
         {
-            //test Assembler
+            //run Assembler
             Logi::Assembler* file = new Logi::Assembler();
             file->load(argc,argv);
             std::cout << *file << std::endl;

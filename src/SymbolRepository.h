@@ -86,7 +86,8 @@ struct GlobalVariable : public Addressable
     void write(std::ofstream& out) const
     {
         out.write((const char*)&text,sizeof(Logi::U8));
-        out.write((const char*)&type,sizeof(Logi::U1));
+        U1 typeAsByte = static_cast<U1>(type);
+        out.write((const char*)&typeAsByte,sizeof(Logi::U1));
         out.write((const char*)&len,sizeof(Logi::U8));
         out.write((const char*)&size,sizeof(Logi::U8));
         out.write((const char*)&offset,sizeof(Logi::S8));
@@ -221,13 +222,14 @@ struct Procedure : public Addressable
         in.read((char*)&p.text,8);
         in.read((char*)&p.address,8);
         in.read((char*)&p.line,4);
-        in.read((char*)&p.retVal,1);
+        U1 retValAsByte {0};
+        in.read((char*)&retValAsByte,1);
+        p.retVal = static_cast<ProcedureReturn>(retValAsByte);
 
         //read num args, locals and labels
-        U1 numArgs,numLocals;
+        int numArgs = in.get();
+        int numLocals = in.get();
         U2 numLabels;
-        in.read((char*)&numArgs,1);
-        in.read((char*)&numLocals,1);
         in.read((char*)&numLabels,2);
 
         //read return value (if any)
@@ -266,20 +268,21 @@ struct Procedure : public Addressable
         out.write((const char*)&text,sizeof(Logi::U8));
         out.write((const char*)&address,sizeof(Logi::U8));
         out.write((const char*)&line,sizeof(Logi::U4));
-        out.write((const char*)&retVal,sizeof(Logi::U1));
+        
+        retVal == VOID ? out.put(VOID) : out.put(VALUE);
+
+        // write num arguments
+        const U1 numArgs = static_cast<U1>(args.size());
+        out.write((const char*)&numArgs,sizeof(Logi::U1));
+        // write num locals
+        const U1 numLocals = static_cast<U1>(locals.size());
+        out.write((const char*)&numLocals,sizeof(Logi::U1));
+        // write num labels
+        const U2 numLabels = static_cast<U2>(labels.size());
+        out.write((const char*)&numLabels,sizeof(Logi::U2));
 
         // write return value (if any)
         if(retVal == ProcedureReturn::VALUE) ret.write(out);
-
-        // write num arguments
-        const U1 numArgs = args.size();
-        out.write((const char*)&numArgs,sizeof(Logi::U1));
-        // write num locals
-        const U1 numLocals = args.size();
-        out.write((const char*)&numLocals,sizeof(Logi::U1));
-        // write num labels
-        const U2 numLabels = args.size();
-        out.write((const char*)&numLabels,sizeof(Logi::U2));
 
         // write arguments
         std::vector<StackFrame>::const_iterator args_it = args.begin();
@@ -354,6 +357,7 @@ class SymbolRepository
         SymbolTable& getSymbolTable();
         const int indexInStringTable(const std::string& id) const;
         std::vector<std::string>& getStringTable();
+        const int stringTableSize() const;
         friend std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr);
     private:
         std::vector<std::string> stringTable;

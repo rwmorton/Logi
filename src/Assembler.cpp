@@ -304,8 +304,7 @@ void Assembler::save()
     // write the header
     const SymbolTable symbolTable = symbolRepository.getSymbolTable();
     const U8 symbolTableSize = symbolTable.size();
-    const std::vector<std::string> stringTable = symbolRepository.getStringTable();
-    const U8 stringTableSize = stringTable.size();
+    const U8 stringTableSize = symbolRepository.stringTableSize();
     const U8 bytecodeSize = bytecodeLoader.getBytecode().size();
     //
     out.write((const char*)&MAGIC_NUMBER,sizeof(Logi::U2));
@@ -317,12 +316,27 @@ void Assembler::save()
     symbolTable.write(out);
 
     // write the string table
+    const std::vector<std::string> stringTable = symbolRepository.getStringTable();
     std::vector<std::string>::const_iterator i = stringTable.begin();
+
+    int totalBytes {0};
+    int totalLines {0};
+
     while(i != stringTable.end())
     {
-        out.write((const char*)&(*i),i->length());
+        out.write(i->c_str(),i->length() + 1); //+1 makes out write the null-character '\0'
+        //out << *i << '\0';
+
+        cout << "writing (" << *i << ") to file, " << i->length() << " bytes long." << endl;
+        totalBytes += i->length() + 1;
+        totalLines++;
+
         ++i;
     }
+
+    cout << "wrote a total of " << totalBytes << " bytes from the string table" << endl;
+    cout << "wrote " << totalLines << " lines" << endl;
+    cout << "string table size = " << stringTableSize << endl;
 
     // write the bytecode
     bytecodeLoader.write(out);

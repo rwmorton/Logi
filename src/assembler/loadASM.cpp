@@ -188,6 +188,7 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
     std::string procStr = line_it->tokens.at(1).str;
     proc.text = symbolRepository.addIdentifier(procStr);
     U8 procByteBegin = bytecodeLoader.getCurrentByte();
+    proc.retVal = ProcedureReturn::VOID; //default value
 
     //get next line
     ++line_it;
@@ -202,6 +203,9 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
         {
             case PR:
             {
+
+                std::cout << "GOT .PR DIRECTIVE" << std::endl;
+
                 //if we have already loaded a procedure retval
                 //then this is an error as a procedure can only
                 //have one retval.
@@ -213,6 +217,7 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
                     throw std::runtime_error(errorStr);
                 }
                 retLoad = true;
+                proc.retVal = ProcedureReturn::VALUE;
                 loadProcedureReturn(proc,*line_it);
             }
             break;

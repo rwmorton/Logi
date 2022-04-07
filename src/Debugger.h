@@ -18,7 +18,7 @@ struct DebugData
     struct Contents contents;
     std::vector<GlobalVariable> globalVariables;
     std::vector<Procedure> procedures;
-    std::vector<U1> stringTable;
+    std::vector<std::string> stringTable;
 };
 
 class VirtualMachine;

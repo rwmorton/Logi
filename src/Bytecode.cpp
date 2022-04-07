@@ -129,6 +129,8 @@ void Bytecode::loadDebugger(std::ifstream& in)
         throw std::runtime_error("BYTECODE: debug is on but no global variables and/or procedures to load.");
     }
 
+    cout << "GLOBAL VARS:\n" << endl;
+
     //if there are global variables
     if(numGlobalVariables > 0)
     {
@@ -138,7 +140,7 @@ void Bytecode::loadDebugger(std::ifstream& in)
             GlobalVariable::read(g,in); //read in from file
             debugData->globalVariables.push_back(g); // and save
 
-            std::cout << "loaded global var:\n" << g << std::endl;
+            cout << g << endl;
         }
     }
 
@@ -148,17 +150,22 @@ void Bytecode::loadDebugger(std::ifstream& in)
         for(int i=0; i<numProcedures; i++)
         {
             Procedure p;
-            Procedure::read(p,in); //raed in from file
+            Procedure::read(p,in); //read in from file
             debugData->procedures.push_back(p); //and save
 
-            std::cout << "loaded proc:\n" << p << std::endl;
+            cout << p << endl;
         }
     }
 
     //read in string table
-    for(int i=0; i<stringTableSize; i++)
+    int byteCount {0};
+    while(byteCount < stringTableSize)
     {
-        debugData->stringTable.push_back(in.get());
+        std::string line {};
+        std::getline(in,line,'\0');
+        debugData->stringTable.push_back(line);
+
+        byteCount += line.length() + 1;
     }
 }
 

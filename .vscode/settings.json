@@ -54,10 +54,10 @@
         "variant": "cpp",
         "map": "cpp"
     },
-    "cmake.configureOnOpen": true,
+    "cmake.configureOnOpen": false,
     "cmake.debugConfig":
     {
         //"args": ["-d", "/home/richard/work/projects/Logi/test.ASM","-o","/home/richard/work/projects/Logi/test.RUN"]
         "args": ["-d", "/home/richard/work/projects/Logi/test.RUN"]
-    }
+    },
 }
