@@ -74,7 +74,9 @@ struct GlobalVariable : public Addressable
     static void read(GlobalVariable& g,std::ifstream& in)
     {
         in.read((char*)&g.text,8);
-        in.read((char*)&g.type,1);
+        U1 typeAsByte {0};
+        in.read((char*)&typeAsByte,1);
+        g.type = static_cast<GVType>(typeAsByte);
         in.read((char*)&g.len,8);
         in.read((char*)&g.size,8);
         in.read((char*)&g.offset,8);

@@ -64,7 +64,10 @@ void Bytecode::load(int argc,char* argv[])
     std::ifstream in(filename,std::ios::in | std::ios::binary);
     if(!in.is_open())
     {
-        throw std::runtime_error("BYTECODE: could not load file.");
+        std::string errorStr {"BYTECODE: could not load file ("};
+        errorStr += filename;
+        errorStr += ')';
+        throw std::runtime_error(errorStr);
     }
 
     //read in header
