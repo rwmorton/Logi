@@ -65,7 +65,6 @@ class Bytecode : public LoadFile
         friend std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode);
     private:
         void loadDebugger(std::ifstream& in);
-        void readStackFrame(std::ifstream& in,StackFrame* sf);
         void loadBytecode(std::ifstream& in);
         VirtualMachine& vm;                                 //reference to the VM
         U2 magic;                                           //magic number

@@ -41,6 +41,8 @@ class BytecodeFromASM
         BytecodeFromASM& RD(unsigned int count=1);
         std::map<std::string,U8>& getAddressesToResolve();
         std::vector<U1>& getBytecode();
+        //write the bytecode to file
+        void write(std::ofstream& out) const;
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const BytecodeFromASM& li);
     private:

@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <fstream>
 
 namespace Logi
 {
@@ -21,6 +22,11 @@ struct Contents
     U4 numGlobalVariables;   //number of global variable records in string table
     U4 numProcedures;        //number of procedure records in string table
 };
+
+const U1 GLOBAL_VARIABLE_SIZE {37};
+const U1 STACK_FRAME_SIZE {16};
+const U1 LABEL_SIZE {20};
+const U1 BASE_PROCEDURE_SIZE {37};
 
 enum GVType
 {
@@ -45,6 +51,17 @@ struct Addressable
 // information in Contents is used to allocate an
 // array of GlobalVarRec and ProcRec structures
 //
+// GlobalVariables are 37 bytes in size:
+//
+// text:    QWORD (8)
+// type:    BYTE (1)
+// len:     QWORD (8)
+// size:    QWORD (8)
+// offset:  QWORD (8)
+// line:    DWORD (4)
+// -------------------
+// TOTAL:    37
+//
 struct GlobalVariable : public Addressable
 {
     U8 text;        //index to stringTable of where identifier begins
@@ -53,15 +70,52 @@ struct GlobalVariable : public Addressable
     U8 size;        //total byte size
     S8 offset;      //offset below $TOP, address(g) = $TOP - offset
     U4 line;        //line in source code containing declaration
+    //read from file
+    static void read(GlobalVariable& g,std::ifstream& in)
+    {
+        in.read((char*)&g.text,8);
+        in.read((char*)&g.type,1);
+        in.read((char*)&g.len,8);
+        in.read((char*)&g.size,8);
+        in.read((char*)&g.offset,8);
+        in.read((char*)&g.line,4);
+    }
+    //write to file
+    void write(std::ofstream& out) const
+    {
+        out.write((const char*)&text,sizeof(Logi::U8));
+        out.write((const char*)&type,sizeof(Logi::U1));
+        out.write((const char*)&len,sizeof(Logi::U8));
+        out.write((const char*)&size,sizeof(Logi::U8));
+        out.write((const char*)&offset,sizeof(Logi::S8));
+        out.write((const char*)&line,sizeof(Logi::U4));
+    }
     //stream output
     friend std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv);
 };
 
+//
+// Stack frame is 16 bytes long.
+//
 struct StackFrame
 {
     U8 text;            //index to stringTable of where identifier begins
     S4 fpOffset;        //+n or -n from $FP
     U4 line;            //line in source code containing declaration
+    //read from file
+    static void read(StackFrame& sf,std::ifstream& in)
+    {
+        in.read((char*)&sf.text,8);
+        in.read((char*)&sf.fpOffset,4);
+        in.read((char*)&sf.line,4);
+    }
+    //write to file
+    void write(std::ofstream& out) const
+    {
+        out.write((const char*)&text,sizeof(Logi::U8));
+        out.write((const char*)&fpOffset,sizeof(Logi::S4));
+        out.write((const char*)&line,sizeof(Logi::U4));
+    }
     //stream output
     friend std::ostream& operator<<(std::ostream& out,const StackFrame& sf);
 };
@@ -82,11 +136,29 @@ When this labels identifier is encountered elsewhere in the
 source file the assembler will replace the identifier with
 the address associated with the label (e.g. address of LQI).
 */
+
+//
+// Label is 20 bytes long.
+//
 struct Label : public Addressable
 {
+    //U8 address        //derived from Addressable
     U8 text;            //index to stringTable of where identifier begins
-    //U8 address;         //address of label
     U4 line;            //line in source code containing declaration
+    //read from file
+    static void read(Label& l,std::ifstream& in)
+    {
+        in.read((char*)&l.text,8);
+        in.read((char*)&l.address,8);
+        in.read((char*)&l.line,4);
+    }
+    //write to file
+    void write(std::ofstream& out) const
+    {
+        out.write((const char*)&text,sizeof(Logi::U8));
+        out.write((const char*)&address,sizeof(Logi::U8));
+        out.write((const char*)&line,sizeof(Logi::U4));
+    }
     //stream output
     friend std::ostream& operator<<(std::ostream& out,const Label& l);
 };
@@ -119,16 +191,119 @@ this label is encountered as an operand in an
 instruction the assembler will replace it with the
 corresponding address.
 */
+//
+// PROCEDURE IS 37 BYTES LONG + TOTAL SIZE OF ARGS, LOCALS AND LABELS:
+//
+// address: QWORD (8)
+// text:    QWORD (8)
+// line:    DWORD (4)
+// retVal:  BYTE (1)
+// ret:     STACK FRAME (16)
+// args:    16 * NUM ARGS
+// locals:  16 * NUM LOCALS
+// lables:  20 * NUM LABELS
+//
 struct Procedure : public Addressable
 {
+    //U8 address                        //derived from Addressable
     U8 text;                            //index to stringTable of where identifier begins
-    //U8 address;                         //address of procedure
     U4 line;                            //line in source code containing declaration
     ProcedureReturn retVal;             //VOID or VALUE
     StackFrame ret;                     //return (if any)
     std::vector<StackFrame> args;       //arguments
     std::vector<StackFrame> locals;     //local variables
     std::vector<Label> labels;          //labels
+    //read from file
+    static void read(Procedure& p,std::ifstream& in)
+    {
+        in.read((char*)&p.text,8);
+        in.read((char*)&p.address,8);
+        in.read((char*)&p.line,4);
+        in.read((char*)&p.retVal,1);
+
+        //read num args, locals and labels
+        U1 numArgs,numLocals;
+        U2 numLabels;
+        in.read((char*)&numArgs,1);
+        in.read((char*)&numLocals,1);
+        in.read((char*)&numLabels,2);
+
+        //read return value (if any)
+        if(p.retVal == ProcedureReturn::VALUE)
+        {
+            StackFrame::read(p.ret,in);
+        }
+
+        //read in arguments
+        for(int i=0; i<numArgs; i++)
+        {
+            StackFrame arg;
+            StackFrame::read(arg,in);
+            p.args.push_back(arg);
+        }
+
+        //read in locals
+        for(int i=0; i<numLocals; i++)
+        {
+            StackFrame local;
+            StackFrame::read(local,in);
+            p.locals.push_back(local);
+        }
+
+        //read in labels
+        for(int i=0; i<numLabels; i++)
+        {
+            Label label;
+            Label::read(label,in);
+            p.labels.push_back(label);
+        }
+    }
+    //write to file
+    void write(std::ofstream& out) const
+    {
+        out.write((const char*)&text,sizeof(Logi::U8));
+        out.write((const char*)&address,sizeof(Logi::U8));
+        out.write((const char*)&line,sizeof(Logi::U4));
+        out.write((const char*)&retVal,sizeof(Logi::U1));
+
+        // write return value (if any)
+        if(retVal == ProcedureReturn::VALUE) ret.write(out);
+
+        // write num arguments
+        const U1 numArgs = args.size();
+        out.write((const char*)&numArgs,sizeof(Logi::U1));
+        // write num locals
+        const U1 numLocals = args.size();
+        out.write((const char*)&numLocals,sizeof(Logi::U1));
+        // write num labels
+        const U2 numLabels = args.size();
+        out.write((const char*)&numLabels,sizeof(Logi::U2));
+
+        // write arguments
+        std::vector<StackFrame>::const_iterator args_it = args.begin();
+        while(args_it != args.end())
+        {
+            args_it->write(out);
+            ++args_it;
+        }
+
+        // write local variables
+        std::vector<StackFrame>::const_iterator locals_it = locals.begin();
+        while(locals_it != locals.end())
+        {
+            locals_it->write(out);
+            ++locals_it;
+        }
+
+        // write labels
+        std::vector<Label>::const_iterator labels_it = labels.begin();
+        while(labels_it != labels.end())
+        {
+            labels_it->write(out);
+            ++labels_it;
+        }
+    }
+    //stream output
     friend std::ostream& operator<<(std::ostream& out,const Procedure& p);
 };
 
@@ -145,10 +320,11 @@ class SymbolTable
         //add label that is not a procedure
         void addLabel(const Label& label);
         //get addressable at index
-        Addressable* getAddressable(const int index)
-        {
-            return addressablesMap.find(index)->second;
-        }
+        Addressable* getAddressable(const int index);
+        //get size of symbol table in bytes
+        const U8 size() const;
+        //write to file
+        void write(std::ofstream& out) const;
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const SymbolTable& st);
     private:
@@ -175,6 +351,7 @@ class SymbolRepository
         const U8 getAddress(const std::string& id) const;
         SymbolTable& getSymbolTable();
         const int indexInStringTable(const std::string& id) const;
+        std::vector<std::string>& getStringTable();
         friend std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr);
     private:
         std::vector<std::string> stringTable;

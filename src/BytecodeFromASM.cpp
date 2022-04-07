@@ -531,6 +531,19 @@ std::vector<U1>& BytecodeFromASM::getBytecode()
 }
 
 //
+// Write the bytecode to file.
+//
+void BytecodeFromASM::write(std::ofstream& out) const
+{
+    std::vector<U1>::const_iterator i = bytecode.begin();
+    while(i != bytecode.end())
+    {
+        out.put(*i); //write byte
+        ++i;
+    }
+}
+
+//
 // write bytecode to stream.
 //
 std::ostream& operator<<(std::ostream& out,const BytecodeFromASM& li)

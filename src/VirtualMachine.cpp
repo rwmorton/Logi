@@ -39,84 +39,13 @@ void VirtualMachine::init(int argc,char* argv[])
     stream->string("VM: Bytecode executable loaded.\n");
 
     //validate the bytecode
-    validateBytecode();
-    stream->string("VM: bytecode passed validation!\n");
+    //validateBytecode();
+    //stream->string("VM: bytecode passed validation!\n");
 }
 
 void VirtualMachine::run()
 {
     stream->string("VM: running...\n");
-
-    //std::ofstream ramDump("RAM_DUMP.BIN",std::ios::binary | std::ios::out);
-    //ramDump << (*this->ram);
-    //ramDump.close();
-
-    //set register temp
-    //registers.R1_24(2) = 0x04; // 14_LAI.RUN test
-    //registers.R1_24(3) = 0x0b; // 15_LAI_LWI_LBI_HALT.RUN test
-    //registers.R1_24(4) = 0x04; // 16_LB_HALT.RUN test through to 21_LF2_HALT.RUN
-    //
-    //SB_HALT.RUN through SQ_SQ_HALT.RUN
-    //registers.R1_24(1) = 0xfa37ef58;
-    //registers.R1_24(2) = 0x15a;
-    //registers.R1_24(3) = 0x14;
-    //registers.R1_24(4) = 0xabcdef12ea34fa37;
-    //
-    //registers.RF(0) = 0xf;
-    //registers.RF(1) = 0xabcdef;
-
-    //pushpop byte
-    //registers.R1_24(1) = 0xf;
-    //registers.R1_24(2) = 0x73;
-    //pushpop word
-    //registers.R1_24(1) = 0xfa73;
-    //registers.R1_24(2) = 0x87bc;
-    //pushpop dword
-    //registers.R1_24(1) = 0xbe73ab91;
-    //registers.R1_24(2) = 0x87bc73fa;
-    //pushpop dword
-    //registers.R1_24(1) = 0xbe73ab9157c5d3a8;
-    //registers.R1_24(2) = 0x87bc73fa7c5a8e9b;
-    //pushpop float
-    //registers.RF($F1) = 565465; //0xbe73ab91;
-    //registers.RF($F2) = 65454; //0x87bc73fa;
-    //pushpop double
-    //registers.RD($D1) = 35635632;//0xbe73ab9157c5d3a8;
-    //registers.RD($D2) = 345343;//0x87bc73fa7c5a8e9b;
-
-    //mov
-    //registers.R1_24(1) = 0xf;
-    //registers.R1_24(2) = 0xff;
-    //registers.RF($F1) = 1;
-    //registers.RF($F2) = 354343;
-    //registers.RD($D1) = 2;
-    //registers.RD($D2) = 34354353;
-
-    //jump
-    //registers.R1_24(1) = 0x7;
-    //registers.R1_24(2) = 0x7;
-    //registers.R1_24(3) = 0x22;
-    //registers.R1_24(4) = 0x21;
-    //registers.R1_24(5) = 0x1;
-
-    //bitwise
-    //registers.R1_24(1) = 0x7;
-    //registers.R1_24(2) = 0x7;
-    //registers.R1_24(3) = 0x0;
-    //registers.R1_24(4) = 33;
-    //registers.R1_24(5) = 0x5; //test bit 5
-
-    //shift
-    //registers.R1_24(1) = 0x0;
-    //registers.R1_24(2) = 0xf0f0f0f0;
-    //registers.R1_24(3) = 0x5; //shift
-
-    //intmath
-    registers.R1_24(1) = 0x0;
-    registers.R1_24(2) = 0x3;
-    registers.R1_24(3) = 0x5;
-    registers.R1_24(4) = 0x0; //force division by zero
-    registers.R1_24(5) = 0x1e; //R5 / R2 = 10
 
     //////////////// TEMP!!!!!!
     // force debug on until I can build a proper executable
@@ -215,8 +144,6 @@ void VirtualMachine::run()
             case DSLT: iset->DSLT(); break;
             default: throw std::runtime_error("VIRTUAL_MACHINE: invalid instruction.");
         }
-
-        //iset->debug_post();
 
         std::ostream& out = stream->get();
         out << "\n\nR($IP) = " << static_cast<int>(registers.R($IP)) << "\n";

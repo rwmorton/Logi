@@ -21,19 +21,25 @@ int main(int argc,char *argv[])
 
     Logi::VirtualMachine vm;
 
+    bool testAssembler = false;
+
     try
     {
-        //vm.init(argc,argv);
-        //vm.run();
-        //vm.shutdown();
-
-        //test Assembler
-        Logi::Assembler* file = new Logi::Assembler();
-        file->load(argc,argv);
-        //
-        std::cout << *file << std::endl;
-        //
-        delete file;
+        if(testAssembler)
+        {
+            //test Assembler
+            Logi::Assembler* file = new Logi::Assembler();
+            file->load(argc,argv);
+            std::cout << *file << std::endl;
+            file->save();
+            delete file;
+        }
+        else
+        {
+            vm.init(argc,argv);
+            vm.run();
+            vm.shutdown();
+        }
     }
     catch(const std::exception& e)
     {

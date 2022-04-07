@@ -7,6 +7,9 @@
 namespace Logi
 {
 
+const unsigned int MAGIC_NUMBER {57069};    //magic number to verify the bytecode format
+const unsigned int HEADER_SIZE {26};        //header size for the bytecode format
+
 using S1 = signed char;
 using S2 = signed short;
 using S4 = signed int;

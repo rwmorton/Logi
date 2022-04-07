@@ -15,15 +15,6 @@ namespace Logi
 
 std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv)
 {
-    //out << "GLOBAL VARIABLE:\n";
-    //out << std::setw(50) << std::setfill('-') << '\n';
-    
-    /*out << "text: " << gv.text << '\n';
-    out << "line: " << gv.line << '\n';
-    out << "type: ";*/
-
-    //out << "line\ttext\ttype\tlen\tsize\toffset\n";
-
     out << gv.line << '\t' << gv.text << '\t';
 
     switch(gv.type)
@@ -40,21 +31,11 @@ std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv)
 
     out << gv.len << '\t' << gv.size << '\t' << gv.offset;
 
-    //if(gv.len > 1) out << "array count: " << gv.len << '\n';
-    //out << "size: " << gv.size << '\n';
-    //out << "offset: " << gv.offset << '\n';
-
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out,const StackFrame& sf)
 {
-    /*out << "STACK FRAME:\n";
-    out << std::setw(13) << std::setfill('-') << '\n';
-    out << "text: " << sf.text << '\n';
-    out << "FP offset: " << sf.fpOffset << '\n';
-    out << "line: " << sf.line << '\n';*/
-
     out << sf.line << '\t' << sf.text << '\t' << sf.fpOffset;
 
     return out;
@@ -62,12 +43,6 @@ std::ostream& operator<<(std::ostream& out,const StackFrame& sf)
 
 std::ostream& operator<<(std::ostream& out,const Label& l)
 {
-    /*out << "LABEL:\n";
-    out << std::setw(7) << std::setfill('-') << '\n';
-    out << "text: " << l.text << '\n';
-    out << "address: " << l.address << '\n';
-    out << "line: " << l.line << '\n';*/
-
     out << l.text << '\t' << l.line << '\t' << l.address;
 
     return out;
@@ -81,10 +56,6 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
     out << "line\ttext\taddress\n";
     out << std::setw(W) << std::setfill('-') << '\n';
     out << p.line << '\t' << p.text << '\t' << p.address << '\n';
-
-    /*out << "text: " << p.text << '\n';
-    out <<"line: " << p.line << '\n';
-    out <<"address: " << p.address << '\n';*/
 
     //output return
     out << "\nRETURN:\n";
@@ -151,6 +122,64 @@ void SymbolTable::addLabel(const Label& label)
     int index = labels.size();
     labels.push_back(label);
     addressablesMap.insert(std::pair<int,Addressable*>(label.text,&labels.at(index)));
+}
+
+Addressable* SymbolTable::getAddressable(const int index)
+{
+    return addressablesMap.find(index)->second;
+}
+
+//
+// Get size of symbol table
+//
+const U8 SymbolTable::size() const
+{
+    U8 gvSize = globalVariables.size() * GLOBAL_VARIABLE_SIZE;
+    U8 procSize {0};
+    std::vector<Procedure>::const_iterator p = procedures.begin();
+    while(p != procedures.end())
+    {
+        U8 totalStackFrames = p->args.size() + p->locals.size();
+        U8 totalLabels = p->labels.size();
+        procSize += BASE_PROCEDURE_SIZE;
+        procSize += totalStackFrames * STACK_FRAME_SIZE;
+        procSize += totalLabels * LABEL_SIZE;
+        ++p;
+    }
+
+    U8 totalSize = gvSize + procSize;
+    return totalSize;
+}
+
+//
+// Write the symbol table to file.
+//
+void SymbolTable::write(std::ofstream& out) const
+{
+    //write table of contents - 8 bytes long
+    //which is two DWORDS specifying the number
+    //of global variable records and the number
+    //of procedure records.
+    const U4 numGlobalVariables = globalVariables.size();
+    const U4 numProcedures = procedures.size();
+    out.write((const char*)&numGlobalVariables,sizeof(Logi::U4));
+    out.write((const char*)&numProcedures,sizeof(Logi::U4));
+
+    //write global variables
+    std::vector<GlobalVariable>::const_iterator gv_it = globalVariables.begin();
+    while(gv_it != globalVariables.end())
+    {
+        gv_it->write(out);
+        ++gv_it;
+    }
+
+    //write procedures
+    std::vector<Procedure>::const_iterator p_it = procedures.begin();
+    while(p_it != procedures.end())
+    {
+        p_it->write(out);
+        ++p_it;
+    }
 }
 
 std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
@@ -239,6 +268,11 @@ const int SymbolRepository::indexInStringTable(const std::string& id) const
     errorStr += id;
     errorStr += ')';
     throw std::runtime_error(errorStr);
+}
+
+std::vector<std::string>& SymbolRepository::getStringTable()
+{
+    return stringTable;
 }
 
 std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)

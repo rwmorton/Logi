@@ -167,6 +167,7 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
     out << "output file? ";
     asmb.outputFile.length() == 0 ? out << "no\n" : out << asmb.outputFile << '\n';
 
+    /*
     //TEMP
     out << "\nRAW LINES:\n";
     out << std::setw(11) << std::setfill('-') << '\n';
@@ -187,6 +188,7 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
         ++j;
         if(j != asmb.tokenizedLines.end()) out << '\n';
     }
+    */
 
     out << "\nSYMBOL REPOSITORY:\n";
     out << std::setw(19) << std::setfill('-') << '\n';
@@ -300,29 +302,32 @@ void Assembler::save()
     }
 
     // write the header
+    const SymbolTable symbolTable = symbolRepository.getSymbolTable();
+    const U8 symbolTableSize = symbolTable.size();
+    const std::vector<std::string> stringTable = symbolRepository.getStringTable();
+    const U8 stringTableSize = stringTable.size();
+    const U8 bytecodeSize = bytecodeLoader.getBytecode().size();
     //
-    // TODO
-    //
+    out.write((const char*)&MAGIC_NUMBER,sizeof(Logi::U2));
+    out.write((const char*)&symbolTableSize,sizeof(Logi::U8));
+    out.write((const char*)&stringTableSize,sizeof(Logi::U8));
+    out.write((const char*)&bytecodeSize,sizeof(Logi::U8));
 
     // write the symbol table
-    //
-    // TODO
-    //
+    symbolTable.write(out);
 
     // write the string table
-    //
-    // TODO
-    //
-
-    //write the bytecode
-    std::vector<U1>::const_iterator i = bytecodeLoader.getBytecode().begin();
-    while(i != bytecodeLoader.getBytecode().end())
+    std::vector<std::string>::const_iterator i = stringTable.begin();
+    while(i != stringTable.end())
     {
-        out.put(*i); //write byte
+        out.write((const char*)&(*i),i->length());
         ++i;
     }
 
-    //all done, close file
+    // write the bytecode
+    bytecodeLoader.write(out);
+
+    // all done, close file
     out.close();
 }
 

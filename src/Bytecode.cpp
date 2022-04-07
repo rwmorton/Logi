@@ -9,6 +9,10 @@
 #include <fstream>
 #include <iomanip>
 
+//TEMP
+using std::cout;
+using std::endl;
+
 namespace Logi
 {
 
@@ -114,6 +118,9 @@ void Bytecode::loadDebugger(std::ifstream& in)
     const U4 numGlobalVariables = debugData->contents.numGlobalVariables;
     const U4 numProcedures = debugData->contents.numProcedures;
 
+    cout << "num global variables = " << numGlobalVariables << endl;
+    cout << "num procedures = " << numProcedures << endl;
+
     if(numGlobalVariables == 0 && numProcedures == 0)
     {
         throw std::runtime_error("BYTECODE: debug is on but no global variables and/or procedures to load.");
@@ -125,13 +132,10 @@ void Bytecode::loadDebugger(std::ifstream& in)
         for(int i=0; i<numGlobalVariables; i++)
         {
             GlobalVariable g;
-            in.read((char*)&g.text,8);
-            in.read((char*)&g.type,1);
-            in.read((char*)&g.len,8);
-            in.read((char*)&g.size,8);
-            in.read((char*)&g.offset,8);
-            in.read((char*)&g.line,4);
-            debugData->globalVariables.push_back(g);
+            GlobalVariable::read(g,in); //read in from file
+            debugData->globalVariables.push_back(g); // and save
+
+            std::cout << "loaded global var:\n" << g << std::endl;
         }
     }
 
@@ -141,55 +145,10 @@ void Bytecode::loadDebugger(std::ifstream& in)
         for(int i=0; i<numProcedures; i++)
         {
             Procedure p;
-            in.read((char*)&p.text,8);
-            in.read((char*)&p.address,8);
-            in.read((char*)&p.line,4);
+            Procedure::read(p,in); //raed in from file
+            debugData->procedures.push_back(p); //and save
 
-            int nRet{0},nArgs{0},nLocals{0},nLabels{0};
-            in.read((char*)&nRet,1);
-            in.read((char*)&nArgs,1);
-            in.read((char*)&nLocals,1);
-            in.read((char*)&nLabels,2);
-
-            //read ret
-            if(nRet)
-            {
-                p.retVal = ProcedureReturn::VALUE; //does return a value
-                readStackFrame(in,&p.ret);
-            }
-            else
-            {
-                p.retVal = ProcedureReturn::VOID;
-            }
-            
-            //if args, read in args and push onto the args vector
-            for(int i=0; i<nArgs; i++)
-            {
-                StackFrame sf;
-                readStackFrame(in,&sf);
-                p.args.push_back(sf);
-            }
-
-            //if locals, read in locals and push onto the locals vector
-            for(int i=0; i<nLocals; i++)
-            {
-                StackFrame sf;
-                readStackFrame(in,&sf);
-                p.locals.push_back(sf);
-            }
-
-            //if labels, read in labels and push onto the labels vector
-            for(int i=0; i<nLabels; i++)
-            {
-                Label label;
-                in.read((char*)&label.text,8);
-                in.read((char*)&label.address,8);
-                in.read((char*)&label.text,4);
-
-                p.labels.push_back(label);
-            }
-
-            debugData->procedures.push_back(p); //save procedure
+            std::cout << "loaded proc:\n" << p << std::endl;
         }
     }
 
@@ -198,14 +157,6 @@ void Bytecode::loadDebugger(std::ifstream& in)
     {
         debugData->stringTable.push_back(in.get());
     }
-}
-
-//load stack frame
-void Bytecode::readStackFrame(std::ifstream& in,StackFrame* sf)
-{
-    in.read((char*)&sf->text,8);
-    in.read((char*)&sf->fpOffset,4);
-    in.read((char*)&sf->line,4);
 }
 
 //load bytecode data
