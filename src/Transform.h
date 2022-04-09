@@ -49,25 +49,23 @@ class Transform
         static void wordFromStack(U8& byte,const U1* stackTop);
         static void dwordFromStack(U8& byte,const U1* stackTop);
         static void qwordFromStack(U8& byte,const U1* stackTop);
-        static void floatFromStack(U8& byte,const U1* stackTop);
-        static void doubleFromStack(U8& byte,const U1* stackTop);
-        //big-endian to little-endian conversion
-        static void word(U1 bytes[],unsigned int start);
-        static void dword(U1 bytes[],unsigned int start);
-        static void qword(U1 bytes[],unsigned int start);
+        static void floatFromStack(F4& byte,const U1* stackTop);
+        static void doubleFromStack(F8& byte,const U1* stackTop);
+        //TESTS
+        #ifdef __LOGI_TESTS_ON__
+            static void TEST_run_all_tests();
+        #endif //__LOGI_TESTS_ON__
+        //END TEST
+    private:
         //TESTS
         #ifdef __LOGI_TESTS_ON__
             static void TEST_setPlatform(const Endian end);
-            static void TEST_run_all_tests();
             static void TEST_bytecodeToXYZ();
             static void TEST_xyzToBytecode();
             static void TEST_xyzToRegister();
             static void TEST_xyzToStack();
             static void TEST_xyzFromStack();
-            static void TEST_xyz_bigToLittleEndian();
         #endif //__LOGI_TESTS_ON__
-        //END TEST
-    private:
         Transform();
         //set system endianess
         static const Endian setPlatform();

@@ -32,25 +32,21 @@ void Transform::TEST_run_all_tests()
     Transform::TEST_setPlatform(Endian::LITTLE);
     TEST_bytecodeToXYZ();
     TEST_xyzToBytecode();
-    //TEST_xyzToRegister();
-    //TEST_xyzToStack();
-    //TEST_xyzFromStack();
-    //TEST_xyz_bigToLittleEndian();
-    
-    out << '\n';
 
     //run tests in big-endian platform
     Transform::TEST_setPlatform(Endian::BIG);
     TEST_bytecodeToXYZ();
     TEST_xyzToBytecode();
-    //TEST_xyzToRegister();
-    //TEST_xyzToStack();
-    //TEST_xyzFromStack();
-    //TEST_xyz_bigToLittleEndian();
 
     //reset to system platform
-    out << "\nRESETTING TO SYSTEM PLATFORM...\n";
+    out << "RESETTING TO SYSTEM PLATFORM...\n";
     Transform::setPlatform();
+
+    //not dependent on byte ordering
+    TEST_xyzToRegister();
+    TEST_xyzToStack();
+    TEST_xyzFromStack();
+    //TEST_xyz_bigToLittleEndian();
 }
 
 void Transform::TEST_bytecodeToXYZ()
@@ -325,22 +321,432 @@ void Transform::TEST_xyzToBytecode()
 
 void Transform::TEST_xyzToRegister()
 {
-    //
+    out << "TEST_xyzToRegister() running:\n";
+
+    U8 reg;
+    U1* reg_buffer = (U1*)&reg;
+
+    //byte to register
+    U1 byte = 0xB3;
+    Transform::byteToRegister(byte,reg);
+    
+    assert(*(&reg_buffer[0]) == 0xB3);
+    assert(*(&reg_buffer[1]) == 0);
+    assert(*(&reg_buffer[2]) == 0);
+    assert(*(&reg_buffer[3]) == 0);
+    assert(*(&reg_buffer[4]) == 0);
+    assert(*(&reg_buffer[5]) == 0);
+    assert(*(&reg_buffer[6]) == 0);
+    assert(*(&reg_buffer[7]) == 0);
+    out << "\tbyte-to-register test passed!\n";
+
+    //word to register
+    U2 word;
+    U1* word_buffer = (U1*)&word;
+    word_buffer[0] = 0xB3;
+    word_buffer[1] = 0x1E;
+    Transform::wordToRegister(word_buffer,reg);
+
+    assert(*(&reg_buffer[0]) == 0xB3);
+    assert(*(&reg_buffer[1]) == 0x1E);
+    assert(*(&reg_buffer[3]) == 0);
+    assert(*(&reg_buffer[4]) == 0);
+    assert(*(&reg_buffer[5]) == 0);
+    assert(*(&reg_buffer[6]) == 0);
+    assert(*(&reg_buffer[7]) == 0);
+    out << "\tword-to-register test passed!\n";
+
+    //dword to register
+    U4 dword;
+    U1* dword_buffer = (U1*)&dword;
+    dword_buffer[0] = 0xAB;
+    dword_buffer[1] = 0x12;
+    dword_buffer[2] = 0xCD;
+    dword_buffer[3] = 0x34;
+    Transform::dwordToRegister(dword_buffer,reg);
+
+    assert(*(&reg_buffer[0]) == 0xAB);
+    assert(*(&reg_buffer[1]) == 0x12);
+    assert(*(&reg_buffer[2]) == 0xCD);
+    assert(*(&reg_buffer[3]) == 0x34);
+    assert(*(&reg_buffer[4]) == 0);
+    assert(*(&reg_buffer[5]) == 0);
+    assert(*(&reg_buffer[6]) == 0);
+    assert(*(&reg_buffer[7]) == 0);
+    out << "\tdword-to-register test passed!\n";
+
+    //qword to register
+    U8 qword;
+    U1* qword_buffer = (U1*)&qword;
+    qword_buffer[0] = 0x12;
+    qword_buffer[1] = 0xAB;
+    qword_buffer[2] = 0x34;
+    qword_buffer[3] = 0xCD;
+    qword_buffer[4] = 0x56;
+    qword_buffer[5] = 0xEF;
+    qword_buffer[6] = 0x78;
+    qword_buffer[7] = 0xA1;
+    Transform::qwordToRegister(qword_buffer,reg);
+
+    assert(*(&reg_buffer[0]) == 0x12);
+    assert(*(&reg_buffer[1]) == 0xAB);
+    assert(*(&reg_buffer[2]) == 0x34);
+    assert(*(&reg_buffer[3]) == 0xCD);
+    assert(*(&reg_buffer[4]) == 0x56);
+    assert(*(&reg_buffer[5]) == 0xEF);
+    assert(*(&reg_buffer[6]) == 0x78);
+    assert(*(&reg_buffer[7]) == 0xA1);
+    out << "\tqword-to-register test passed!\n";
+
+    //float to register
+    F4 freg;
+    U1* freg_buffer = (U1*)&freg;
+    F4 float_;
+    U1* float_buffer = (U1*)&float_;
+    float_buffer[0] = 0x12;
+    float_buffer[1] = 0x34;
+    float_buffer[2] = 0x56;
+    float_buffer[3] = 0x78;
+    Transform::floatToRegister(float_buffer,freg);
+
+    assert(*(&freg_buffer[0]) == 0x12);
+    assert(*(&freg_buffer[1]) == 0x34);
+    assert(*(&freg_buffer[2]) == 0x56);
+    assert(*(&freg_buffer[3]) == 0x78);
+    out << "\tfloat-to-register test passed!\n";
+
+    //double to register
+    F8 dreg;
+    U1* dreg_buffer = (U1*)&dreg;
+    F8 double_;
+    U1* double_buffer = (U1*)&double_;
+    double_buffer[0] = 0x12;
+    double_buffer[1] = 0x34;
+    double_buffer[2] = 0x56;
+    double_buffer[3] = 0x78;
+    double_buffer[4] = 0xAB;
+    double_buffer[5] = 0xCD;
+    double_buffer[6] = 0xEF;
+    double_buffer[7] = 0xA7;
+    Transform::doubleToRegister(double_buffer,dreg);
+
+    assert(*(&dreg_buffer[0]) == 0x12);
+    assert(*(&dreg_buffer[1]) == 0x34);
+    assert(*(&dreg_buffer[2]) == 0x56);
+    assert(*(&dreg_buffer[3]) == 0x78);
+    assert(*(&dreg_buffer[4]) == 0xAB);
+    assert(*(&dreg_buffer[5]) == 0xCD);
+    assert(*(&dreg_buffer[6]) == 0xEF);
+    assert(*(&dreg_buffer[7]) == 0xA7);
+    out << "\tdouble-to-register test passed!\n";
+
+    //qword to register
+    U8 addr;
+    U1* addr_buffer = (U1*)&qword;
+    addr_buffer[0] = 0x1A;
+    addr_buffer[1] = 0xB2;
+    addr_buffer[2] = 0x3C;
+    addr_buffer[3] = 0xD4;
+    addr_buffer[4] = 0x5E;
+    addr_buffer[5] = 0xF6;
+    addr_buffer[6] = 0x1E;
+    addr_buffer[7] = 0xD2;
+    Transform::addressToRegister(addr_buffer,reg);
+
+    assert(*(&reg_buffer[0]) == 0x1A);
+    assert(*(&reg_buffer[1]) == 0xB2);
+    assert(*(&reg_buffer[2]) == 0x3C);
+    assert(*(&reg_buffer[3]) == 0xD4);
+    assert(*(&reg_buffer[4]) == 0x5E);
+    assert(*(&reg_buffer[5]) == 0xF6);
+    assert(*(&reg_buffer[6]) == 0x1E);
+    assert(*(&reg_buffer[7]) == 0xD2);
+    out << "\taddress-to-register test passed!\n";
+
+    out << "TEST_xyzToRegister() 7 tests passed!\n";
+}
+
+//
+// construct a test "stack"
+//
+void set_test_stack(U1* stack)
+{
+    stack[0] = 0x00;
+    stack[1] = 0x01;
+    stack[2] = 0x02;
+    stack[3] = 0x03;
+    stack[4] = 0x04;
+    stack[5] = 0x05;
+    stack[6] = 0x06;
+    stack[7] = 0x07;
+    stack[8] = 0x08;
+    stack[9] = 0x09;
+    stack[10] = 0x0a;
+    stack[11] = 0x0b;
+    stack[12] = 0x0c;
+    stack[13] = 0x0d;
+    stack[14] = 0x0e;
+    stack[15] = 0x0f;
+}
+
+void assert_initial_stack(U1 stack[16])
+{
+    assert(stack[0] == 0x00);
+    assert(stack[1] == 0x01);
+    assert(stack[2] == 0x02);
+    assert(stack[3] == 0x03);
+    assert(stack[4] == 0x04);
+    assert(stack[5] == 0x05);
+    assert(stack[6] == 0x06);
+    assert(stack[7] == 0x07);
+    assert(stack[8] == 0x08);
+    assert(stack[9] == 0x09);
+    assert(stack[10] == 0x0a);
+    assert(stack[11] == 0x0b);
+    assert(stack[12] == 0x0c);
+    assert(stack[13] == 0x0d);
+    assert(stack[14] == 0x0e);
+    assert(stack[15] == 0x0f);
 }
 
 void Transform::TEST_xyzToStack()
 {
-    //
+    out << "TEST_xyzToStack() running:\n";
+
+    //test stack
+    U1 stack[16];
+    U1* stackTop = &stack[15];
+
+    //byte to stack test
+    //set initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    assert(*stackTop == 0x0f);
+    U1 byte = 0xAD;
+    Transform::byteToStack(byte,stackTop);
+    assert(*stackTop == 0xAD);
+    *stackTop = 0x0f;
+    assert_initial_stack(stack);
+    out << "\tbyte-to-stack test passed!\n";
+
+    //word to stack test
+    //reset initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    assert(*stackTop == 0x0f);
+    U2 word;
+    U1* buffer = (U1*)&word;
+    buffer[0] = 0x7C;
+    buffer[1] = 0x5A;
+    Transform::wordToStack(word,stackTop);
+    assert(*stackTop == 0x7C);
+    assert(*(&stack[14]) == 0x5A);
+    out << "\tword-to-stack test passed!\n";
+
+    //dword to stack test
+    //reset initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    assert(*stackTop == 0x0f);
+    U4 dword;
+    buffer = (U1*)&dword;
+    buffer[0] = 0x98;
+    buffer[1] = 0xAB;
+    buffer[2] = 0x76;
+    buffer[3] = 0xCD;
+    Transform::dwordToStack(dword,stackTop);
+    assert(*stackTop == 0x98);
+    assert(*(&stack[14]) == 0xAB);
+    assert(*(&stack[13]) == 0x76);
+    assert(*(&stack[12]) == 0xCD);
+    out << "\tdword-to-stack test passed!\n";
+
+    //qword to stack test
+    //reset initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    assert(*stackTop == 0x0f);
+    U8 qword;
+    buffer = (U1*)&qword;
+    buffer[0] = 0x12;
+    buffer[1] = 0x34;
+    buffer[2] = 0x56;
+    buffer[3] = 0x78;
+    buffer[4] = 0x9A;
+    buffer[5] = 0xBC;
+    buffer[6] = 0xDE;
+    buffer[7] = 0xF1;
+    Transform::qwordToStack(qword,stackTop);
+    assert(*stackTop == 0x12);
+    assert(*(&stack[14]) == 0x34);
+    assert(*(&stack[13]) == 0x56);
+    assert(*(&stack[12]) == 0x78);
+    assert(*(&stack[11]) == 0x9A);
+    assert(*(&stack[10]) == 0xBC);
+    assert(*(&stack[9]) == 0xDE);
+    assert(*(&stack[8]) == 0xF1);
+    out << "\tqword-to-stack test passed!\n";
+
+    //float to stack test
+    //reset initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    assert(*stackTop == 0x0f);
+    F4 float_;
+    buffer = (U1*)&float_;
+    buffer[0] = 0x12;
+    buffer[1] = 0xAB;
+    buffer[2] = 0x34;
+    buffer[3] = 0xCD;
+    Transform::floatToStack(float_,stackTop);
+    assert(*stackTop == 0x12);
+    assert(*(&stack[14]) == 0xAB);
+    assert(*(&stack[13]) == 0x34);
+    assert(*(&stack[12]) == 0xCD);
+    out << "\tfloat-to-stack test passed!\n";
+
+    //double to stack test
+    //reset initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    assert(*stackTop == 0x0f);
+    F8 double_;
+    buffer = (U1*)&double_;
+    buffer[0] = 0x1A;
+    buffer[1] = 0xB2;
+    buffer[2] = 0x3C;
+    buffer[3] = 0xD4;
+    buffer[4] = 0x5E;
+    buffer[5] = 0xF6;
+    buffer[6] = 0x7A;
+    buffer[7] = 0xB8;
+    Transform::doubleToStack(double_,stackTop);
+    assert(*stackTop == 0x1A);
+    assert(*(&stack[14]) == 0xB2);
+    assert(*(&stack[13]) == 0x3C);
+    assert(*(&stack[12]) == 0xD4);
+    assert(*(&stack[11]) == 0x5E);
+    assert(*(&stack[10]) == 0xF6);
+    assert(*(&stack[9]) == 0x7A);
+    assert(*(&stack[8]) == 0xB8);
+    out << "\tdouble-to-stack test passed!\n";
+
+    out << "TEST_xyzToStack() 6 tests passed!\n";
 }
 
 void Transform::TEST_xyzFromStack()
 {
-    //
-}
+    out << "TEST_xyzFromStack() running:\n";
 
-void Transform::TEST_xyz_bigToLittleEndian()
-{
-    //
+    //test stack
+    U1 stack[16];
+    U1* stackTop = &stack[15];
+    U8 byte;
+    U1* buffer = (U1*)&byte;
+
+    //byte from stack test
+    //set initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    Transform::byteFromStack(byte,stackTop);
+    assert(*(&buffer[0]) == stack[15]);
+    assert(*(&buffer[1]) == 0);
+    assert(*(&buffer[2]) == 0);
+    assert(*(&buffer[3]) == 0);
+    assert(*(&buffer[4]) == 0);
+    assert(*(&buffer[5]) == 0);
+    assert(*(&buffer[6]) == 0);
+    assert(*(&buffer[7]) == 0);
+    out << "\tbyte-from-stack test passed!\n";
+
+    //byte from stack test
+    //set initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    Transform::wordFromStack(byte,stackTop);
+    assert(*(&buffer[0]) == stack[15]);
+    assert(*(&buffer[1]) == stack[14]);
+    assert(*(&buffer[2]) == 0);
+    assert(*(&buffer[3]) == 0);
+    assert(*(&buffer[4]) == 0);
+    assert(*(&buffer[5]) == 0);
+    assert(*(&buffer[6]) == 0);
+    assert(*(&buffer[7]) == 0);
+    out << "\tword-from-stack test passed!\n";
+
+    //byte from stack test
+    //set initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    Transform::dwordFromStack(byte,stackTop);
+    assert(*(&buffer[0]) == stack[15]);
+    assert(*(&buffer[1]) == stack[14]);
+    assert(*(&buffer[2]) == stack[13]);
+    assert(*(&buffer[3]) == stack[12]);
+    assert(*(&buffer[4]) == 0);
+    assert(*(&buffer[5]) == 0);
+    assert(*(&buffer[6]) == 0);
+    assert(*(&buffer[7]) == 0);
+    out << "\tdword-from-stack test passed!\n";
+
+    //byte from stack test
+    //set initial stack
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    Transform::qwordFromStack(byte,stackTop);
+    assert(*(&buffer[0]) == stack[15]);
+    assert(*(&buffer[1]) == stack[14]);
+    assert(*(&buffer[2]) == stack[13]);
+    assert(*(&buffer[3]) == stack[12]);
+    assert(*(&buffer[4]) == stack[11]);
+    assert(*(&buffer[5]) == stack[10]);
+    assert(*(&buffer[6]) == stack[9]);
+    assert(*(&buffer[7]) == stack[8]);
+    out << "\tqword-from-stack test passed!\n";
+
+    //float from stack test
+    //set initial stack
+    F4 float_;
+    buffer = (U1*)&float_;
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    Transform::floatFromStack(float_,stackTop);
+    assert(*(&buffer[0]) == stack[15]);
+    assert(*(&buffer[1]) == stack[14]);
+    assert(*(&buffer[2]) == stack[13]);
+    assert(*(&buffer[3]) == stack[12]);
+    out << "\tfloat-from-stack test passed!\n";
+
+    //double from stack test
+    //set initial stack
+    F8 double_;
+    buffer = (U1*)&double_;
+    set_test_stack(stack);
+    assert_initial_stack(stack);
+
+    Transform::doubleFromStack(double_,stackTop);
+    assert(*(&buffer[0]) == stack[15]);
+    assert(*(&buffer[1]) == stack[14]);
+    assert(*(&buffer[2]) == stack[13]);
+    assert(*(&buffer[3]) == stack[12]);
+    assert(*(&buffer[4]) == stack[11]);
+    assert(*(&buffer[5]) == stack[10]);
+    assert(*(&buffer[6]) == stack[9]);
+    assert(*(&buffer[7]) == stack[8]);
+    out << "\tdouble-from-stack test passed!\n";
+
+    out << "TEST_xyzFromStack() 6 tests passed!\n";
 }
 
 #endif //__LOGI_TESTS_ON__

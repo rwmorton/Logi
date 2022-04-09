@@ -105,6 +105,7 @@ void Transform::doubleToBytecode(F8 double_,U1 bytes[])
 //store data in registers
 void Transform::byteToRegister(U1 byte,U8& reg)
 {
+    reg = 0;
     U1* buffer = (U1*)&reg;
     buffer[0] = byte;
 }
@@ -119,6 +120,7 @@ void Transform::wordToRegister(U1 bytes[],U8& reg)
 
 void Transform::dwordToRegister(U1 bytes[],U8& reg)
 {
+    reg = 0;
     U1* buffer = (U1*)&reg;;
     buffer[0] = bytes[0];
     buffer[1] = bytes[1];
@@ -128,6 +130,7 @@ void Transform::dwordToRegister(U1 bytes[],U8& reg)
 
 void Transform::qwordToRegister(U1 bytes[],U8& reg)
 {
+    reg = 0;
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];
     buffer[1] = bytes[1];
@@ -141,6 +144,7 @@ void Transform::qwordToRegister(U1 bytes[],U8& reg)
 
 void Transform::floatToRegister(U1 bytes[],F4& reg)
 {
+    reg = 0;
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];
     buffer[1] = bytes[1];
@@ -150,6 +154,7 @@ void Transform::floatToRegister(U1 bytes[],F4& reg)
 
 void Transform::doubleToRegister(U1 bytes[],F8& reg)
 {
+    reg = 0;
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];
     buffer[1] = bytes[1];
@@ -163,6 +168,7 @@ void Transform::doubleToRegister(U1 bytes[],F8& reg)
 
 void Transform::addressToRegister(U1 bytes[],U8& reg)
 {
+    reg = 0;
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];
     buffer[1] = bytes[1];
@@ -234,13 +240,14 @@ void Transform::doubleToStack(const F8 double_,U1* stackTop)
 //get data from top of stack
 void Transform::byteFromStack(U8& byte,const U1* stackTop)
 {
+    byte = 0;
     U1* buffer = (U1*)&byte;
     buffer[0] = stackTop[0];
 }
 
-
 void Transform::wordFromStack(U8& word,const U1* stackTop)
 {
+    word = 0;
     U1* buffer = (U1*)&word;
     buffer[0] = stackTop[0];
     buffer[1] = stackTop[-1];
@@ -248,6 +255,7 @@ void Transform::wordFromStack(U8& word,const U1* stackTop)
 
 void Transform::dwordFromStack(U8& dword,const U1* stackTop)
 {
+    dword = 0;
     U1* buffer = (U1*)&dword;
     buffer[0] = stackTop[0];
     buffer[1] = stackTop[-1];
@@ -257,6 +265,7 @@ void Transform::dwordFromStack(U8& dword,const U1* stackTop)
 
 void Transform::qwordFromStack(U8& qword,const U1* stackTop)
 {
+    qword = 0;
     U1* buffer = (U1*)&qword;
     buffer[0] = stackTop[0];
     buffer[1] = stackTop[-1];
@@ -268,8 +277,9 @@ void Transform::qwordFromStack(U8& qword,const U1* stackTop)
     buffer[7] = stackTop[-7];
 }
 
-void Transform::floatFromStack(U8& float_,const U1* stackTop)
+void Transform::floatFromStack(F4& float_,const U1* stackTop)
 {
+    float_ = 0;
     U1* buffer = (U1*)&float_;
     buffer[0] = stackTop[0];
     buffer[1] = stackTop[-1];
@@ -277,8 +287,9 @@ void Transform::floatFromStack(U8& float_,const U1* stackTop)
     buffer[3] = stackTop[-3];
 }
 
-void Transform::doubleFromStack(U8& double_,const U1* stackTop)
+void Transform::doubleFromStack(F8& double_,const U1* stackTop)
 {
+    double_ = 0;
     U1* buffer = (U1*)&double_;
     buffer[0] = stackTop[0];
     buffer[1] = stackTop[-1];
@@ -288,53 +299,6 @@ void Transform::doubleFromStack(U8& double_,const U1* stackTop)
     buffer[5] = stackTop[-5];
     buffer[6] = stackTop[-6];
     buffer[7] = stackTop[-7];
-}
-
-//big-endian to little-endian conversion
-void Transform::word(U1 bytes[],unsigned int start)
-{
-    U1 temp[2];
-    temp[0] = bytes[start+1];
-    temp[1] = bytes[start];
-    //flip
-    bytes[start] = temp[1];
-    bytes[start+1] = temp[0];
-}
-
-void Transform::dword(U1 bytes[],unsigned int start)
-{
-    U1 temp[4];
-    temp[0] = bytes[start+3];
-    temp[1] = bytes[start+2];
-    temp[2] = bytes[start+1];
-    temp[3] = bytes[start];
-    //flip
-    bytes[start] = temp[0];
-    bytes[start+1] = temp[1];
-    bytes[start+2] = temp[2];
-    bytes[start+3] = temp[3];
-}
-
-void Transform::qword(U1 bytes[],unsigned int start)
-{
-    U1 temp[8];
-    temp[0] = bytes[start+7];
-    temp[1] = bytes[start+6];
-    temp[2] = bytes[start+5];
-    temp[3] = bytes[start+4];
-    temp[4] = bytes[start+3];
-    temp[5] = bytes[start+2];
-    temp[6] = bytes[start+1];
-    temp[7] = bytes[start];
-    //flip
-    bytes[start] = temp[0];
-    bytes[start+1] = temp[1];
-    bytes[start+2] = temp[2];
-    bytes[start+3] = temp[3];
-    bytes[start+4] = temp[4];
-    bytes[start+5] = temp[5];
-    bytes[start+6] = temp[6];
-    bytes[start+7] = temp[7];
 }
 
 Transform::Transform() {}
