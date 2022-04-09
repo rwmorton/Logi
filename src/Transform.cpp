@@ -5,7 +5,7 @@
 namespace Logi
 {
 
-const Endian Transform::PLATFORM {Transform::setPlatform()};
+Endian Transform::PLATFORM {Transform::setPlatform()};
 
 const U2 Transform::bytecodeToWord(U1 bytes[])
 {
@@ -60,12 +60,6 @@ const F8 Transform::bytecodeToDouble(U1 bytes[])
     else for(int i=0; i<SIZE; i++) buffer[i] = bytes[i];
 
     return double_;
-}
-
-void Transform::byteToBytecode(U1 byte,U1 bytes[])
-{
-    U1* buffer = (U1*)&byte;
-    bytes[0] = buffer[0];
 }
 
 void Transform::wordToBytecode(U2 word,U1 bytes[])

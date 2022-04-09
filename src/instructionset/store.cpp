@@ -12,11 +12,16 @@ namespace Logi
 //
 void InstructionSet::SB() const
 {
+    /*
     Transform::byteToBytecode
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        //vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
     );
+    */
+
+    (*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2))) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1));
+
     vm->registers.R($IP) += 3; //set next instruction
 }
 

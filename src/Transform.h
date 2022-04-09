@@ -17,19 +17,19 @@ namespace Logi
 class Transform
 {
     public:
+        //bytecode to XYZ
         static const U2 bytecodeToWord(U1 bytes[]);
         static const U4 bytecodeToDWord(U1 bytes[]);
         static const U8 bytecodeToQWord(U1 bytes[]);
         static const F4 bytecodeToFloat(U1 bytes[]);
         static const F8 bytecodeToDouble(U1 bytes[]);
-        //
-        static void byteToBytecode(U1 byte,U1 bytes[]);
+        //XYZ to bytecode
         static void wordToBytecode(U2 word,U1 bytes[]);
         static void dwordToBytecode(U4 dword,U1 bytes[]);
         static void qwordToBytecode(U8 qword,U1 bytes[]);
         static void floatToBytecode(F4 float_,U1 bytes[]);
         static void doubleToBytecode(F8 double_,U1 bytes[]);
-        //
+        //XYZ to register
         static void byteToRegister(U1 byte,U8& reg);
         static void wordToRegister(U1 bytes[],U8& reg);
         static void dwordToRegister(U1 bytes[],U8& reg);
@@ -37,14 +37,14 @@ class Transform
         static void floatToRegister(U1 bytes[],F4& reg);
         static void doubleToRegister(U1 bytes[],F8& reg);
         static void addressToRegister(U1 bytes[],U8& reg);
-        //
+        //XYZ to stack
         static void byteToStack(const U1 byte,U1* stackTop);
         static void wordToStack(const U2 word,U1* stackTop);
         static void dwordToStack(const U4 dword,U1* stackTop);
         static void qwordToStack(const U8 qword,U1* stackTop);
         static void floatToStack(const F4 float_,U1* stackTop);
         static void doubleToStack(const F8 double_,U1* stackTop);
-        //
+        //XYZ from stack
         static void byteFromStack(U8& byte,const U1* stackTop);
         static void wordFromStack(U8& byte,const U1* stackTop);
         static void dwordFromStack(U8& byte,const U1* stackTop);
@@ -57,6 +57,7 @@ class Transform
         static void qword(U1 bytes[],unsigned int start);
         //TESTS
         #ifdef __LOGI_TESTS_ON__
+            static void TEST_setPlatform(const Endian end);
             static void TEST_run_all_tests();
             static void TEST_bytecodeToXYZ();
             static void TEST_xyzToBytecode();
@@ -70,7 +71,7 @@ class Transform
         Transform();
         //set system endianess
         static const Endian setPlatform();
-        static const Endian PLATFORM;
+        static Endian PLATFORM;
 };
 
 } //namespace Logi
