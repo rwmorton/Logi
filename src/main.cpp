@@ -22,7 +22,6 @@ int main(const int argc,const char *argv[])
         Logi::run_all_tests();
     #endif
 
-    /*
     Logi::VirtualMachine vm;
 
     bool runAssembler = true;
@@ -42,17 +41,10 @@ int main(const int argc,const char *argv[])
         //vm.init(argc,argv);
 
         int argc_override = 3;
-        const char* argv_override[] =
-        {
-            std::string{"./build/src/main"}.c_str(),
-            std::string{"-d"}.c_str(),
-            std::string{"/home/richard/work/projects/Logi/test.RUN"}.c_str()
-        };
-
-        cout << "/home/richard/work/projects/Logi/test.RUN" << endl;
-        std::string str {"/home/richard/work/projects/Logi/test.RUN"};
-        cout << str << endl;
-        cout << str.c_str() << endl;
+        const char* arg1 = "./build/src/main";
+        const char* arg2 = "-d";
+        const char* arg3 = "/home/richard/work/projects/Logi/test.RUN";
+        const char* argv_override[] = {arg1,arg2,arg3};
 
         vm.init(argc_override,argv_override);
 
@@ -64,7 +56,6 @@ int main(const int argc,const char *argv[])
         std::cout << "ERROR: " << e.what() << std::endl;
         vm.shutdown();
     }
-    */
 
     return 0;
 }

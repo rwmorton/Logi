@@ -80,12 +80,10 @@ void Bytecode::load(const int argc,const char* argv[])
 
     //header looks good, continue.
 
-    //is debug on? and do we have the neccessary data?
-    if(debug == true && symbolTableSize > 0 && stringTableSize > 0)
+    //is debug on?
+    if(debug == true)
     {
-        cout << in.tellg() << endl;
         loadDebugger(in);
-        cout << in.tellg() << endl;
     }
     else
     {
@@ -131,7 +129,8 @@ void Bytecode::loadDebugger(std::ifstream& in)
 
     if(numGlobalVariables == 0 && numProcedures == 0)
     {
-        throw std::runtime_error("BYTECODE: debug is on but no global variables and/or procedures to load.");
+        //throw std::runtime_error("BYTECODE: debug is on but no global variables and/or procedures to load.");
+        Stream::getInstance()->string("BYTECODE (WARNING): no global variables or procedures available for the debugger.\n");
     }
 
     //if there are global variables

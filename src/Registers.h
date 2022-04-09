@@ -110,9 +110,9 @@ class Registers
         static const U1 NUM_FLOAT_REGISTERS {10};
         static const U1 NUM_DOUBLE_REGISTERS {10};
     private:
-        U8 _R[NUM_REGISTERS]{0};               //integer registers - 64 bit in size
-        F4 _RF[NUM_FLOAT_REGISTERS]{0};        //single-precision float registers - 32 bit in size
-        F8 _RD[NUM_DOUBLE_REGISTERS]{0};       //double-precision float registers - 64 bit in size
+        U8 _R[NUM_REGISTERS];               //integer registers - 64 bit in size
+        F4 _RF[NUM_FLOAT_REGISTERS];        //single-precision float registers - 32 bit in size
+        F8 _RD[NUM_DOUBLE_REGISTERS];       //double-precision float registers - 64 bit in size
         static const std::vector<std::string> _RegisterStrings;
         static const std::vector<std::string> _FloatRegisterStrings;
         static const std::vector<std::string> _DoubleRegisterStrings;

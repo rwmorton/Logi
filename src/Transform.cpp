@@ -144,26 +144,40 @@ void Transform::qwordToRegister(U1 bytes[],U8& reg)
 
 void Transform::floatToRegister(U1 bytes[],F4& reg)
 {
-    reg = 0;
-    U1* buffer = (U1*)&reg;
-    buffer[0] = bytes[0];
-    buffer[1] = bytes[1];
-    buffer[2] = bytes[2];
-    buffer[3] = bytes[3];
+    if(PLATFORM == Endian::LITTLE)
+    {
+        U1 buffer[4];
+        buffer[0] = bytes[3];
+        buffer[1] = bytes[2];
+        buffer[2] = bytes[1];
+        buffer[3] = bytes[0];
+        reg = *(F4*)&buffer;
+    }
+    else
+    {
+        reg = *(F4*)&bytes;
+    }
 }
 
 void Transform::doubleToRegister(U1 bytes[],F8& reg)
 {
-    reg = 0;
-    U1* buffer = (U1*)&reg;
-    buffer[0] = bytes[0];
-    buffer[1] = bytes[1];
-    buffer[2] = bytes[2];
-    buffer[3] = bytes[3];
-    buffer[4] = bytes[4];
-    buffer[5] = bytes[5];
-    buffer[6] = bytes[6];
-    buffer[7] = bytes[7];
+    if(PLATFORM == Endian::LITTLE)
+    {
+        U1 buffer[8];
+        buffer[0] = bytes[7];
+        buffer[1] = bytes[6];
+        buffer[2] = bytes[5];
+        buffer[3] = bytes[4];
+        buffer[4] = bytes[3];
+        buffer[5] = bytes[2];
+        buffer[6] = bytes[1];
+        buffer[7] = bytes[0];
+        reg = *(F8*)&buffer;
+    }
+    else
+    {
+        reg = *(F8*)&bytes;
+    }
 }
 
 void Transform::addressToRegister(U1 bytes[],U8& reg)

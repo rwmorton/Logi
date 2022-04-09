@@ -63,6 +63,9 @@ void InstructionSet::LF1I() const
 {
     //set register at byte 2 to float starting at byte 3
     Transform::floatToRegister(&(*vm->ram)(vm->registers.R($IP)+2),vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
+
+    //vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = static_cast<F4>((*vm->ram)(vm->registers.R($IP)+2));
+
     vm->registers.R($IP) += 6; //set next instruction
 }
 

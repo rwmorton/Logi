@@ -2,8 +2,7 @@
 #define __LOGI_TESTING_H__
 
 //Logi includes
-#include "Transform.h"
-#include "Stream.h"
+#include "Logi.h"
 
 namespace Logi
 {

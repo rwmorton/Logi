@@ -1,6 +1,5 @@
 //Logi includes
-#include "../Transform.h"
-#include "../Stream.h"
+#include "../Logi.h"
 
 //std includes
 #include <cassert>

@@ -1,6 +1,9 @@
 #ifndef __LOGI_H__
 #define __LOGI_H__
 
+//run tests?
+// #define __LOGI_TESTS_ON__
+
 //Logi includes
 #include "Assembler.h"
 #include "Bytecode.h"
@@ -20,11 +23,11 @@
 #include "Validator.h"
 #include "VirtualMachine.h"
 
-#include "Byte.h"
-#include "Word.h"
-#include "DWord.h"
-#include "QWord.h"
-#include "Float.h"
+#include "./types/Byte.h"
+#include "./types/Word.h"
+#include "./types/DWord.h"
+#include "./types/QWord.h"
+#include "./types/Float.h"
 
 namespace Logi
 {

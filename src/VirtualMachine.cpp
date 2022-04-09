@@ -34,11 +34,10 @@ void VirtualMachine::init(const int argc,const char* argv[])
 {
     stream->string("VM: Initializing virtual machine...\n");
     stream->string("VM: Loading bytecode executable...\n");
+
     //load the bytecode
     executable.load(argc,argv);
     stream->string("VM: Bytecode executable loaded.\n");
-
-    cout << *ram << endl;
 
     //validate the bytecode
     validateBytecode();
@@ -55,8 +54,6 @@ void VirtualMachine::run()
     {
         stream->string("Debugger started, enter command:\n");
     }
-
-    cout << "RAM CONTENTS = " << *ram << endl;
 
     while((*ram)(registers.R($IP)) != OpCode::HALT)
     {
