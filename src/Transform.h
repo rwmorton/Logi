@@ -9,21 +9,19 @@ namespace Logi
 {
 
 //
-// TODO: add flag to check endian of system
-// this is an optimization to add later.
+// Internally data is stored in big-endian format, so
+// the the platform endianness must be detected in order
+// to do the correct conversions. This is done in the
+// constructor.
 //
-
 class Transform
 {
     public:
-        //check system endianess
-        static Endian checkEndianness();
-        //transforms
-        static U2 bytecodeToWord(U1 bytes[]);
-        static U4 bytecodeToDWord(U1 bytes[]);
-        static U8 bytecodeToQWord(U1 bytes[]);
-        static F4 bytecodeToFloat(U1 bytes[]);
-        static F8 bytecodeToDouble(U1 bytes[]);
+        static const U2 bytecodeToWord(U1 bytes[]);
+        static const U4 bytecodeToDWord(U1 bytes[]);
+        static const U8 bytecodeToQWord(U1 bytes[]);
+        static const F4 bytecodeToFloat(U1 bytes[]);
+        static const F8 bytecodeToDouble(U1 bytes[]);
         //
         static void byteToBytecode(U1 byte,U1 bytes[]);
         static void wordToBytecode(U2 word,U1 bytes[]);
@@ -36,8 +34,8 @@ class Transform
         static void wordToRegister(U1 bytes[],U8& reg);
         static void dwordToRegister(U1 bytes[],U8& reg);
         static void qwordToRegister(U1 bytes[],U8& reg);
-        static void floatToRegister(U1 bytes[],U8& reg);
-        static void doubleToRegister(U1 bytes[],U8& reg);
+        static void floatToRegister(U1 bytes[],F4& reg);
+        static void doubleToRegister(U1 bytes[],F8& reg);
         static void addressToRegister(U1 bytes[],U8& reg);
         //
         static void byteToStack(const U1 byte,U1* stackTop);
@@ -53,14 +51,26 @@ class Transform
         static void qwordFromStack(U8& byte,const U1* stackTop);
         static void floatFromStack(U8& byte,const U1* stackTop);
         static void doubleFromStack(U8& byte,const U1* stackTop);
-        //
         //big-endian to little-endian conversion
-        //
         static void word(U1 bytes[],unsigned int start);
         static void dword(U1 bytes[],unsigned int start);
         static void qword(U1 bytes[],unsigned int start);
+        //TESTS
+        #ifdef __LOGI_TESTS_ON__
+            static void TEST_run_all_tests();
+            static void TEST_bytecodeToXYZ();
+            static void TEST_xyzToBytecode();
+            static void TEST_xyzToRegister();
+            static void TEST_xyzToStack();
+            static void TEST_xyzFromStack();
+            static void TEST_xyz_bigToLittleEndian();
+        #endif //__LOGI_TESTS_ON__
+        //END TEST
     private:
         Transform();
+        //set system endianess
+        static const Endian setPlatform();
+        static const Endian PLATFORM;
 };
 
 } //namespace Logi

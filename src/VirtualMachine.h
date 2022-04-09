@@ -76,7 +76,7 @@ class VirtualMachine
         VirtualMachine();
         ~VirtualMachine();
         const Logi::RAM* RAM() const;
-        void init(int argc,char* argv[]);
+        void init(const int argc,const char* argv[]);
         void run();
         void shutdown();
         friend std::ostream& operator<<(std::ostream& out,const VirtualMachine& vm);

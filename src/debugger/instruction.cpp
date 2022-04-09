@@ -115,7 +115,7 @@ void Debugger::instruction(const U8 address) const
         {
             std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 F1{},R1{};
-            Transform::floatToRegister(&(*vm.ram)(currentByte+1),F1);
+            //Transform::floatToRegister(&(*vm.ram)(currentByte+1),F1);
             Transform::byteToRegister((*vm.ram)(currentByte+2),R1);
             out << "$IP= " << inst << ", $F1= " << F1 << ",R1= " << R1 << '\n';
         }
@@ -125,7 +125,7 @@ void Debugger::instruction(const U8 address) const
         {
             std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
             U8 D1{},R1{};
-            Transform::doubleToRegister(&(*vm.ram)(currentByte+1),D1);
+            //Transform::doubleToRegister(&(*vm.ram)(currentByte+1),D1);
             Transform::byteToRegister((*vm.ram)(currentByte+2),R1);
             out << "$IP= " << inst << ", $D1= " << D1 << ",R1= " << R1 << '\n';
         }

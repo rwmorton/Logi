@@ -1,3 +1,5 @@
+tmp/
+
 build/
 build_debug/
 build_release/

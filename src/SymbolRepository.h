@@ -26,7 +26,7 @@ struct Contents
 const U1 GLOBAL_VARIABLE_SIZE {37};
 const U1 STACK_FRAME_SIZE {16};
 const U1 LABEL_SIZE {20};
-const U1 BASE_PROCEDURE_SIZE {37};
+const U1 BASE_PROCEDURE_SIZE {41};
 
 enum GVType
 {
@@ -195,16 +195,19 @@ instruction the assembler will replace it with the
 corresponding address.
 */
 //
-// PROCEDURE IS 37 BYTES LONG + TOTAL SIZE OF ARGS, LOCALS AND LABELS:
+// PROCEDURE IS 41 BYTES LONG + TOTAL SIZE OF ARGS, LOCALS AND LABELS:
 //
-// address: QWORD (8)
-// text:    QWORD (8)
-// line:    DWORD (4)
-// retVal:  BYTE (1)
-// ret:     STACK FRAME (16)
-// args:    16 * NUM ARGS
-// locals:  16 * NUM LOCALS
-// lables:  20 * NUM LABELS
+// address:     QWORD (8)
+// text:        QWORD (8)
+// line:        DWORD (4)
+// retVal:      BYTE (1)
+// numArgs:     BYTE (1)
+// numLocals:   BYTE (1)
+// numLabels:   WORD (2)
+// ret:         STACK FRAME (16)
+// args:        16 * NUM ARGS
+// locals:      16 * NUM LOCALS
+// lables:      20 * NUM LABELS
 //
 struct Procedure : public Addressable
 {
@@ -216,6 +219,31 @@ struct Procedure : public Addressable
     std::vector<StackFrame> args;       //arguments
     std::vector<StackFrame> locals;     //local variables
     std::vector<Label> labels;          //labels
+    //get size
+    const int size() const
+    {
+        int totalSize {BASE_PROCEDURE_SIZE};
+
+        std::vector<StackFrame>::const_iterator i = args.begin();
+        while(i != args.end())
+        {
+            totalSize += STACK_FRAME_SIZE;
+            ++i;
+        }
+        i = locals.begin();
+        while(i != locals.end())
+        {
+            totalSize += STACK_FRAME_SIZE;
+            ++i;
+        }
+        std::vector<Label>::const_iterator j = labels.begin();
+        while(j != labels.end())
+        {
+            totalSize += LABEL_SIZE;
+            ++j;
+        }
+        return totalSize;
+    }
     //read from file
     static void read(Procedure& p,std::ifstream& in)
     {

@@ -27,11 +27,11 @@ LDI $R3, -70000
 LQI $R4, 1234567890123 ### SOME COMMENT ####
 LF1I $F1, -2.3e-4
 LF2I $D1, 100e2
-# LAD $R5, myproc2
+LAD $R5, myproc2
 #
 # CHECK!!!
 #
-# LAI $R6, $TOP, gvar4        # balh balh balh
+LAI $R6, $TOP, gvar4        # balh balh balh
 #
 LWI $R7, 600
 SB $R1, $R7
@@ -78,13 +78,13 @@ POPF2 $D3
 MOV $R4, $R12
 MOVF $F3, $F4
 MOVD $D3, $D4
-# LAD $R13, proc2label1
+LAD $R13, proc2label1
 JMP $R13
 NOP
 NOP
 NOP
 .PL proc2label1
-# LAD $R13, proc2label2
+LAD $R13, proc2label2
 JE $R4, $R12, $R13
 NOP
 .PL proc2label2

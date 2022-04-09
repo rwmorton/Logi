@@ -203,9 +203,6 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
         {
             case PR:
             {
-
-                std::cout << "GOT .PR DIRECTIVE" << std::endl;
-
                 //if we have already loaded a procedure retval
                 //then this is an error as a procedure can only
                 //have one retval.

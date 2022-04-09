@@ -95,7 +95,7 @@ Assembler::~Assembler() {}
 //
 // Load ASM file from command line args
 //
-void Assembler::load(int argc,char* argv[])
+void Assembler::load(const int argc,const char* argv[])
 {
     std::vector<Flag> flags = parseArgs(argc,argv);
 
@@ -325,18 +325,12 @@ void Assembler::save()
     while(i != stringTable.end())
     {
         out.write(i->c_str(),i->length() + 1); //+1 makes out write the null-character '\0'
-        //out << *i << '\0';
 
-        cout << "writing (" << *i << ") to file, " << i->length() << " bytes long." << endl;
         totalBytes += i->length() + 1;
         totalLines++;
 
         ++i;
     }
-
-    cout << "wrote a total of " << totalBytes << " bytes from the string table" << endl;
-    cout << "wrote " << totalLines << " lines" << endl;
-    cout << "string table size = " << stringTableSize << endl;
 
     // write the bytecode
     bytecodeLoader.write(out);

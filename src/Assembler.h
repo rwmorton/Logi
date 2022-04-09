@@ -153,7 +153,7 @@ class Assembler : public LoadFile
     public:
         Assembler();
         ~Assembler();
-        void load(int argc,char *argv[]);
+        void load(const int argc,const char *argv[]);
         void save();
         friend std::ostream& operator<<(std::ostream& out,const Assembler& asmb);
     private:

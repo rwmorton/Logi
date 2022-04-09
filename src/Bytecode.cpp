@@ -40,7 +40,7 @@ Bytecode::Bytecode(VirtualMachine& vm) :
 Bytecode::~Bytecode() {}
 
 //load the bytecode from command line args
-void Bytecode::load(int argc,char* argv[])
+void Bytecode::load(const int argc,const char* argv[])
 {
     std::vector<Flag> flags = parseArgs(argc,argv);
     std::vector<Flag>::iterator flags_it = flags.begin();
@@ -83,7 +83,15 @@ void Bytecode::load(int argc,char* argv[])
     //is debug on? and do we have the neccessary data?
     if(debug == true && symbolTableSize > 0 && stringTableSize > 0)
     {
+        cout << in.tellg() << endl;
         loadDebugger(in);
+        cout << in.tellg() << endl;
+    }
+    else
+    {
+        //skip ahead
+        int skipBy = symbolTableSize + stringTableSize + Bytecode::HEADER_SIZE;
+        in.seekg(skipBy);
     }
 
     //now load the bytecode
@@ -121,15 +129,10 @@ void Bytecode::loadDebugger(std::ifstream& in)
     const U4 numGlobalVariables = debugData->contents.numGlobalVariables;
     const U4 numProcedures = debugData->contents.numProcedures;
 
-    cout << "num global variables = " << numGlobalVariables << endl;
-    cout << "num procedures = " << numProcedures << endl;
-
     if(numGlobalVariables == 0 && numProcedures == 0)
     {
         throw std::runtime_error("BYTECODE: debug is on but no global variables and/or procedures to load.");
     }
-
-    cout << "GLOBAL VARS:\n" << endl;
 
     //if there are global variables
     if(numGlobalVariables > 0)

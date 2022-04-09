@@ -60,7 +60,7 @@ class Bytecode : public LoadFile
     public:
         Bytecode(VirtualMachine& vm);
         ~Bytecode();
-        void load(int argc,char *argv[]);
+        void load(const int argc,const char *argv[]);
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const Bytecode& bytecode);
     private:

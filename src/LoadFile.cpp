@@ -106,7 +106,7 @@ LoadFile& LoadFile::addFlag(const Flag& flag)
     return *this;
 }
 
-std::vector<Flag> LoadFile::parseArgs(int argc,char* argv[])
+std::vector<Flag> LoadFile::parseArgs(const int argc,const char* argv[])
 {
     //get all the command line args
     std::vector<std::string> args;

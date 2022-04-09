@@ -3,6 +3,7 @@ add_subdirectory(instructionset)
 add_subdirectory(virtualmachine)
 add_subdirectory(debugger)
 add_subdirectory(assembler)
+add_subdirectory(tests)
 
 add_library(Types_obj Types.cpp)
 add_library(LoadFile_obj LoadFile.cpp)
@@ -29,10 +30,11 @@ target_link_libraries(main DWord_obj)
 target_link_libraries(main QWord_obj)
 target_link_libraries(main Float_obj)
 target_link_libraries(main Types_obj)
+# tests
+target_link_libraries(main transform_test_obj)
 #
 target_link_libraries(main VirtualMachine_obj)
 # virtualmachine
-target_link_libraries(main Transform_obj)
 target_link_libraries(main validatebytecode_obj)
 #
 target_link_libraries(main Validator_obj)
@@ -65,5 +67,6 @@ target_link_libraries(main loadASM_obj)
 target_link_libraries(main ValidateASM_obj)
 target_link_libraries(main SymbolRepository_obj)
 target_link_libraries(main BytecodeFromASM_obj)
+target_link_libraries(main Transform_obj)
 
 target_include_directories(main PUBLIC types)

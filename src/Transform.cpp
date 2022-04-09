@@ -1,145 +1,111 @@
 //Logi includes
 #include "Transform.h"
+#include "Stream.h"
 
 namespace Logi
 {
 
-//
-// if LSB is placed first followed by the MSB
-// then the system is little-endian.
-//
-// if MSB is placed first followed by LSB
-// then the system is big-endian.
-//
-Endian Transform::checkEndianness()
-{
-    int i = 184594741; //0x0B00B135
+const Endian Transform::PLATFORM {Transform::setPlatform()};
 
-    U1* buf = (U1*)&i;
-    return buf[0] == 0x35 ? Endian::LITTLE : Endian::BIG;
-}
-
-U2 Transform::bytecodeToWord(U1 bytes[])
+const U2 Transform::bytecodeToWord(U1 bytes[])
 {
+    int SIZE = sizeof(U2);
     U2 word;
     U1* buffer = (U1*)&word;
-    buffer[0] = bytes[1];
-    buffer[1] = bytes[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) buffer[i] = bytes[rev];
+    else for(int i=0; i<SIZE; i++) buffer[i] = bytes[i];
 
     return word;
 }
 
-U4 Transform::bytecodeToDWord(U1 bytes[])
+const U4 Transform::bytecodeToDWord(U1 bytes[])
 {
+    int SIZE = sizeof(U4);
     U4 dword;
     U1* buffer = (U1*)&dword;
-    buffer[0] = bytes[3];
-    buffer[1] = bytes[2];
-    buffer[2] = bytes[1];
-    buffer[3] = bytes[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) buffer[i] = bytes[rev];
+    else for(int i=0; i<SIZE; i++) buffer[i] = bytes[i];
 
     return dword;
 }
 
-U8 Transform::bytecodeToQWord(U1 bytes[])
+const U8 Transform::bytecodeToQWord(U1 bytes[])
 {
+    int SIZE = sizeof(U8);
     U8 qword;
     U1* buffer = (U1*)&qword;
-    buffer[0] = bytes[7];
-    buffer[1] = bytes[6];
-    buffer[2] = bytes[5];
-    buffer[3] = bytes[4];
-    buffer[4] = bytes[3];
-    buffer[5] = bytes[2];
-    buffer[6] = bytes[1];
-    buffer[7] = bytes[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) buffer[i] = bytes[rev];
+    else for(int i=0; i<SIZE; i++) buffer[i] = bytes[i];
 
     return qword;
 }
 
-F4 Transform::bytecodeToFloat(U1 bytes[])
+const F4 Transform::bytecodeToFloat(U1 bytes[])
 {
+    int SIZE = sizeof(F4);
     F4 float_;
     U1* buffer = (U1*)&float_;
-    buffer[0] = bytes[3];
-    buffer[1] = bytes[2];
-    buffer[2] = bytes[1];
-    buffer[3] = bytes[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) buffer[i] = bytes[rev];
+    else for(int i=0; i<SIZE; i++) buffer[i] = bytes[i];
 
     return float_;
 }
 
-F8 Transform::bytecodeToDouble(U1 bytes[])
+const F8 Transform::bytecodeToDouble(U1 bytes[])
 {
+    int SIZE = sizeof(F8);
     F8 double_;
     U1* buffer = (U1*)&double_;
-    buffer[0] = bytes[7];
-    buffer[1] = bytes[6];
-    buffer[2] = bytes[5];
-    buffer[3] = bytes[4];
-    buffer[4] = bytes[3];
-    buffer[5] = bytes[2];
-    buffer[6] = bytes[1];
-    buffer[7] = bytes[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) buffer[i] = bytes[rev];
+    else for(int i=0; i<SIZE; i++) buffer[i] = bytes[i];
 
     return double_;
 }
 
 void Transform::byteToBytecode(U1 byte,U1 bytes[])
 {
-    U1* buffer = (U1*)&word;
-    bytes[0] = buffer[1];
+    U1* buffer = (U1*)&byte;
+    bytes[0] = buffer[0];
 }
 
 void Transform::wordToBytecode(U2 word,U1 bytes[])
 {
+    int SIZE = sizeof(U2);
     U1* buffer = (U1*)&word;
-    bytes[0] = buffer[1];
-    bytes[1] = buffer[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) bytes[i] = buffer[rev];
+    else for(int i=0; i<SIZE; i++) bytes[i] = buffer[i];
 }
 
 void Transform::dwordToBytecode(U4 dword,U1 bytes[])
 {
+    int SIZE = sizeof(U4);
     U1* buffer = (U1*)&dword;
-    bytes[0] = buffer[3];
-    bytes[1] = buffer[2];
-    bytes[2] = buffer[1];
-    bytes[3] = buffer[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) bytes[i] = buffer[rev];
+    else for(int i=0; i<SIZE; i++) bytes[i] = buffer[i];
 }
 
 void Transform::qwordToBytecode(U8 qword,U1 bytes[])
 {
+    int SIZE = sizeof(U8);
     U1* buffer = (U1*)&qword;
-    bytes[0] = buffer[7];
-    bytes[1] = buffer[6];
-    bytes[2] = buffer[5];
-    bytes[3] = buffer[4];
-    bytes[4] = buffer[3];
-    bytes[5] = buffer[2];
-    bytes[6] = buffer[1];
-    bytes[7] = buffer[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) bytes[i] = buffer[rev];
+    else for(int i=0; i<SIZE; i++) bytes[i] = buffer[i];
 }
 
 void Transform::floatToBytecode(F4 float_,U1 bytes[])
 {
+    int SIZE = sizeof(F4);
     U1* buffer = (U1*)&float_;
-    bytes[0] = buffer[3];
-    bytes[1] = buffer[2];
-    bytes[2] = buffer[1];
-    bytes[3] = buffer[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) bytes[i] = buffer[rev];
+    else for(int i=0; i<SIZE; i++) bytes[i] = buffer[i];
 }
 
 void Transform::doubleToBytecode(F8 double_,U1 bytes[])
 {
+    int SIZE = sizeof(F8);
     U1* buffer = (U1*)&double_;
-    bytes[0] = buffer[7];
-    bytes[1] = buffer[6];
-    bytes[2] = buffer[5];
-    bytes[3] = buffer[4];
-    bytes[4] = buffer[3];
-    bytes[5] = buffer[2];
-    bytes[6] = buffer[1];
-    bytes[7] = buffer[0];
+    if(PLATFORM == Endian::LITTLE) for(int i=0, rev{SIZE-1}; i<SIZE; i++,rev--) bytes[i] = buffer[rev];
+    else for(int i=0; i<SIZE; i++) bytes[i] = buffer[i];
 }
 
 //store data in registers
@@ -151,6 +117,7 @@ void Transform::byteToRegister(U1 byte,U8& reg)
 
 void Transform::wordToRegister(U1 bytes[],U8& reg)
 {
+    reg = 0;
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];
     buffer[1] = bytes[1];
@@ -158,7 +125,7 @@ void Transform::wordToRegister(U1 bytes[],U8& reg)
 
 void Transform::dwordToRegister(U1 bytes[],U8& reg)
 {
-    U1* buffer = (U1*)&reg;
+    U1* buffer = (U1*)&reg;;
     buffer[0] = bytes[0];
     buffer[1] = bytes[1];
     buffer[2] = bytes[2];
@@ -178,7 +145,7 @@ void Transform::qwordToRegister(U1 bytes[],U8& reg)
     buffer[7] = bytes[7];
 }
 
-void Transform::floatToRegister(U1 bytes[],U8& reg)
+void Transform::floatToRegister(U1 bytes[],F4& reg)
 {
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];
@@ -187,7 +154,7 @@ void Transform::floatToRegister(U1 bytes[],U8& reg)
     buffer[3] = bytes[3];
 }
 
-void Transform::doubleToRegister(U1 bytes[],U8& reg)
+void Transform::doubleToRegister(U1 bytes[],F8& reg)
 {
     U1* buffer = (U1*)&reg;
     buffer[0] = bytes[0];
@@ -377,5 +344,27 @@ void Transform::qword(U1 bytes[],unsigned int start)
 }
 
 Transform::Transform() {}
+
+//
+// if LSB is placed first followed by the MSB
+// then the system is little-endian.
+//
+// if MSB is placed first followed by LSB
+// then the system is big-endian.
+//
+const Endian Transform::setPlatform()
+{
+    int i = 184594741; //0x0B00B135
+
+    U1* buf = (U1*)&i;
+    Endian platform = buf[0] == 0x35 ? Endian::LITTLE : Endian::BIG;
+
+    std::string msg {"TRANSFORM: detected "};
+    platform == Endian::LITTLE ? msg += "little" : msg += "big";
+    msg += "-endian system. Appropriate conversions will be done.";
+    Stream::getInstance()->string(msg).endl();
+
+    return platform;
+}
 
 } //namespace Logi

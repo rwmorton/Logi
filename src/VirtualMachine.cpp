@@ -30,7 +30,7 @@ const Logi::RAM* VirtualMachine::RAM() const
     return ram;
 }
 
-void VirtualMachine::init(int argc,char* argv[])
+void VirtualMachine::init(const int argc,const char* argv[])
 {
     stream->string("VM: Initializing virtual machine...\n");
     stream->string("VM: Loading bytecode executable...\n");
@@ -38,18 +38,16 @@ void VirtualMachine::init(int argc,char* argv[])
     executable.load(argc,argv);
     stream->string("VM: Bytecode executable loaded.\n");
 
+    cout << *ram << endl;
+
     //validate the bytecode
-    //validateBytecode();
-    //stream->string("VM: bytecode passed validation!\n");
+    validateBytecode();
+    stream->string("VM: bytecode passed validation!\n");
 }
 
 void VirtualMachine::run()
 {
     stream->string("VM: running...\n");
-
-    //////////////// TEMP!!!!!!
-    // force debug on until I can build a proper executable
-    debugOn = true;
 
     U8 debugIP;
 
@@ -58,8 +56,14 @@ void VirtualMachine::run()
         stream->string("Debugger started, enter command:\n");
     }
 
+    cout << "RAM CONTENTS = " << *ram << endl;
+
     while((*ram)(registers.R($IP)) != OpCode::HALT)
     {
+        std::ostream& out = stream->get();
+        out << "\n\nR($IP) = " << static_cast<int>(registers.R($IP)) << "\n";
+        out << "RAM[R($IP)) = " << static_cast<int>((*ram)(registers.R($IP))) << "\n\n";
+
         //is debugger on?
         if(debugOn)
         {
@@ -144,11 +148,6 @@ void VirtualMachine::run()
             case DSLT: iset->DSLT(); break;
             default: throw std::runtime_error("VIRTUAL_MACHINE: invalid instruction.");
         }
-
-        std::ostream& out = stream->get();
-        out << "\n\nR($IP) = " << static_cast<int>(registers.R($IP)) << "\n";
-        out << "RAM[R($IP)) = " << static_cast<int>((*ram)($IP)) << "\n\n";
-        out << static_cast<int>((*ram)(3)) << '\n';
 
         if(debugOn)
         {

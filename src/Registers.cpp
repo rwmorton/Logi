@@ -37,9 +37,19 @@ const RegisterCodes Registers::FIRST_INTEGER_REGISTER {RegisterCodes::$R1};
 const FloatRegisterCodes Registers::FIRST_FLOAT_REGISTER {FloatRegisterCodes::$F1};
 const DoubleRegisterCodes Registers::FIRST_DOUBLE_REGISTER {DoubleRegisterCodes::$D1};
 
+Registers::Registers()
+{
+    for(int i=0; i<32; i++) _R[i] = 0;
+    for(int i=0; i<10; i++)
+    {
+        _RF[i] = 0;
+        _RD[i] = 0;
+    }
+}
+
 U8& Registers::R(const RegisterCodes code)
 {
-    if(code < RegisterCodes::$IP || code > (NUM_REGISTERS + NUM_INTEGER_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code > RegisterCodes::$R24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
@@ -51,19 +61,19 @@ U8& Registers::R1_24(unsigned int code)
 
 F4& Registers::RF(const FloatRegisterCodes code)
 {
-    if(code < FloatRegisterCodes::$F1 || code >= (NUM_FLOAT_REGISTERS + FloatRegisterCodes::$F1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < FloatRegisterCodes::$F1 || code > FloatRegisterCodes::$F10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RF[code-1];
 }
 
 F8& Registers::RD(const DoubleRegisterCodes code)
 {
-    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_DOUBLE_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < DoubleRegisterCodes::$D1 || code > DoubleRegisterCodes::$D10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RD[code-1];
 }
 
 const U8 Registers::R(const RegisterCodes code) const
 {
-    if(code < RegisterCodes::$IP || code > (NUM_REGISTERS + NUM_INTEGER_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code > RegisterCodes::$R24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
@@ -75,19 +85,19 @@ const U8 Registers::R1_24(unsigned int code) const
 
 const F4 Registers::RF(const FloatRegisterCodes code) const
 {
-    if(code < FloatRegisterCodes::$F1 || code >= (NUM_FLOAT_REGISTERS + FloatRegisterCodes::$F1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < FloatRegisterCodes::$F1 || code > FloatRegisterCodes::$F10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RF[code-1];
 }
 
 const F8 Registers::RD(const DoubleRegisterCodes code) const
 {
-    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_DOUBLE_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < DoubleRegisterCodes::$D1 || code > DoubleRegisterCodes::$D10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RD[code-1];
 }
 
 const std::string& Registers::R_str(const RegisterCodes code) const
 {
-    if(code < RegisterCodes::$IP || code > (NUM_REGISTERS + NUM_INTEGER_REGISTERS + RegisterCodes::$R24)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    if(code < RegisterCodes::$IP || code > RegisterCodes::$R24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RegisterStrings.at(code);
 }
 
@@ -99,14 +109,14 @@ const std::string& Registers::R1_24_str(unsigned int code) const
 
 const std::string& Registers::RF_str(const FloatRegisterCodes code) const
 {
-    if(code < FloatRegisterCodes::$F1 || code >= (NUM_FLOAT_REGISTERS + FloatRegisterCodes::$F1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _FloatRegisterStrings.at(code-1);
+    if(code < FloatRegisterCodes::$F1 || code > FloatRegisterCodes::$F10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _FloatRegisterStrings.at(code);
 }
 
 const std::string& Registers::RD_str(const DoubleRegisterCodes code) const
 {
-    if(code < DoubleRegisterCodes::$D1 || code >= (NUM_DOUBLE_REGISTERS + DoubleRegisterCodes::$D1)) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
-    return _DoubleRegisterStrings.at(code-1);
+    if(code < DoubleRegisterCodes::$D1 || code > DoubleRegisterCodes::$D10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
+    return _DoubleRegisterStrings.at(code);
 }
 
 std::ostream& operator<<(std::ostream& out,const Registers& registers)

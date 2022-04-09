@@ -13,15 +13,19 @@
 #include "Logi.h"
 #include "Testing.h"
 
-int main(int argc,char *argv[])
+int main(const int argc,const char *argv[])
 {
     //Logi::makeRandomBytecodeFile();
 
-    std::cout << "Testing Virtual Machine\n" << std::setw(25) << std::setfill('-') << '\n';
+    #ifdef __LOGI_TESTS_ON__
+        std::cout << "Testing Virtual Machine\n" << std::setw(25) << std::setfill('-') << '\n';
+        Logi::run_all_tests();
+    #endif
 
+    /*
     Logi::VirtualMachine vm;
 
-    bool runAssembler = false;
+    bool runAssembler = true;
 
     try
     {
@@ -34,20 +38,33 @@ int main(int argc,char *argv[])
             file->save();
             delete file;
         }
-        else
+
+        //vm.init(argc,argv);
+
+        int argc_override = 3;
+        const char* argv_override[] =
         {
-            vm.init(argc,argv);
-            vm.run();
-            vm.shutdown();
-        }
+            std::string{"./build/src/main"}.c_str(),
+            std::string{"-d"}.c_str(),
+            std::string{"/home/richard/work/projects/Logi/test.RUN"}.c_str()
+        };
+
+        cout << "/home/richard/work/projects/Logi/test.RUN" << endl;
+        std::string str {"/home/richard/work/projects/Logi/test.RUN"};
+        cout << str << endl;
+        cout << str.c_str() << endl;
+
+        vm.init(argc_override,argv_override);
+
+        vm.run();
+        vm.shutdown();
     }
     catch(const std::exception& e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         vm.shutdown();
     }
-
-    Logi::Transform::checkEndianness(); //FORCE LINKER TO WORK
+    */
 
     return 0;
 }

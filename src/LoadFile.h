@@ -43,10 +43,10 @@ class LoadFile
 {
     public:
         virtual ~LoadFile();
-        virtual void load(int argc,char *argv[]) = 0;
+        virtual void load(const int argc,const char *argv[]) = 0;
     protected:
         LoadFile& addFlag(const Flag& flag);
-        std::vector<Flag> parseArgs(int argc,char* argv[]);
+        std::vector<Flag> parseArgs(const int argc,const char* argv[]);
         static const bool checkFlag(const char* currentChar,const char prefix,const char flags[],unsigned char numFlags);
         std::string filename;
         std::vector<Flag> addedFlags;

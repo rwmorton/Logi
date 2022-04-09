@@ -130,7 +130,7 @@ Addressable* SymbolTable::getAddressable(const int index)
 const U8 SymbolTable::size() const
 {
     U8 gvSize = globalVariables.size() * GLOBAL_VARIABLE_SIZE;
-    U8 procSize {0};
+    U8 procSize {8}; //initialize to 8 bytes for the TOC
     std::vector<Procedure>::const_iterator p = procedures.begin();
     while(p != procedures.end())
     {
@@ -168,11 +168,16 @@ void SymbolTable::write(std::ofstream& out) const
         ++gv_it;
     }
 
+    int procSize {0};
+
     //write procedures
     std::vector<Procedure>::const_iterator p_it = procedures.begin();
     while(p_it != procedures.end())
     {
         p_it->write(out);
+
+        procSize += p_it->size();
+
         ++p_it;
     }
 }

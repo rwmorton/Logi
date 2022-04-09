@@ -72,7 +72,13 @@ U1& RAM::operator()(const unsigned int index)
 {
     //Stream::getInstance()->string("RAM::operator() : index = ").U8(index).endl();
 
-    if(index >= _numBytes) throw std::out_of_range("RAM: index out of bounds.");
+    if(index >= _numBytes) 
+    {
+        std::string errorStr {"RAM: index ("};
+        errorStr += std::to_string(index);
+        errorStr += ") is out of bounds.";
+        throw std::out_of_range(errorStr);
+    }
     return *(&_ram[index]);
 }
 

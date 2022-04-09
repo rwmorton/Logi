@@ -1,6 +1,8 @@
 #ifndef __LOGI_TYPES_H__
 #define __LOGI_TYPES_H__
 
+#define __LOGI_TESTS_ON__
+
 //std includes
 #include <ostream>
 
