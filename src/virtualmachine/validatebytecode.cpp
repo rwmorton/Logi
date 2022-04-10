@@ -24,9 +24,6 @@ void VirtualMachine::validateBytecode()
 
     while(currentByte < stopByte)
     {
-        cout << "start of validator while loop...\n";
-        cout << "currentByte = " << currentByte << endl;
-
         switch((*ram)(currentByte))
         {
             case LBI: //LBI $R1, BBB

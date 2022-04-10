@@ -97,12 +97,15 @@ void InstructionSet::LAD() const
 //
 void InstructionSet::LAI() const
 {
-    Transform::addressToRegister
-    (
-        &(*vm->ram)(vm->registers.R((RegisterCodes)((*vm->ram)(vm->registers.R($IP)+2)))),
-        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1))
-    );
-    vm->registers.R($IP) += 3; //set next instruction
+    U8 R2 = (*vm->ram)(vm->registers.R($IP)+2);
+    U8 QWORD = (*vm->ram)(vm->registers.R($IP)+3);
+
+    cout << "R2 = " << R2 << endl;
+    cout << "QWORD = " << QWORD << endl;
+
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)(R2 + QWORD);
+
+    vm->registers.R($IP) += 11; //set next instruction
 }
 
 //

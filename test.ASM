@@ -2,8 +2,16 @@
 .GB gvar2
 .GB gvar3
 
+.PB myproc
+
 LAD $R22 gvar3
 
+LBI $R23 7
+LBI $R1 4
+
+LAI $R13 $R1 test_label
+
+.PL test_label
 LBI $R1 13
 LBI $R2 7
 ADD $R3 $R1 $R2
@@ -39,5 +47,7 @@ LF2I $D1 3.4567890
 NOP
 NOP
 NOP
+
+.PE # myproc
 
 HALT
