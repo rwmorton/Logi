@@ -1,0 +1,53 @@
+.GB gvar1
+.GB gvar2
+.GB gvar3
+
+.PB myproc
+
+LAD $R22 gvar3
+
+LBI $R23 7
+LBI $R1 4
+
+LAI $R13 $R1 test_label
+
+.PL test_label
+LBI $R1 13
+LBI $R2 7
+ADD $R3 $R1 $R2
+
+LBI $R4 -5
+LBI $R5 -15
+ADD $R6 $R4 $R5
+
+LWI $R7 -300
+LWI $R8 500
+ADD $R9 $R7 $R8
+
+LDI $R10 23
+LDI $R11 11
+ADD $R12 $R10 $R11
+
+LDI $R13 -21
+LDI $R14 29
+ADD $R15 $R13 $R14
+
+LQI $R16 111111
+LQI $R17 222222
+ADD $R18 $R16 $R17
+
+LQI $R19 -4444444
+LQI $R20 -3333333
+ADD $R21 $R19 $R20
+
+LF1I $F1 1.2345
+
+LF2I $D1 3.4567890
+
+NOP
+NOP
+NOP
+
+.PE # myproc
+
+HALT

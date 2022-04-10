@@ -12,16 +12,7 @@ namespace Logi
 //
 void InstructionSet::SB() const
 {
-    /*
-    Transform::byteToBytecode
-    (
-        //vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
-    );
-    */
-
-    (*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2))) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1));
-
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S1)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -32,11 +23,7 @@ void InstructionSet::SB() const
 //
 void InstructionSet::SW() const
 {
-    Transform::wordToBytecode
-    (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S2)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -47,11 +34,7 @@ void InstructionSet::SW() const
 //
 void InstructionSet::SD() const
 {
-    Transform::dwordToBytecode
-    (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S4)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -62,11 +45,7 @@ void InstructionSet::SD() const
 //
 void InstructionSet::SQ() const
 {
-    Transform::qwordToBytecode
-    (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -77,11 +56,7 @@ void InstructionSet::SQ() const
 //
 void InstructionSet::SF1() const
 {
-    Transform::floatToBytecode
-    (
-        vm->registers.RF((FloatRegisterCodes)((*vm->ram)(vm->registers.RF((FloatRegisterCodes)$IP)+1))),
-        &(*vm->ram)(vm->registers.R1_24(($IP+2)))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S4)(vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -92,11 +67,7 @@ void InstructionSet::SF1() const
 //
 void InstructionSet::SF2() const
 {
-    Transform::doubleToBytecode
-    (
-        vm->registers.RD((DoubleRegisterCodes)((*vm->ram)(vm->registers.RD((DoubleRegisterCodes)$IP)+1))),
-        &(*vm->ram)(vm->registers.R1_24(($IP+2)))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S8)(vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 

@@ -248,10 +248,10 @@ void Debugger::dump(const U8 start,const U8 stop) const
         out << "\nMEMORY DUMP [" << start << "," << stop << "]\n";
         out << std::setw(30) << std::setfill('-') << '\n';
 
-        for(U8 i=start; i<stop; i++)
+        for(U8 i=start; i<=stop; i++)
         {
             stream->U1((*vm.ram)(i));
-            if(i < stop-1) out << ' ';
+            if(i < stop) out << ' ';
         }
         out << '\n';
     } //else, checkRange will print appropriate message.

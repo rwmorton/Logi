@@ -98,10 +98,7 @@ void InstructionSet::LAD() const
 void InstructionSet::LAI() const
 {
     U8 R2 = (*vm->ram)(vm->registers.R($IP)+2);
-    U8 QWORD = (*vm->ram)(vm->registers.R($IP)+3);
-
-    cout << "R2 = " << R2 << endl;
-    cout << "QWORD = " << QWORD << endl;
+    U8 QWORD = (S8)((*vm->ram)(vm->registers.R($IP)+3));
 
     vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)(R2 + QWORD);
 
@@ -115,11 +112,7 @@ void InstructionSet::LAI() const
 //
 void InstructionSet::LB() const
 {
-    Transform::byteToRegister
-    (
-        (*vm->ram)(vm->registers.R((RegisterCodes)((*vm->ram)(vm->registers.R($IP)+2)))),
-        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -130,11 +123,7 @@ void InstructionSet::LB() const
 //
 void InstructionSet::LW() const
 {
-    Transform::wordToRegister
-    (
-        &(*vm->ram)(vm->registers.R((RegisterCodes)((*vm->ram)(vm->registers.R($IP)+2)))),
-        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -145,11 +134,7 @@ void InstructionSet::LW() const
 //
 void InstructionSet::LD() const
 {
-    Transform::dwordToRegister
-    (
-        &(*vm->ram)(vm->registers.R((RegisterCodes)((*vm->ram)(vm->registers.R($IP)+2)))),
-        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -160,11 +145,7 @@ void InstructionSet::LD() const
 //
 void InstructionSet::LQ() const
 {
-    Transform::qwordToRegister
-    (
-        &(*vm->ram)(vm->registers.R((RegisterCodes)((*vm->ram)(vm->registers.R($IP)+2)))),
-        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1))
-    );
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -175,11 +156,7 @@ void InstructionSet::LQ() const
 //
 void InstructionSet::LF1() const
 {
-    Transform::floatToRegister
-    (
-        &(*vm->ram)(vm->registers.R((RegisterCodes)((*vm->ram)(vm->registers.R($IP)+2)))),
-        vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1))
-    );
+    vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F4)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -190,11 +167,7 @@ void InstructionSet::LF1() const
 //
 void InstructionSet::LF2() const
 {
-    Transform::doubleToRegister
-    (
-        &(*vm->ram)(vm->registers.R((RegisterCodes)((*vm->ram)(vm->registers.R($IP)+2)))),
-        vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1))
-    );
+    vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 

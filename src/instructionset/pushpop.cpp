@@ -20,7 +20,7 @@ void InstructionSet::PUSHB() const
 {
     Transform::byteToStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP)--; //decrement stack pointer
@@ -36,7 +36,7 @@ void InstructionSet::PUSHW() const
 {
     Transform::wordToStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 2; //decrement stack pointer
@@ -52,7 +52,7 @@ void InstructionSet::PUSHD() const
 {
     Transform::dwordToStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 4; //decrement stack pointer
@@ -68,7 +68,7 @@ void InstructionSet::PUSHQ() const
 {
     Transform::qwordToStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($SP) -= 8; //decrement stack pointer
@@ -98,7 +98,7 @@ void InstructionSet::PUSHF1() const
 //
 void InstructionSet::PUSHF2() const
 {
-    Transform::floatToStack
+    Transform::doubleToStack
     (
         vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
@@ -114,12 +114,12 @@ void InstructionSet::PUSHF2() const
 //
 void InstructionSet::POPB() const
 {
+    vm->registers.R($SP)++; //first increment stack pointer
     Transform::byteFromStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R($TOP))
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)), //byte
+        &(*vm->ram)(vm->registers.R($SP))                                   //stack top
     );
-    vm->registers.R($TOP)--; //decrement top-of-stack pointer
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -130,12 +130,12 @@ void InstructionSet::POPB() const
 //
 void InstructionSet::POPW() const
 {
+    vm->registers.R($SP) += 2; //first increment stack pointer by 2
     Transform::wordFromStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R($TOP))
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R($SP))
     );
-    vm->registers.R($TOP) -= 2; //decrement top-of-stack pointer
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -146,12 +146,12 @@ void InstructionSet::POPW() const
 //
 void InstructionSet::POPD() const
 {
+    vm->registers.R($SP) += 4; //first increment stack pointer by 4
     Transform::dwordFromStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R($TOP))
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R($SP))
     );
-    vm->registers.R($TOP) -= 4; //decrement top-of-stack pointer
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -162,12 +162,12 @@ void InstructionSet::POPD() const
 //
 void InstructionSet::POPQ() const
 {
+    vm->registers.R($SP) += 8; //first increment stack pointer by 8
     Transform::qwordFromStack
     (
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)),
-        &(*vm->ram)(vm->registers.R($TOP))
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R($SP))
     );
-    vm->registers.R($TOP) -= 8; //decrement top-of-stack pointer
     vm->registers.R($IP) += 2; //set next instruction
 }
 
