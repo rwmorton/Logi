@@ -24,6 +24,9 @@ void VirtualMachine::validateBytecode()
 
     while(currentByte < stopByte)
     {
+        cout << "start of validator while loop...\n";
+        cout << "currentByte = " << currentByte << endl;
+
         switch((*ram)(currentByte))
         {
             case LBI: //LBI $R1, BBB
@@ -72,7 +75,7 @@ void VirtualMachine::validateBytecode()
             {
                 validate->opcode() /* B */
                     .R().operand() /* $R1 */
-                    .address(TypeTag::U8_TAG).end(); /* Q */
+                    .address(TypeTag::U8_TAG).end_qword(); /* Q */
             }
             break;
             case LAI: //LAI $R1,$R2,qword,  BBBQ
@@ -81,8 +84,7 @@ void VirtualMachine::validateBytecode()
                     .R().operand() /* $R1 */
                     .R().operand() /* $R2 */
                     .address(TypeTag::U8_TAG) /* qword (address) */
-                    .end();
-                    //.end_qword(); /* Q */
+                    .end_qword(); /* Q */
             }
             break;
             case LB: // LB $R1,$R2,     BBB

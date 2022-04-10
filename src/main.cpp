@@ -40,12 +40,12 @@ int main(const int argc,const char *argv[])
 
         //vm.init(argc,argv);
 
+        //override for testing
         int argc_override = 3;
         const char* arg1 = "./build/src/main";
         const char* arg2 = "-d";
         const char* arg3 = "/home/richard/work/projects/Logi/test.RUN";
         const char* argv_override[] = {arg1,arg2,arg3};
-
         vm.init(argc_override,argv_override);
 
         vm.run();

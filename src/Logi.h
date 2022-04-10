@@ -2,7 +2,7 @@
 #define __LOGI_H__
 
 //run tests?
-#define __LOGI_TESTS_ON__
+// #define __LOGI_TESTS_ON__
 
 //Logi includes
 #include "Assembler.h"

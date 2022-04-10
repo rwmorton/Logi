@@ -244,36 +244,35 @@ void Transform::doubleToBytecode(F8 double_,U1 bytes[])
 void Transform::byteToRegister(U1 byte,U8& reg)
 {
     reg = 0;
-    U1* buffer = (U1*)&reg;
-    PLATFORM == Endian::LITTLE ? buffer[7] = byte : buffer[0] = byte;
+    reg = (S1)byte;
 }
 
 void Transform::wordToRegister(U1 bytes[],U8& reg)
 {
-    reg = 0;
-    U1* buffer = (U1*)&reg;
+    U1 buffer[2];
     if(PLATFORM == Endian::LITTLE)
     {
-        buffer[7] = bytes[0];
-        buffer[6] = bytes[1];
+        buffer[0] = bytes[1];
+        buffer[1] = bytes[0];
     }
     else
     {
         buffer[0] = bytes[0];
         buffer[1] = bytes[1];
     }
+    reg = *(S2*)&buffer;
 }
 
 void Transform::dwordToRegister(U1 bytes[],U8& reg)
 {
     reg = 0;
-    U1* buffer = (U1*)&reg;
+    U1 buffer[4];
     if(PLATFORM == Endian::LITTLE)
     {
-        buffer[7] = bytes[0];
-        buffer[6] = bytes[1];
-        buffer[5] = bytes[2];
-        buffer[4] = bytes[3];
+        buffer[0] = bytes[3];
+        buffer[1] = bytes[2];
+        buffer[2] = bytes[1];
+        buffer[3] = bytes[0];
     }
     else
     {
@@ -282,12 +281,13 @@ void Transform::dwordToRegister(U1 bytes[],U8& reg)
         buffer[2] = bytes[2];
         buffer[3] = bytes[3];
     }
+    reg = *(S4*)&buffer;
 }
 
 void Transform::qwordToRegister(U1 bytes[],U8& reg)
 {
     reg = 0;
-    U1* buffer = (U1*)&reg;
+    U1 buffer[8];
     if(PLATFORM == Endian::LITTLE)
     {
         buffer[0] = bytes[7];
@@ -310,6 +310,7 @@ void Transform::qwordToRegister(U1 bytes[],U8& reg)
         buffer[6] = bytes[6];
         buffer[7] = bytes[7];
     }
+    reg = *(S8*)&buffer;
 }
 
 void Transform::floatToRegister(U1 bytes[],F4& reg)
@@ -363,7 +364,7 @@ void Transform::doubleToRegister(U1 bytes[],F8& reg)
 void Transform::addressToRegister(U1 bytes[],U8& reg)
 {
     reg = 0;
-    U1* buffer = (U1*)&reg;
+    U1 buffer[8];
     if(PLATFORM == Endian::LITTLE)
     {
         buffer[0] = bytes[7];
@@ -386,6 +387,7 @@ void Transform::addressToRegister(U1 bytes[],U8& reg)
         buffer[6] = bytes[6];
         buffer[7] = bytes[7];
     }
+    reg = *(U8*)&buffer;
 }
 
 //push data to top of stack

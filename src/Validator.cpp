@@ -131,7 +131,6 @@ Validator& Validator::address(TypeTag tag)
 {
     //checkAddr(ram->at(currentByte),currentByte,registers);
     checkAddr(currentByte);
-
     switch(tag)
     {
         case TypeTag::S1_TAG: stream->string(ADDR).S1(*((S1*)ram->at(currentByte))).string(ENDL); break;
@@ -151,7 +150,15 @@ Validator& Validator::address(TypeTag tag)
 
 void Validator::checkIReg(U1 arg,U8 currentByte) const
 {
-    if(arg > RegisterCodes::$R24) throw std::runtime_error("VALIDATOR: invalid integer register code.");
+    if(arg > RegisterCodes::$R24)
+    {
+        std::string errorStr {"VALIDATOR: invalid integer register code ("};
+        errorStr += std::to_string(arg);
+        errorStr += ") at byte (";
+        errorStr += std::to_string(currentByte);
+        errorStr += ')';
+        throw std::runtime_error(errorStr);
+    }
 }
 
 void Validator::checkFReg(U1 arg,U8 currentByte) const

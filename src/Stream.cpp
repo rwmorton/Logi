@@ -147,6 +147,9 @@ const Stream& Stream::bytes(const Logi::U1 bytes[],unsigned int length) const
 }
 
 //prevent copies - singleton
-Stream::Stream() : out(&std::cout) {}
+Stream::Stream()
+{
+    out = &std::cout;
+}
 
 } //namespace Logi

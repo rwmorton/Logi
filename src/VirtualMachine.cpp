@@ -11,7 +11,7 @@
 namespace Logi
 {
 
-VirtualMachine::VirtualMachine() : executable(*this),debugger{*this},debugOn(false),registers{},ram{nullptr},validate{nullptr}
+VirtualMachine::VirtualMachine() : executable{*this},debugger{*this},debugOn{false},registers{},ram{nullptr},validate{nullptr}
 {
     ram = new Logi::RAM();
     iset = new InstructionSet{this};
@@ -57,9 +57,9 @@ void VirtualMachine::run()
 
     while((*ram)(registers.R($IP)) != OpCode::HALT)
     {
-        std::ostream& out = stream->get();
-        out << "\n\nR($IP) = " << static_cast<int>(registers.R($IP)) << "\n";
-        out << "RAM[R($IP)) = " << static_cast<int>((*ram)(registers.R($IP))) << "\n\n";
+        //std::ostream& out = stream->get();
+        //out << "\n\nR($IP) = " << static_cast<int>(registers.R($IP)) << "\n";
+        //out << "RAM[R($IP)) = " << static_cast<int>((*ram)(registers.R($IP))) << "\n\n";
 
         //is debugger on?
         if(debugOn)

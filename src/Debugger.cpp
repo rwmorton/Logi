@@ -338,7 +338,6 @@ void Debugger::intRegisters() const
     for(int i=$R1; i<=$R24; i++)
     {
         out << std::dec << vm.registers.R_str((RegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.R((RegisterCodes)i) << '\n';
-        //out << std::dec << vm.registers.R_str((RegisterCodes)i) << ":\t" << vm.registers.R((RegisterCodes)i) << '\n';
     }
     out << std::dec << '\n';
 }

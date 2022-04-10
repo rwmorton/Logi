@@ -12,9 +12,9 @@ namespace Logi
 //
 void InstructionSet::ADD() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2))) +
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+        (vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))) +
+        (vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3)));
 
     vm->registers.R($IP) += 4; //set next instruction
 }

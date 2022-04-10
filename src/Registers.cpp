@@ -37,7 +37,9 @@ const RegisterCodes Registers::FIRST_INTEGER_REGISTER {RegisterCodes::$R1};
 const FloatRegisterCodes Registers::FIRST_FLOAT_REGISTER {FloatRegisterCodes::$F1};
 const DoubleRegisterCodes Registers::FIRST_DOUBLE_REGISTER {DoubleRegisterCodes::$D1};
 
-Registers::Registers()
+Registers::Registers() : _R{0},_RF{0},_RD{0} {}
+
+void Registers::zero()
 {
     for(int i=0; i<32; i++) _R[i] = 0;
     for(int i=0; i<10; i++)

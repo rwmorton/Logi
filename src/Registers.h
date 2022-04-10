@@ -82,6 +82,8 @@ class Registers
     public:
         //Registers
         Registers();
+        //zero all registers
+        void zero();
         //set registers
         U8& R(const RegisterCodes code);
         U8& R1_24(unsigned int code); //set registers from R1 - R24
@@ -104,15 +106,14 @@ class Registers
         static const FloatRegisterCodes RF_fromStr(const std::string& str);
         static const DoubleRegisterCodes RD_fromStr(const std::string& str);
         //
-        //static const U1 NUM_REGISTERS {32};
-        static const U1 NUM_REGISTERS {8};
-        static const U1 NUM_INTEGER_REGISTERS {24};
-        static const U1 NUM_FLOAT_REGISTERS {10};
-        static const U1 NUM_DOUBLE_REGISTERS {10};
+        static const U1 NUM_REGISTERS {8};                  //number of basic registers
+        static const U1 NUM_INTEGER_REGISTERS {24};         //number of integer registers
+        static const U1 NUM_FLOAT_REGISTERS {10};           //number of float registers
+        static const U1 NUM_DOUBLE_REGISTERS {10};          //number of double registers
     private:
-        U8 _R[NUM_REGISTERS];               //integer registers - 64 bit in size
-        F4 _RF[NUM_FLOAT_REGISTERS];        //single-precision float registers - 32 bit in size
-        F8 _RD[NUM_DOUBLE_REGISTERS];       //double-precision float registers - 64 bit in size
+        U8 _R[NUM_REGISTERS+NUM_INTEGER_REGISTERS];         //integer registers - 64 bit in size
+        F4 _RF[NUM_FLOAT_REGISTERS];                        //single-precision float registers - 32 bit in size
+        F8 _RD[NUM_DOUBLE_REGISTERS];                       //double-precision float registers - 64 bit in size
         static const std::vector<std::string> _RegisterStrings;
         static const std::vector<std::string> _FloatRegisterStrings;
         static const std::vector<std::string> _DoubleRegisterStrings;
