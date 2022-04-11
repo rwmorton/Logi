@@ -56,7 +56,13 @@ void InstructionSet::SQ() const
 //
 void InstructionSet::SF1() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S4)(vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: SF1() not verified.\n");
+
+    Transform::floatToRegister
+    (
+        &(*vm->ram)(vm->registers.R($IP)+1),
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))
+    );
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -67,7 +73,13 @@ void InstructionSet::SF1() const
 //
 void InstructionSet::SF2() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S8)(vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: SF2() not verified.\n");
+
+    Transform::doubleToRegister
+    (
+        &((*vm->ram)(vm->registers.R($IP)+1)),
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))
+    );
     vm->registers.R($IP) += 3; //set next instruction
 }
 

@@ -73,25 +73,25 @@ F8& Registers::RD(const DoubleRegisterCodes code)
     return _RD[code-1];
 }
 
-const U8 Registers::R(const RegisterCodes code) const
+const U8& Registers::R(const RegisterCodes code) const
 {
     if(code < RegisterCodes::$IP || code > RegisterCodes::$R24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[code];
 }
 
-const U8 Registers::R1_24(unsigned int code) const
+const U8& Registers::R1_24(unsigned int code) const
 {
     if(code < 1 || code > 24) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _R[(code-1) + NUM_REGISTERS];
 }
 
-const F4 Registers::RF(const FloatRegisterCodes code) const
+const F4& Registers::RF(const FloatRegisterCodes code) const
 {
     if(code < FloatRegisterCodes::$F1 || code > FloatRegisterCodes::$F10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RF[code-1];
 }
 
-const F8 Registers::RD(const DoubleRegisterCodes code) const
+const F8& Registers::RD(const DoubleRegisterCodes code) const
 {
     if(code < DoubleRegisterCodes::$D1 || code > DoubleRegisterCodes::$D10) throw std::out_of_range(REG_CODE_OUT_OF_BOUNDS);
     return _RD[code-1];

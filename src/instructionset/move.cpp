@@ -12,7 +12,7 @@ namespace Logi
 //
 void InstructionSet::MOV() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 

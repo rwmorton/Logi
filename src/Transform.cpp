@@ -313,6 +313,54 @@ void Transform::qwordToRegister(U1 bytes[],U8& reg)
     reg = *(S8*)&buffer;
 }
 
+void Transform::floatToRegister(U1 bytes[],U8& reg)
+{
+    U1 buffer[4];
+    if(PLATFORM == Endian::LITTLE)
+    {
+        buffer[0] = bytes[3];
+        buffer[1] = bytes[2];
+        buffer[2] = bytes[1];
+        buffer[3] = bytes[0];
+    }
+    else
+    {
+        buffer[0] = bytes[0];
+        buffer[1] = bytes[1];
+        buffer[2] = bytes[2];
+        buffer[3] = bytes[3];
+    }
+    reg = *(S4*)&buffer;
+}
+
+void Transform::doubleToRegister(U1 bytes[],U8& reg)
+{
+    U1 buffer[8];
+    if(PLATFORM == Endian::LITTLE)
+    {
+        buffer[0] = bytes[7];
+        buffer[1] = bytes[6];
+        buffer[2] = bytes[5];
+        buffer[3] = bytes[4];
+        buffer[4] = bytes[3];
+        buffer[5] = bytes[2];
+        buffer[6] = bytes[1];
+        buffer[7] = bytes[0];
+    }
+    else
+    {
+        buffer[0] = bytes[0];
+        buffer[1] = bytes[1];
+        buffer[2] = bytes[2];
+        buffer[3] = bytes[3];
+        buffer[4] = bytes[4];
+        buffer[5] = bytes[5];
+        buffer[6] = bytes[6];
+        buffer[7] = bytes[7];
+    }
+    reg = *(S8*)&buffer;
+}
+
 void Transform::floatToRegister(U1 bytes[],F4& reg)
 {
     U1 buffer[4];
@@ -390,7 +438,7 @@ void Transform::addressToRegister(U1 bytes[],U8& reg)
     reg = *(U8*)&buffer;
 }
 
-//push data to top of stack
+//push data to stack
 void Transform::byteToStack(const U1 byte,U1* stackTop)
 {
     stackTop[0] = (S1)byte;
@@ -503,7 +551,7 @@ void Transform::doubleToStack(const F8 double_,U1* stackTop)
     }
 }
 
-//get data from top of stack
+//get data from stack
 void Transform::byteFromStack(U8& byte,const U1* stackTop)
 {
     byte = (S1)*(&stackTop[0]);
@@ -522,7 +570,7 @@ void Transform::wordFromStack(U8& word,const U1* stackTop)
         buffer[0] = stackTop[0];
         buffer[1] = stackTop[-1];
     }
-    word = (S2)*(&buffer[0]);
+    word = *(S2*)&buffer;
 }
 
 void Transform::dwordFromStack(U8& dword,const U1* stackTop)
@@ -542,7 +590,7 @@ void Transform::dwordFromStack(U8& dword,const U1* stackTop)
         buffer[2] = stackTop[-2];
         buffer[3] = stackTop[-3];
     }
-    dword = (S4)*(&buffer[0]);
+    dword = *(S4*)&buffer;
 }
 
 void Transform::qwordFromStack(U8& qword,const U1* stackTop)
@@ -570,7 +618,7 @@ void Transform::qwordFromStack(U8& qword,const U1* stackTop)
         buffer[6] = stackTop[-6];
         buffer[7] = stackTop[-7];
     }
-    qword = (S8)*(&buffer[0]);
+    qword = *(S8*)&buffer;
 }
 
 void Transform::floatFromStack(F4& float_,const U1* stackTop)

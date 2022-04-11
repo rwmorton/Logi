@@ -90,10 +90,10 @@ class Registers
         F4& RF(const FloatRegisterCodes code);
         F8& RD(const DoubleRegisterCodes code);
         //get registers
-        const U8 R(const RegisterCodes code) const;
-        const U8 R1_24(unsigned int code) const; //get registers from R1 - R24
-        const F4 RF(const FloatRegisterCodes code) const;
-        const F8 RD(const DoubleRegisterCodes code) const;
+        const U8& R(const RegisterCodes code) const;
+        const U8& R1_24(unsigned int code) const; //get registers from R1 - R24
+        const F4& RF(const FloatRegisterCodes code) const;
+        const F8& RD(const DoubleRegisterCodes code) const;
         //get register as string
         const std::string& R_str(const RegisterCodes code) const;
         const std::string& R1_24_str(unsigned int code) const;

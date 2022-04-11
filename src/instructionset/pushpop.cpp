@@ -34,11 +34,13 @@ void InstructionSet::PUSHB() const
 //
 void InstructionSet::PUSHW() const
 {
+    
     Transform::wordToStack
     (
         vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
+
     vm->registers.R($SP) -= 2; //decrement stack pointer
     vm->registers.R($IP) += 2; //set next instruction
 }
@@ -103,7 +105,7 @@ void InstructionSet::PUSHF2() const
         vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
-    vm->registers.R($SP) -= 4; //decrement stack pointer
+    vm->registers.R($SP) -= 8; //decrement stack pointer
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -117,8 +119,8 @@ void InstructionSet::POPB() const
     vm->registers.R($SP)++; //first increment stack pointer
     Transform::byteFromStack
     (
-        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)), //byte
-        &(*vm->ram)(vm->registers.R($SP))                                   //stack top
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R($SP))
     );
     vm->registers.R($IP) += 2; //set next instruction
 }
@@ -178,7 +180,13 @@ void InstructionSet::POPQ() const
 //
 void InstructionSet::POPF1() const
 {
-    throw std::runtime_error("InstructionSet::POPF1() unimplemented.");
+    vm->registers.R($SP) += 4; //first increment stack pointer by 4
+    Transform::floatFromStack
+    (
+        vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R($SP))
+    );
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 //
@@ -188,7 +196,13 @@ void InstructionSet::POPF1() const
 //
 void InstructionSet::POPF2() const
 {
-    throw std::runtime_error("InstructionSet::POPF2() unimplemented.");
+    vm->registers.R($SP) += 8; //first increment stack pointer by 8
+    Transform::doubleFromStack
+    (
+        vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
+        &(*vm->ram)(vm->registers.R($SP))
+    );
+    vm->registers.R($IP) += 2; //set next instruction
 }
 
 } //namespace Logi

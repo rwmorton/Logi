@@ -112,7 +112,7 @@ void InstructionSet::LAI() const
 //
 void InstructionSet::LB() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S1)vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -123,7 +123,7 @@ void InstructionSet::LB() const
 //
 void InstructionSet::LW() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S2)vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -134,7 +134,7 @@ void InstructionSet::LW() const
 //
 void InstructionSet::LD() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S4)vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -145,7 +145,7 @@ void InstructionSet::LD() const
 //
 void InstructionSet::LQ() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -156,6 +156,8 @@ void InstructionSet::LQ() const
 //
 void InstructionSet::LF1() const
 {
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: LF1 NOT TESTED YET.\n");
+
     vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F4)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
     vm->registers.R($IP) += 3; //set next instruction
 }
@@ -167,6 +169,8 @@ void InstructionSet::LF1() const
 //
 void InstructionSet::LF2() const
 {
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: LF2 NOT TESTED YET.\n");
+
     vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
     vm->registers.R($IP) += 3; //set next instruction
 }

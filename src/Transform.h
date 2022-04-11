@@ -34,6 +34,8 @@ class Transform
         static void wordToRegister(U1 bytes[],U8& reg);
         static void dwordToRegister(U1 bytes[],U8& reg);
         static void qwordToRegister(U1 bytes[],U8& reg);
+        static void floatToRegister(U1 bytes[],U8& reg);
+        static void doubleToRegister(U1 bytes[],U8& reg);
         static void floatToRegister(U1 bytes[],F4& reg);
         static void doubleToRegister(U1 bytes[],F8& reg);
         static void addressToRegister(U1 bytes[],U8& reg);
