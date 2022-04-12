@@ -562,13 +562,13 @@ void Transform::wordFromStack(U8& word,const U1* stackTop)
     U1 buffer[2];
     if(PLATFORM == Endian::LITTLE)
     {
-        buffer[0] = stackTop[-1];
+        buffer[0] = stackTop[1];
         buffer[1] = stackTop[0];
     }
     else
     {
         buffer[0] = stackTop[0];
-        buffer[1] = stackTop[-1];
+        buffer[1] = stackTop[1];
     }
     word = *(S2*)&buffer;
 }
@@ -578,17 +578,17 @@ void Transform::dwordFromStack(U8& dword,const U1* stackTop)
     U1 buffer[4];
     if(PLATFORM == Endian::LITTLE)
     {
-        buffer[0] = stackTop[-3];
-        buffer[1] = stackTop[-2];
-        buffer[2] = stackTop[-1];
+        buffer[0] = stackTop[3];
+        buffer[1] = stackTop[2];
+        buffer[2] = stackTop[1];
         buffer[3] = stackTop[0];
     }
     else
     {
         buffer[0] = stackTop[0];
-        buffer[1] = stackTop[-1];
-        buffer[2] = stackTop[-2];
-        buffer[3] = stackTop[-3];
+        buffer[1] = stackTop[1];
+        buffer[2] = stackTop[2];
+        buffer[3] = stackTop[3];
     }
     dword = *(S4*)&buffer;
 }
@@ -598,25 +598,25 @@ void Transform::qwordFromStack(U8& qword,const U1* stackTop)
     U1 buffer[8];
     if(PLATFORM == Endian::LITTLE)
     {
-        buffer[0] = stackTop[-7];
-        buffer[1] = stackTop[-6];
-        buffer[2] = stackTop[-5];
-        buffer[3] = stackTop[-4];
-        buffer[4] = stackTop[-3];
-        buffer[5] = stackTop[-2];
-        buffer[6] = stackTop[-1];
+        buffer[0] = stackTop[7];
+        buffer[1] = stackTop[6];
+        buffer[2] = stackTop[5];
+        buffer[3] = stackTop[4];
+        buffer[4] = stackTop[3];
+        buffer[5] = stackTop[2];
+        buffer[6] = stackTop[1];
         buffer[7] = stackTop[0];
     }
     else
     {
         buffer[0] = stackTop[0];
-        buffer[1] = stackTop[-1];
-        buffer[2] = stackTop[-2];
-        buffer[3] = stackTop[-3];
-        buffer[4] = stackTop[-4];
-        buffer[5] = stackTop[-5];
-        buffer[6] = stackTop[-6];
-        buffer[7] = stackTop[-7];
+        buffer[1] = stackTop[1];
+        buffer[2] = stackTop[2];
+        buffer[3] = stackTop[3];
+        buffer[4] = stackTop[4];
+        buffer[5] = stackTop[5];
+        buffer[6] = stackTop[6];
+        buffer[7] = stackTop[7];
     }
     qword = *(S8*)&buffer;
 }
@@ -626,17 +626,17 @@ void Transform::floatFromStack(F4& float_,const U1* stackTop)
     U1 buffer[4];
     if(PLATFORM == Endian::LITTLE)
     {
-        buffer[0] = stackTop[-3];
-        buffer[1] = stackTop[-2];
-        buffer[2] = stackTop[-1];
+        buffer[0] = stackTop[3];
+        buffer[1] = stackTop[2];
+        buffer[2] = stackTop[1];
         buffer[3] = stackTop[0];
     }
     else
     {
         buffer[0] = stackTop[0];
-        buffer[1] = stackTop[-1];
-        buffer[2] = stackTop[-2];
-        buffer[3] = stackTop[-3];
+        buffer[1] = stackTop[1];
+        buffer[2] = stackTop[2];
+        buffer[3] = stackTop[3];
     }
     float_ = *(F4*)&buffer;
 }
@@ -646,25 +646,25 @@ void Transform::doubleFromStack(F8& double_,const U1* stackTop)
     U1 buffer[8];
     if(PLATFORM == Endian::LITTLE)
     {
-        buffer[0] = stackTop[-7];
-        buffer[1] = stackTop[-6];
-        buffer[2] = stackTop[-5];
-        buffer[3] = stackTop[-4];
-        buffer[4] = stackTop[-3];
-        buffer[5] = stackTop[-2];
-        buffer[6] = stackTop[-1];
+        buffer[0] = stackTop[7];
+        buffer[1] = stackTop[6];
+        buffer[2] = stackTop[5];
+        buffer[3] = stackTop[4];
+        buffer[4] = stackTop[3];
+        buffer[5] = stackTop[2];
+        buffer[6] = stackTop[1];
         buffer[7] = stackTop[0];
     }
     else
     {
         buffer[0] = stackTop[0];
-        buffer[1] = stackTop[-1];
-        buffer[2] = stackTop[-2];
-        buffer[3] = stackTop[-3];
-        buffer[4] = stackTop[-4];
-        buffer[5] = stackTop[-5];
-        buffer[6] = stackTop[-6];
-        buffer[7] = stackTop[-7];
+        buffer[1] = stackTop[1];
+        buffer[2] = stackTop[2];
+        buffer[3] = stackTop[3];
+        buffer[4] = stackTop[4];
+        buffer[5] = stackTop[5];
+        buffer[6] = stackTop[6];
+        buffer[7] = stackTop[7];
     }
     double_ = *(F8*)&buffer;
 }

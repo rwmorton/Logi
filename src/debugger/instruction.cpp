@@ -131,7 +131,7 @@ void Debugger::instruction(const U8 address)
         case NOT:
         case BS:
         {
-            //
+            print.I().R().R_end();
         }
         break;
         case JMP:
@@ -176,32 +176,32 @@ void Debugger::instruction(const U8 address)
         break;
         case CAST_IF: // CAST_IF $R,$F
         {
-            //
+            print.I().R().RF_end();
         }
         break;
         case CAST_ID: // CAST_ID $R,$D
         {
-            //
+            print.I().R().RD_end();
         }
         break;
         case CAST_FI: // CAST_FI $F,$R
         {
-            //
+            print.I().RF().R_end();
         }
         break;
         case CAST_FD: // CAST_FD $F,$D
         {
-            //
+            print.I().RF().RD_end();
         }
         break;
         case CAST_DI: // CAST_DI $D,$R
         {
-            //
+            print.I().RD().R_end();
         }
         break;
         case CAST_DF: // CAST_DF $D,$F
         {
-            //
+            print.I().RD().RF_end();
         }
         break;
         case FADD: // FADD $F1,$F2,$F3 BBBB
@@ -210,7 +210,7 @@ void Debugger::instruction(const U8 address)
         case FDIV:
         case FSLT:
         {
-            //
+            print.I().RF(2).RF_end();
         }
         break;
         case DADD: // DADD $D1,$D2,$D3 BBBB
@@ -219,7 +219,7 @@ void Debugger::instruction(const U8 address)
         case DDIV:
         case DSLT:
         {
-            //
+            print.I().RD(2).RD_end();
         }
         break;
         default:

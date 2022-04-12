@@ -4,6 +4,7 @@
 //Logi includes
 #include "Types.h"
 #include "SymbolRepository.h"
+#include "ListingLine.h"
 
 //std includes
 #include <vector>
@@ -24,7 +25,7 @@ class BytecodeFromASM
 {
     public:
         BytecodeFromASM();
-        void init(SymbolRepository* symbolRepository,const bool skip);
+        void init(SymbolRepository* symbolRepository,const bool listingFile,const bool skip);
         void load(const Line& line);
         const U8 getCurrentByte() const;
         BytecodeFromASM& I();
@@ -41,17 +42,23 @@ class BytecodeFromASM
         BytecodeFromASM& RD(unsigned int count=1);
         std::map<std::string,U8>& getAddressesToResolve();
         std::vector<U1>& getBytecode();
+        std::vector<ListingLine>& getListingLines();
         //write the bytecode to file
         void write(std::ofstream& out) const;
         //stream output
         friend std::ostream& operator<<(std::ostream& out,const BytecodeFromASM& li);
     private:
         U8 currentByte;
+        U4 currentLine;
         SymbolRepository* symbolRepository;
         std::vector<Token>::const_iterator token_it;
         bool skip; //if true then skip loading the bytecode as in first pass we need to collect address information
         std::vector<U1> bytecode;
         std::map<std::string,U8> addressesToResolve;
+        //if a listing file is requested
+        bool listingFile;
+        std::vector<ListingLine> listingLines;
+        ListingLine currentListingLine;
 };
 
 } //namespace Logi

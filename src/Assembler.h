@@ -7,6 +7,7 @@
 #include "Registers.h"
 #include "SymbolRepository.h"
 #include "BytecodeFromASM.h"
+#include "ListingLine.h"
 
 //std includes
 #include <string>
@@ -127,6 +128,7 @@ class Line
     friend class ValidateASM;
     public:
         Line(const U4 pos);
+        const U4 getPos() const { return pos; }
         std::vector<Token>::const_iterator token_iter() const;
         friend std::ostream& operator<<(std::ostream& out,const Line& line);
     private:
@@ -172,6 +174,8 @@ class Assembler : public LoadFile
         void resolveAddresses();
         //step 6
         void buildBytecode();
+        //step 7
+        void writeListing();
         //
         void loadDirective(std::vector<Line>::const_iterator& line_it);
         void loadGlobalVariable(const Line& line);
@@ -188,6 +192,8 @@ class Assembler : public LoadFile
         bool omitDebug;
         unsigned short numErrors;
         bool createListing;
+        std::vector<ListingLine> listingLines;
+        std::string listingFilename;
         std::string outputFile;
         std::vector<std::string> rawLines;              //vector containing all the raw lines from the ASM file
         std::vector<Line> tokenizedLines;               //vector containing all the tokens per line

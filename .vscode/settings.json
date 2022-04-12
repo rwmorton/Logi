@@ -57,7 +57,7 @@
     "cmake.configureOnOpen": false,
     "cmake.debugConfig":
     {
-        "args": ["-d", "/home/richard/work/projects/Logi/test.ASM","-o","/home/richard/work/projects/Logi/test.RUN"]
+        "args": ["-d", "-l","/home/richard/work/projects/Logi/test.ASM","-o","/home/richard/work/projects/Logi/test.RUN"]
         //"args": ["-d", "/home/richard/work/projects/Logi/test.RUN"]
     },
 }

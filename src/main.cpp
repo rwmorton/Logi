@@ -22,30 +22,6 @@ int main(const int argc,const char *argv[])
         Logi::run_all_tests();
     #endif
 
-    char buf[9] = {'t','e','s','t','.','A','S','M','\0'};
-    for(int i=0; i<9; i++)
-    {
-        cout << (int)buf[i] << endl;
-    }
-
-    char hello[10] = {'h','e','l','l','o','.','t','x','t','\0'};
-    for(int i=0; i<10; i++)
-    {
-        cout << (int)hello[i] << endl;
-    }
-
-    char hi[8] = {'h','i',' ','b','r','o','!','\0'};
-    for(int i=0; i<8; i++)
-    {
-        cout << (int)hi[i] << endl;
-    }
-
-    Logi::U1 file_buf[9] = {116,101,115,116,46,65,83,77,0};
-
-    std::string file_str = (const char*)&file_buf;
-
-    cout << "file_str = " << file_str << endl;
-
     Logi::VirtualMachine vm;
 
     bool runAssembler = true;

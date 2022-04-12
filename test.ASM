@@ -1,54 +1,64 @@
-.GB hello 8
+.GB gb1
+.GW gw1
+.GD gd1
+.GQ gq1
 
-### "hi bro!" is made up of the following bytes (including line end)
-# 104 105 32 98 114 111 33 0 # big-endian
+.PB myproc
+.PR retval 5
+.PA arg1 3
+.PA arg2 2
+.PV loc1 1
+.PV loc2 -5
+.PE
 
-LBI $R1 104
-PUSHB $R1
+.PB stackproc
 
-LBI $R1 105
-PUSHB $R1
+# manually place word on stackproc
+LWI $R2 6570
+LBI $R3 2
+SUB $SP $SP $R3
+SW $R2 $SP
 
-LBI $R1 32
-PUSHB $R1
+# pop word into $R2 then print
+POPW $R2
+LAD $R10 stackproc_L1
+LAD $R1 printNumber
+JMP $R1
 
-LBI $R1 98
-PUSHB $R1
+.PL stackproc_L1
 
-LBI $R1 114
-PUSHB $R1
+# push a quad word on to stack
+LQI $R2 -1234567890
+PUSHQ $R2
 
-LBI $R1 111
-PUSHB $R1
+# manually retrieve quad word and print
+LQ $R2 $SP
+LQI $R3 8
+SUB $SP $SP $R3
+LAD $R10 stackproc_end
+LAD $R4 printNumber
+JMP $R4
 
-LBI $R1 33
-PUSHB $R1
+.PL stackproc_end
+HALT
 
-LBI $R1 0
-PUSHB $R1
+.PE
 
-#
+# print value in $R2
+# return to position in $R10
+.PB printNumber
 
-NOP
-NOP
-
-EI
-
-# print string
-LBI $R1 14
+LBI $R1 20
 INT 0
 
-# open file
-#LBI $R1 0
-#INT 0
+LQI $R2 10
+LQI $R1 16
+INT 0
 
-# flush the file buffer
-#LBI $R1 2
-#INT 0
+LQI $R2 13
+LQI $R1 16
+INT 0
 
-# close file
-#LBI $R1 1
-#INT 0
+JMP $R10
 
-NOP
-HALT
+.PE

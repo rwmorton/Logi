@@ -13,15 +13,16 @@ using std::endl;
 namespace Logi
 {
 
-BytecodeFromASM::BytecodeFromASM() : currentByte{0}, symbolRepository{nullptr} {}
+BytecodeFromASM::BytecodeFromASM() : currentByte{0}, symbolRepository{nullptr}, listingFile{nullptr} {}
 
 //
 // initialize
 //
-void BytecodeFromASM::init(SymbolRepository* symbolRepository,const bool skip)
+void BytecodeFromASM::init(SymbolRepository* symbolRepository,const bool listingFile,const bool skip)
 {
     currentByte = 0;    
     this->symbolRepository = symbolRepository;
+    this->listingFile = listingFile;
     this->skip = skip;
 }
 
@@ -33,6 +34,13 @@ void BytecodeFromASM::load(const Line& line)
     if(symbolRepository == nullptr) throw std::runtime_error("BYTECODE_FROM_ASM: null pointer to SymbolRepository.");
 
     token_it = line.token_iter();
+
+    //make sure the current listing line is reset
+    currentListingLine.clear();
+
+    //save current line
+    currentListingLine.line = line.getPos();
+    currentLine = line.getPos();
 
     switch(InstructionSet::OpCode_fromStr(token_it->str))
     {
@@ -231,6 +239,9 @@ void BytecodeFromASM::load(const Line& line)
             throw std::runtime_error("BYTECODE_FROM_ASM: bad opcode.");
         }
     }
+    
+    //save the listing line
+    listingLines.push_back(currentListingLine);
 }
 
 //
@@ -246,7 +257,23 @@ const U8 BytecodeFromASM::getCurrentByte() const
 //
 BytecodeFromASM& BytecodeFromASM::I()
 {
-    if(!skip) bytecode.push_back(InstructionSet::OpCode_fromStr(token_it->str));
+    if(!skip)
+    {
+        bytecode.push_back(InstructionSet::OpCode_fromStr(token_it->str));
+    }
+    else if(skip && listingFile)
+    {
+        std::string lstStr = {std::to_string(currentLine) + ") "};
+        lstStr += '[';
+        lstStr += std::to_string(currentByte);
+        lstStr += "] ";
+        lstStr += token_it->str;
+        lstStr += ' ';
+
+        //save listing
+        currentListingLine.str = lstStr; //will always start the line here
+        currentListingLine.add(currentByte);
+    }
 
     ++token_it;
     currentByte++;
@@ -271,6 +298,20 @@ BytecodeFromASM& BytecodeFromASM::A()
         addressesToResolve.insert(std::pair<std::string,U8>(token_it->str,currentByte));
 
         cout << "adding (" << token_it->str << ") to the list of addresses to resolve at (" << currentByte << ")" << endl;
+
+        //create listing
+        if(listingFile)
+        {
+            std::string lstStr {token_it->str};
+            lstStr += ' ';
+            currentListingLine.add(lstStr);
+
+            //save bytes
+            for(int i=0; i<8; i++)
+            {
+                currentListingLine.add(currentByte + i);
+            }
+        }
 
         currentByte += 8;
     }
@@ -301,10 +342,21 @@ BytecodeFromASM& BytecodeFromASM::A()
 //
 BytecodeFromASM& BytecodeFromASM::B()
 {
+    U1 byte = static_cast<U1>(token_it->val.S8_val);
+
     if(!skip)
     {
-        U1 byte = static_cast<U1>(token_it->val.S8_val);
         bytecode.push_back(byte);
+    }
+    else if(skip && listingFile)
+    {
+        //create listing
+        std::string lstStr {std::to_string(byte)};
+        lstStr += ' ';
+        
+        //save listing info
+        currentListingLine.add(lstStr);
+        currentListingLine.add(currentByte);
     }
 
     ++token_it; //next token
@@ -318,9 +370,10 @@ BytecodeFromASM& BytecodeFromASM::B()
 //
 BytecodeFromASM& BytecodeFromASM::W()
 {
+    U2 word = static_cast<U2>(token_it->val.S8_val);
+
     if(!skip)
     {
-        U2 word = static_cast<U2>(token_it->val.S8_val);
         U1 bytes[2];
         Transform::wordToBytecode(word,&bytes[0]);
         for(int i=0; i<2; i++)
@@ -329,8 +382,20 @@ BytecodeFromASM& BytecodeFromASM::W()
             currentByte++;
         }
     }
-    else
+    else if(skip && listingFile)
     {
+        //create listing
+        std::string lstStr {std::to_string(word)};
+        lstStr += ' ';
+        currentListingLine.add(lstStr);
+
+        //save bytes
+        for(int i=0; i<2; i++)
+        {
+            currentListingLine.add(currentByte + i);
+        }
+
+        //skip 2 bytes
         currentByte += 2;
     }
 
@@ -344,9 +409,10 @@ BytecodeFromASM& BytecodeFromASM::W()
 //
 BytecodeFromASM& BytecodeFromASM::D()
 {
+    U4 dword = static_cast<U4>(token_it->val.S8_val);
+
     if(!skip)
     {
-        U4 dword = static_cast<U4>(token_it->val.S8_val);
         U1 bytes[4];
         Transform::dwordToBytecode(dword,&bytes[0]);
         for(int i=0; i<4; i++)
@@ -355,8 +421,20 @@ BytecodeFromASM& BytecodeFromASM::D()
             currentByte++;
         }
     }
-    else
+    else if(skip && listingFile)
     {
+        //create listing
+        std::string lstStr {std::to_string(dword)};
+        lstStr += ' ';
+        currentListingLine.add(lstStr);
+
+        //save bytes
+        for(int i=0; i<4; i++)
+        {
+            currentListingLine.add(currentByte + i);
+        }
+
+        //skip 4 bytes
         currentByte += 4;
     }
 
@@ -370,9 +448,10 @@ BytecodeFromASM& BytecodeFromASM::D()
 //
 BytecodeFromASM& BytecodeFromASM::Q()
 {
+    U8 qword = static_cast<U8>(token_it->val.S8_val);
+
     if(!skip)
     {
-        U8 qword = static_cast<U8>(token_it->val.S8_val);
         U1 bytes[8];
         Transform::qwordToBytecode(qword,&bytes[0]);
         for(int i=0; i<8; i++)
@@ -381,8 +460,20 @@ BytecodeFromASM& BytecodeFromASM::Q()
             currentByte++;
         }
     }
-    else
+    else if(skip && listingFile)
     {
+        //create listing
+        std::string lstStr {std::to_string(qword)};
+        lstStr += ' ';
+        currentListingLine.add(lstStr);
+
+        //save bytes
+        for(int i=0; i<8; i++)
+        {
+            currentListingLine.add(currentByte + i);
+        }
+
+        //skip 8 bytes
         currentByte += 8;
     }
 
@@ -396,9 +487,10 @@ BytecodeFromASM& BytecodeFromASM::Q()
 //
 BytecodeFromASM& BytecodeFromASM::F1()
 {
+    F4 float_ = static_cast<F4>(token_it->val.F8_val);
+
     if(!skip)
     {
-        F4 float_ = static_cast<F4>(token_it->val.F8_val);
         U1 bytes[4];
         Transform::floatToBytecode(float_,&bytes[0]);
         for(int i=0; i<4; i++)
@@ -407,8 +499,20 @@ BytecodeFromASM& BytecodeFromASM::F1()
             currentByte++;
         }
     }
-    else
+    else if(skip && listingFile)
     {
+        //create listing
+        std::string lstStr {std::to_string(float_)};
+        lstStr += ' ';
+        currentListingLine.add(lstStr);
+
+        //save bytes
+        for(int i=0; i<4; i++)
+        {
+            currentListingLine.add(currentByte + i);
+        }
+
+        //skip 4 bytes
         currentByte += 4;
     }
 
@@ -422,9 +526,10 @@ BytecodeFromASM& BytecodeFromASM::F1()
 //
 BytecodeFromASM& BytecodeFromASM::F2()
 {
+    F8 double_ = token_it->val.F8_val;
+
     if(!skip)
     {
-        F8 double_ = token_it->val.F8_val;
         U1 bytes[8];
         Transform::doubleToBytecode(double_,&bytes[0]);
         for(int i=0; i<8; i++)
@@ -433,8 +538,20 @@ BytecodeFromASM& BytecodeFromASM::F2()
             currentByte++;
         }
     }
-    else
+    else if(skip && listingFile)
     {
+        //create listing
+        std::string lstStr {std::to_string(double_)};
+        lstStr += ' ';
+        currentListingLine.add(lstStr);
+
+        //save bytes
+        for(int i=0; i<8; i++)
+        {
+            currentListingLine.add(currentByte + i);
+        }
+
+        //skip 8 bytes
         currentByte += 8;
     }
 
@@ -459,8 +576,18 @@ BytecodeFromASM& BytecodeFromASM::C()
             currentByte++;
         }
     }
-    else
+    else if(skip && listingFile)
     {
+        //create listing
+        std::string lstStr {"BYTECODE_FROM_ASM::C(): NOT IMPLEMENTED YET!\n"};
+        currentListingLine.add(lstStr);
+
+        //save bytes
+        for(int i=0; i<8; i++)
+        {
+            currentListingLine.add(currentByte + i);
+        }
+
         currentByte += 8;
     }
 
@@ -477,6 +604,16 @@ BytecodeFromASM& BytecodeFromASM::R(unsigned int count)
     for(int i=0; i<count; i++)
     {
         if(!skip) bytecode.push_back(Registers::R_fromStr(token_it->str));
+        else if(skip && listingFile)
+        {
+            //create listing
+            std::string lstStr {token_it->str};
+            lstStr += ' ';
+            
+            //save listing info
+            currentListingLine.add(lstStr);
+            currentListingLine.add(currentByte);
+        }
         ++token_it;
         currentByte++;
     }
@@ -492,6 +629,16 @@ BytecodeFromASM& BytecodeFromASM::RF(unsigned int count)
     for(int i=0; i<count; i++)
     {
         if(!skip) bytecode.push_back(Registers::RF_fromStr(token_it->str));
+        else if(skip && listingFile)
+        {
+            //create listing
+            std::string lstStr {token_it->str};
+            lstStr += ' ';
+            
+            //save listing info
+            currentListingLine.add(lstStr);
+            currentListingLine.add(currentByte);
+        }
         ++token_it;
         currentByte++;
     }
@@ -507,6 +654,16 @@ BytecodeFromASM& BytecodeFromASM::RD(unsigned int count)
     for(int i=0; i<count; i++)
     {
         if(!skip) bytecode.push_back(Registers::RD_fromStr(token_it->str));
+        else if(skip && listingFile)
+        {
+            //create listing
+            std::string lstStr {token_it->str};
+            lstStr += ' ';
+            
+            //save listing info
+            currentListingLine.add(lstStr);
+            currentListingLine.add(currentByte);
+        }
         ++token_it;
         currentByte++;
     }
@@ -528,6 +685,28 @@ std::map<std::string,U8>& BytecodeFromASM::getAddressesToResolve()
 std::vector<U1>& BytecodeFromASM::getBytecode()
 {
     return bytecode;
+}
+
+//
+// get the listing lines vector.
+//
+std::vector<ListingLine>& BytecodeFromASM::getListingLines()
+{
+    //before we send it off we need to assign the correct bytecode data
+    std::vector<ListingLine>::iterator i = listingLines.begin();
+    while(i != listingLines.end())
+    {
+        std::vector<U8>::iterator j = i->addrVec.begin();
+        while(j != i->addrVec.end())
+        {
+            *j = bytecode.at(*j);
+            ++j;
+        }
+
+        ++i;
+    }
+
+    return listingLines;
 }
 
 //

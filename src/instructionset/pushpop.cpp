@@ -116,12 +116,12 @@ void InstructionSet::PUSHF2() const
 //
 void InstructionSet::POPB() const
 {
-    vm->registers.R($SP)++; //first increment stack pointer
     Transform::byteFromStack
     (
         vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
+    vm->registers.R($SP)++; //increment stack pointer
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -132,12 +132,12 @@ void InstructionSet::POPB() const
 //
 void InstructionSet::POPW() const
 {
-    vm->registers.R($SP) += 2; //first increment stack pointer by 2
     Transform::wordFromStack
     (
         vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
+    vm->registers.R($SP) += 2; //increment stack pointer by 2
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -148,12 +148,12 @@ void InstructionSet::POPW() const
 //
 void InstructionSet::POPD() const
 {
-    vm->registers.R($SP) += 4; //first increment stack pointer by 4
     Transform::dwordFromStack
     (
         vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
+    vm->registers.R($SP) += 4; //increment stack pointer by 4
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -164,12 +164,12 @@ void InstructionSet::POPD() const
 //
 void InstructionSet::POPQ() const
 {
-    vm->registers.R($SP) += 8; //first increment stack pointer by 8
     Transform::qwordFromStack
     (
         vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
+    vm->registers.R($SP) += 8; //increment stack pointer by 8
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -180,12 +180,12 @@ void InstructionSet::POPQ() const
 //
 void InstructionSet::POPF1() const
 {
-    vm->registers.R($SP) += 4; //first increment stack pointer by 4
     Transform::floatFromStack
     (
         vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
+    vm->registers.R($SP) += 4; //increment stack pointer by 4
     vm->registers.R($IP) += 2; //set next instruction
 }
 
@@ -196,12 +196,12 @@ void InstructionSet::POPF1() const
 //
 void InstructionSet::POPF2() const
 {
-    vm->registers.R($SP) += 8; //first increment stack pointer by 8
     Transform::doubleFromStack
     (
         vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)),
         &(*vm->ram)(vm->registers.R($SP))
     );
+    vm->registers.R($SP) += 8; //increment stack pointer by 8
     vm->registers.R($IP) += 2; //set next instruction
 }
 

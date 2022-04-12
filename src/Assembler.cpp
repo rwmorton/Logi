@@ -108,7 +108,11 @@ void Assembler::load(const int argc,const char* argv[])
             break;
             case Assembler::FlagID::ALLOW_ERRORS: numErrors = std::stoi(flags_it->arg(0));
             break;
-            case Assembler::FlagID::CREATE_LISTING: createListing = true;
+            case Assembler::FlagID::CREATE_LISTING:
+            {
+                createListing = true;
+                listingFilename = filename + ".LST";
+            }
             break;
             case Assembler::FlagID::OUTPUT_FILE: outputFile = flags_it->arg(0);
             break;
@@ -152,6 +156,53 @@ void Assembler::load(const int argc,const char* argv[])
 
     //finally, build the bytecode
     buildBytecode();
+
+    //do we need to build a listing file?
+    if(createListing)
+    {
+        std::ofstream listingFile(listingFilename,std::ios::out);
+
+        if(!listingFile.is_open())
+        {
+            std::string errorStr {"ASSEMBLER: could not open listing file ("};
+            errorStr += listingFilename;
+            errorStr += ") for writing.";
+            throw std::runtime_error(errorStr);
+        }
+
+        //get the bytecode listing lines vector
+        std::vector<ListingLine> bytecodeListingLines = bytecodeLoader.getListingLines();
+
+        //merge the two vectors, sorting by line number
+        std::vector<ListingLine> mergedListingLines;
+        std::merge
+        (
+            listingLines.begin(),listingLines.end(),
+            bytecodeListingLines.begin(),bytecodeListingLines.end(),
+            std::back_inserter(mergedListingLines)
+        );
+
+        //get the largest string in the vector
+        std::vector<ListingLine>::iterator i = mergedListingLines.begin();
+        int largestLine {0};
+        while(i != mergedListingLines.end())
+        {
+            if(largestLine < i->str.length()) largestLine = i->str.length();
+            ++i;
+        }
+
+        //now write the listing lines
+        i = mergedListingLines.begin();
+        while(i != mergedListingLines.end())
+        {
+            i->write(listingFile,largestLine);
+
+            ++i;
+        }
+
+        //finally close the listing file
+        listingFile.close();
+    }
 }
 
 std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
@@ -163,7 +214,7 @@ std::ostream& operator<<(std::ostream& out,const Assembler& asmb)
     out << "omit debug? ";
     asmb.omitDebug ? out << "yes\n" : out << "no\n";
     out << "creating listing file? ";
-    asmb.createListing ? out << "yes\n" : out << "no\n";
+    asmb.createListing ? out << "yes (" << asmb.listingFilename << ")\n" : out << "no\n";
     out << "output file? ";
     asmb.outputFile.length() == 0 ? out << "no\n" : out << asmb.outputFile << '\n';
 

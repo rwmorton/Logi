@@ -17,7 +17,7 @@ void Assembler::buildSymbolRepository()
     std::vector<Line>::const_iterator line = tokenizedLines.begin();
     
     //initialize bytecode loader (skip loading bytecode)
-    bytecodeLoader.init(&symbolRepository,true);
+    bytecodeLoader.init(&symbolRepository,true,true);
 
     while(line != tokenizedLines.end())
     {
@@ -71,7 +71,7 @@ void Assembler::buildBytecode()
     std::vector<Line>::const_iterator line = tokenizedLines.begin();
 
     //initialize bytecode loader, this time load bytecode.
-    bytecodeLoader.init(&symbolRepository,false);
+    bytecodeLoader.init(&symbolRepository,false,false);
 
     while(line != tokenizedLines.end())
     {
@@ -107,16 +107,21 @@ void Assembler::loadDirective(std::vector<Line>::const_iterator& line_it)
 {
     std::vector<Token>::const_iterator token_it = line_it->tokens.begin();
 
+    //check directive
     switch(Assembler::ASMIdentifier_fromStr(token_it->str))
     {
-        case PB: loadProcedure(line_it); break;
+        case PB:
+        {
+            loadProcedure(line_it);
+        }
+        break;
         case GB:
         case GW:
         case GD:
         case GQ:
         {
             loadGlobalVariable(*line_it);
-        }   
+        }
         break;
         default:
         {
@@ -139,7 +144,9 @@ void Assembler::loadGlobalVariable(const Line& line)
     std::vector<Token>::const_iterator token_it = line.tokens.begin();
 
     //set type of variable
-    switch(Assembler::ASMIdentifier_fromStr(token_it->str))
+    ASMIdentifier id = Assembler::ASMIdentifier_fromStr(token_it->str);
+
+    switch(id)
     {
         case GB: g.type = BYTE; break;
         case GW: g.type = WORD; break;
@@ -172,10 +179,36 @@ void Assembler::loadGlobalVariable(const Line& line)
     g.offset = -g.size;
     g.address = (S8)g.offset;
 
-    cout << "g.offset = " << (int)g.offset << endl;
-    cout << "g.address = " << (int)g.address << endl;
-
     symbolRepository.getSymbolTable().addGlobalVariable(g);
+
+    //write to listing file
+    if(createListing)
+    {
+        std::string lstStr {std::to_string(g.line)};
+        lstStr += ") ";
+
+        switch(id)
+        {
+            case PB: lstStr += ".PB "; break;
+            case GB: lstStr += ".GB "; break;
+            case GW: lstStr += ".GW "; break;
+            case GD: lstStr += ".GD "; break;
+            case GQ: lstStr += ".GQ "; break;
+        }
+        
+        lstStr += gvStr;
+
+        if(g.len > 1)
+        {
+            lstStr += std::to_string(g.len);
+        }
+
+        //save the listing line
+        ListingLine ll;
+        ll.line = g.line;
+        ll.str = lstStr;
+        listingLines.push_back(ll);
+    }
 }
 
 //
@@ -190,6 +223,20 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
     proc.text = symbolRepository.addIdentifier(procStr);
     U8 procByteBegin = bytecodeLoader.getCurrentByte();
     proc.retVal = ProcedureReturn::VOID; //default value
+
+    //create listing file
+    if(createListing)
+    {
+        std::string lstStr {std::to_string(proc.line)};
+        lstStr += ") .PB ";
+        lstStr += procStr;
+
+        //save the listing line
+        ListingLine ll;
+        ll.line = proc.line;
+        ll.str = lstStr;
+        listingLines.push_back(ll);        
+    }
 
     //get next line
     ++line_it;
@@ -227,6 +274,17 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
                 //end of procedure.
                 //save procedure
                 symbolRepository.getSymbolTable().addProcedure(proc);
+                //create listing
+                if(createListing)
+                {
+                    //save the listing line
+                    std::string lstStr {std::to_string(line_it->pos)};
+                    lstStr += ") .PE";
+                    ListingLine ll;
+                    ll.line = line_it->pos;
+                    ll.str = lstStr;
+                    listingLines.push_back(ll);
+                }
                 //and return
                 return;
             }
@@ -285,12 +343,25 @@ void Assembler::loadStackFrame(StackFrame& stackFrame,const Line& line)
 
     //move onto next token
     ++token_it;
-    stackFrame.text = symbolRepository.addIdentifier(token_it->str); //save identifier to string table
+    std::string sfStr {token_it->str};
+    stackFrame.text = symbolRepository.addIdentifier(sfStr); //save identifier to string table
 
     //move onto next token
     ++token_it;
     //and get the offset
     stackFrame.fpOffset = token_it->val.S8_val;
+
+    //create listing
+    if(createListing)
+    {
+        std::string lstStr {sfStr};
+        lstStr += ' ';
+        lstStr += std::to_string(stackFrame.fpOffset);
+        
+        //update the current listing line
+        ListingLine& ll = listingLines.back();
+        ll.add(lstStr);
+    }
 }
 
 //
@@ -298,6 +369,19 @@ void Assembler::loadStackFrame(StackFrame& stackFrame,const Line& line)
 //
 void Assembler::loadProcedureReturn(Procedure& proc,const Line& line)
 {
+    //create listing
+    if(createListing)
+    {
+        std::string lstStr {std::to_string(line.pos)};
+        lstStr += ") .PR ";
+        
+        //save the listing line
+        ListingLine ll;
+        ll.line = line.pos;
+        ll.str = lstStr;
+        listingLines.push_back(ll);
+    }
+
     loadStackFrame(proc.ret,line);
 }
 
@@ -306,6 +390,19 @@ void Assembler::loadProcedureReturn(Procedure& proc,const Line& line)
 //
 void Assembler::loadProcedureArgument(Procedure& proc,const Line& line)
 {
+    //create listing
+    if(createListing)
+    {
+        std::string lstStr {std::to_string(line.pos)};
+        lstStr += ") .PA ";
+        
+        //save the listing line
+        ListingLine ll;
+        ll.line = line.pos;
+        ll.str = lstStr;
+        listingLines.push_back(ll);
+    }
+
     StackFrame arg;
     loadStackFrame(arg,line);
     proc.args.push_back(arg);
@@ -316,6 +413,19 @@ void Assembler::loadProcedureArgument(Procedure& proc,const Line& line)
 //
 void Assembler::loadProcedureLocalVariable(Procedure& proc,const Line& line)
 {
+    //create listing
+    if(createListing)
+    {
+        std::string lstStr {std::to_string(line.pos)};
+        lstStr += ") .PV ";
+        
+        //save the listing line
+        ListingLine ll;
+        ll.line = line.pos;
+        ll.str = lstStr;
+        //listingLines.push_back(ll);
+    }
+
     StackFrame local;
     loadStackFrame(local,line);
     proc.locals.push_back(local);
@@ -340,6 +450,20 @@ void Assembler::loadProcedureLabel(Procedure& proc,const Line& line)
     //save label
     symbolRepository.getSymbolTable().addLabel(label);
     proc.labels.push_back(label);
+
+    //create listing
+    if(createListing)
+    {
+        std::string lstStr {std::to_string(line.pos)};
+        lstStr += ") .PL ";
+        lstStr += labelStr;
+        
+        //save the listing line
+        ListingLine ll;
+        ll.line = line.pos;
+        ll.str = lstStr;
+        listingLines.push_back(ll);
+    }
 }
 
 //
