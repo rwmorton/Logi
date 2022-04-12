@@ -2,8 +2,8 @@
 #include "../Debugger.h"
 #include "../VirtualMachine.h"
 
-//temp
-#include <iostream>
+//std includes
+#include <iomanip>
 
 namespace Logi
 {
@@ -11,217 +11,121 @@ namespace Logi
 //
 // display in assembler and binary
 //
-void Debugger::instruction(const U8 address) const
+void Debugger::instruction(const U8 address)
 {
     U8 currentByte = address; //lookahead from passed address
     U1 raw[11]; //buffer to hold binary representation
 
     std::ostream& out = stream->get();
+    print.begin(currentByte);           //begin the printer on current byte
 
     //first dump ram
     dump(0,vm.executable.totalSize-1);
-    out << '\n';
+    out << "\nLAST INSTRUCTION:\n";
+    out << std::setw(18) << std::setfill('-') << '\n';
+
+    //instruction string
+    std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
 
     switch((*vm.ram)(currentByte))
     {
         case LBI: //LBI $R1, BBB
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U8 R1 = (*vm.ram)(currentByte+1);
-            U1 byte = (U1)(*vm.ram)(currentByte+2);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << ", byte= " << static_cast<int>(byte) << '\n';
+            print.I().R().B();
         }
         break;
         case LWI: //LWI $R1, BBW
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U8 R1 = (*vm.ram)(currentByte+1);
-            U2 word = Transform::bytecodeToWord(&(*vm.ram)(currentByte+2));
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << ", word= " << word << '\n';
+            print.I().R().W();
         }
         break;
         case LDI: //LDI $R1, BBD
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U8 R1 = (*vm.ram)(currentByte+1);
-            U4 dword = Transform::bytecodeToDWord(&(*vm.ram)(currentByte+2));
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << ", dword= " << dword << '\n';
+            print.I().R().D();
         }
         break;
         case LQI: //LQI $R1, BBQ
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U8 R1 = (*vm.ram)(currentByte+1);
-            U8 qword = Transform::bytecodeToQWord(&(*vm.ram)(currentByte+2));
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << ", qword= " << qword << '\n';
+            print.I().R().Q();
         }
         break;
         case LF1I: //LF1I $F1, BBD
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            F4 F1 = (*vm.ram)(currentByte+1);
-            F4 float_ = Transform::bytecodeToFloat(&(*vm.ram)(currentByte+2));
-            out << "$IP= " << inst << ", " << vm.registers.RF_str((FloatRegisterCodes)F1) << "= " << vm.registers.RF((FloatRegisterCodes)F1) << ", float= " << float_ << '\n';
+            print.I().RF().F1();
         }
         break;
         case LF2I: //LF2I $D1, BBQ
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            F8 D1 = (*vm.ram)(currentByte+1);
-            F8 double_ = Transform::bytecodeToDouble(&(*vm.ram)(currentByte+2));
-            out << "$IP= " << inst << ", " << vm.registers.RD_str((DoubleRegisterCodes)D1) << "= " << vm.registers.RD((DoubleRegisterCodes)D1) << ", double= " << double_ << '\n';
+            print.I().RD().F2();
         }
         break;
         case LAD: //LAD $R1, address = BBQ
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            U8 addr = Transform::bytecodeToQWord(&(*vm.ram)(currentByte+2));
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << ", addr= " << addr << '\n';
+            print.I().R().A();
         }
         break;
         case LAI: //LAI $R1,$R2,qword,  BBBQ
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            U1 R2 = (*vm.ram)(currentByte+2);
-            U8 addr = Transform::bytecodeToQWord(&(*vm.ram)(currentByte+3));
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << ", " << vm.registers.R_str((RegisterCodes)R2) << "= " << vm.registers.R((RegisterCodes)R2) << ", addr= " << addr << '\n';
+            print.I().R(2).Q();
         }
         break;
         case LB: // LB $R1,$R2,     BBB
         case SB: // SB $R1,$R2,     BBB
-        {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            U1 R2 = (*vm.ram)(currentByte+2);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= ";
-            out << vm.registers.R((RegisterCodes)R1) << ", " << vm.registers.R_str((RegisterCodes)R2);
-            out << "= " << vm.registers.R((RegisterCodes)R2) << '\n';
-        }
-        break;
         case LW:
         case SW:
-        {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            U1 R2 = (*vm.ram)(currentByte+2);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= ";
-            out << vm.registers.R((RegisterCodes)R1) << ", " << vm.registers.R_str((RegisterCodes)R2);
-            out << "= " << vm.registers.R((RegisterCodes)R2) << '\n';
-        }
-        break;
         case LD:
         case SD:
-        {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            U1 R2 = (*vm.ram)(currentByte+2);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= ";
-            out << vm.registers.R((RegisterCodes)R1) << ", " << vm.registers.R_str((RegisterCodes)R2);
-            out << "= " << vm.registers.R((RegisterCodes)R2) << '\n';
-        }
-        break;
         case LQ:
         case SQ:
         case MOV:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            U1 R2 = (*vm.ram)(currentByte+2);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= ";
-            out << vm.registers.R((RegisterCodes)R1) << ", " << vm.registers.R_str((RegisterCodes)R2);
-            out << "= " << vm.registers.R((RegisterCodes)R2) << '\n';
+            print.I().R().R_end();
         }
         break;
         case LF1: // LF1 $F1,D       BBD
         case SF1:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            F4 F1 = (*vm.ram)(currentByte+1);
-            F4 float_;
-            Transform::floatToRegister(&(*vm.ram)(currentByte+2),float_);
-            out << "$IP= " << inst << ", " << vm.registers.RF_str((FloatRegisterCodes)F1) << "= ";
-            out << vm.registers.RF((FloatRegisterCodes)F1) << ", float= " << float_;
+            print.I().RF().F1();
         }
         break;
         case LF2: // LF2 $D1,Q       BBQ
         case SF2:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            F8 D1 = (*vm.ram)(currentByte+1);
-            F8 double_;
-            Transform::doubleToRegister(&(*vm.ram)(currentByte+2),double_);
-            out << "$IP= " << inst << ", " << vm.registers.RF_str((FloatRegisterCodes)D1) << "= ";
-            out << vm.registers.RF((FloatRegisterCodes)D1) << ", float= " << double_;
+            print.I().RD().F2();
         }
         break;
         case PUSHB: // PUSHB $R1, BB
         case POPB:
-        {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << '\n';
-        }
-        break;
         case PUSHW:
         case POPW:
-        {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << '\n';
-        }
-        break;
         case PUSHD:
         case POPD:
-        {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << '\n';
-        }
-        break;
         case PUSHQ:
         case POPQ:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << '\n';
+            print.I().R_end();
         }
         break;
         case PUSHF1: // PUSHF1 $F
         case POPF1:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            F4 F1 = (*vm.ram)(currentByte+1);
-            out << "$IP= " << inst << ", " << vm.registers.RF_str((FloatRegisterCodes)F1) << "= " << vm.registers.RF((FloatRegisterCodes)F1) << '\n';
+            print.I().RF_end();
         }
         break;
         case PUSHF2:
         case POPF2:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            F8 D1 = (*vm.ram)(currentByte+1);
-            out << "$IP= " << inst << ", " << vm.registers.RD_str((DoubleRegisterCodes)D1) << "= " << vm.registers.RD((DoubleRegisterCodes)D1) << '\n';
+            print.I().RD_end();
         }
         break;
         case MOVF: // MOVF $F1,$F2
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 F1 = (*vm.ram)(currentByte+1);
-            U1 F2 = (*vm.ram)(currentByte+2);
-            out << "$IP= " << inst << ", " << vm.registers.RF_str((FloatRegisterCodes)F1) << "= ";
-            out << vm.registers.RF((FloatRegisterCodes)F1) << ", " << vm.registers.RF_str((FloatRegisterCodes)F2);
-            out << "= " << vm.registers.RF((FloatRegisterCodes)F2) << '\n';
+            print.I().RF().RF_end();
         }
         break;
         case MOVD: // MOVD $D1,$D2
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 D1 = (*vm.ram)(currentByte+1);
-            U1 D2 = (*vm.ram)(currentByte+2);
-            out << "$IP= " << inst << ", " << vm.registers.RD_str((DoubleRegisterCodes)D1) << "= ";
-            out << vm.registers.RD((DoubleRegisterCodes)D1) << ", " << vm.registers.RD_str((DoubleRegisterCodes)D2);
-            out << "= " << vm.registers.RD((DoubleRegisterCodes)D2) << '\n';
+            print.I().RD().RD_end();
         }
         break;
         case NOT:
@@ -232,9 +136,7 @@ void Debugger::instruction(const U8 address) const
         break;
         case JMP:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U1 R1 = (*vm.ram)(currentByte+1);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << '\n';
+            print.I().R_end();
         }
         break;
         case JE:
@@ -251,23 +153,12 @@ void Debugger::instruction(const U8 address) const
         case SUB:
         case MULT:
         {
-            // ADD $R1, $R2, $R3
-            // $R1 = $R2 + $R3
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            U8 R1,R2,R3;
-            Transform::byteToRegister((*vm.ram)(currentByte+1),R3);
-            Transform::byteToRegister((*vm.ram)(currentByte+2),R1);
-            Transform::byteToRegister((*vm.ram)(currentByte+3),R2);
-            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1);
-            out << ", " << vm.registers.R_str((RegisterCodes)R2) << "= " << vm.registers.R((RegisterCodes)R2);
-            out << ", " << vm.registers.R_str((RegisterCodes)R3) << "= " << vm.registers.R((RegisterCodes)R3) << '\n';
+            print.I().R(2).R_end();
         }
         break;
         case INT: // INT #vector BB
         {
-            //
-            // TODO!!!
-            //
+            print.I().B();
         }
         break;
         case EI:
@@ -275,13 +166,12 @@ void Debugger::instruction(const U8 address) const
         case HALT:
         case NOP:
         {
-            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
-            out << "$IP= " << inst << '\n';
+            print.I_end();
         }
         break;
         case DIV: // DIV $R1,$R2,$R3,$R4
         {
-            //
+            print.I().R(3).R_end();
         }
         break;
         case CAST_IF: // CAST_IF $R,$F

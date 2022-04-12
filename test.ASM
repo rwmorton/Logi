@@ -1,56 +1,42 @@
-.GB filename 9
-#.GB gvar1 5
-#.GB gvar2 7
-#.GB gvar3 3
+.GB hello 8
 
-#LQI $R1 9 # allocate 9 bytes for global storage
-#SUB $SP $SP $R1
+### "hi bro!" is made up of the following bytes (including line end)
+# 104 105 32 98 114 111 33 0 # big-endian
 
-#LAI $R1 $TOP filename
-
-###
-#LBI $R24 1
-
-#LAD $R1 150         # set start position
-#LBI $R2 116
-#SB $R2 $R1
-#SUB $R1 $R1 $R24
-
-#LBI $R2 101
-#SB $R2 $R1
-#SUB $R1 $R1 $R24
-
-LBI $R1 116
+LBI $R1 104
 PUSHB $R1
 
-LBI $R1 101
+LBI $R1 105
 PUSHB $R1
 
-LBI $R1 115
+LBI $R1 32
 PUSHB $R1
 
-LBI $R1 116
+LBI $R1 98
 PUSHB $R1
 
-LBI $R1 46
+LBI $R1 114
 PUSHB $R1
 
-LBI $R1 65
+LBI $R1 111
 PUSHB $R1
 
-LBI $R1 83
-PUSHB $R1
-
-LBI $R1 77
+LBI $R1 33
 PUSHB $R1
 
 LBI $R1 0
 PUSHB $R1
 
-###
-# 116,101,115,116,46,65,83,77,0
+#
+
+NOP
+NOP
 
 EI
+
+# print string
+LBI $R1 14
+INT 0
 
 # open file
 #LBI $R1 0

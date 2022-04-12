@@ -64,6 +64,7 @@ STACK SEGMENT
 
 class Stream;
 class Debugger;
+class DebugPrinter;
 class Validator;
 
 class VirtualMachine
@@ -71,6 +72,7 @@ class VirtualMachine
     friend class Stream;
     friend class Bytecode;
     friend class Debugger;
+    friend class DebugPrinter;
     friend class InstructionSet;
     public:
         VirtualMachine();

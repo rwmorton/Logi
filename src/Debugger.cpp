@@ -11,11 +11,12 @@
 #include <vector>
 #include <iterator>
 #include <iomanip>
+#include <cmath>
 
 namespace Logi
 {
 
-Debugger::Debugger(VirtualMachine& vm) : vm{vm}
+Debugger::Debugger(VirtualMachine& vm) : vm{vm}, print{vm}
 {
     stream = Stream::getInstance();
 }
@@ -246,16 +247,33 @@ void Debugger::dump(const U8 start,const U8 stop) const
     if(checkRange(start,stop))
     {
         std::ostream& out = stream->get();
-        out << "\nMEMORY DUMP [" << start << "," << stop << "]\n";
-        out << std::setw(30) << std::setfill('-') << '\n';
+
+        std::string str {"MEMORY DUMP ["};
+        str += std::to_string(start);
+        str += ',';
+        str += std::to_string(stop);
+        str += "]:";
+
+        out << '\n' << str << '\n';
+        out << std::setw(str.length()+1) << std::setfill('-') << '\n';
 
         //get positions for console color
         Bytecode& exe = vm.executable;
-        U8 bytecodeEnd = exe.bytecodeSize-1; //use bytecodeSize because bytecodeEndAddress includes the header
-        U8 heapEnd = bytecodeEnd + (exe.heapSize * 1024); //offset by size of heap in bytes
-        U8 stackEnd = heapEnd + (exe.stackSize * 1024); //offset by size of stack in bytes
+        U8 bytecodeSize = exe.bytecodeSize;
+        U8 heapSize = exe.heapSize * 1024;
+        U8 stackSize = exe.stackSize * 1024;
+        U8 bytecodeEnd = bytecodeSize-1;        // use bytecodeSize because bytecodeEndAddress includes the header
+        U8 heapEnd = bytecodeEnd + heapSize;    // offset by size of heap in bytes
+        U8 stackEnd = heapEnd + stackSize;      // offset by size of stack in bytes
 
         //print for reference
+        out << "RAM (" << vm.executable.totalSize << "): [";
+        out << Console::CYAN << "BYTECODE";
+        out << Console::RESET << " (" << bytecodeSize << ")], [";
+        out << Console::GREEN << "HEAP";
+        out << Console::RESET << " (" << heapSize << ")], [";
+        out << Console::BLUE << "STACK";
+        out << Console::RESET << " (" << stackSize << ")]\n";
         out << Console::YELLOW << "$IP = " << vm.registers.R($IP) << '\n';
         out << Console::YELLOW << "$SP = " << vm.registers.R($SP) << '\n';
         out << Console::RED << "$TOP = " << vm.registers.R($TOP) << '\n';
@@ -266,7 +284,7 @@ void Debugger::dump(const U8 start,const U8 stop) const
             //differentiate between bytecode, heap and stack sections
             if(i <= bytecodeEnd) out << Console::CYAN;
             else if(i <= heapEnd) out << Console::GREEN;
-            else if(i <= stackEnd ) out << Console::MAGENTA;
+            else if(i <= stackEnd ) out << Console::BLUE;
 
             //print $IP, $SP and $TOP
             if(i == vm.registers.R($SP) || i == vm.registers.R($IP)) out << Console::YELLOW;

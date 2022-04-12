@@ -5,6 +5,7 @@
 #include "Types.h"
 #include "Bytecode.h"
 #include "SymbolRepository.h"
+#include "DebugPrinter.h"
 
 //std includes
 #include <string>
@@ -31,7 +32,7 @@ class Debugger
         Debugger(VirtualMachine& vm);
         ~Debugger();
         void read();
-        void instruction(const U8 address) const;
+        void instruction(const U8 address);
     private:
         void badCommand(const std::string& command) const;
         void splitArgs(const std::string& line,std::vector<std::string>& args) const;
@@ -49,6 +50,7 @@ class Debugger
         VirtualMachine& vm;     //reference to the VM
         Stream* stream;
         DebugData data;
+        DebugPrinter print;
 };
 
 } //namespace Logi

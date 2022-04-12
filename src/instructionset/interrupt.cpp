@@ -1,6 +1,11 @@
 //Logi includes
 #include "../InstructionSet.h"
 #include "../VirtualMachine.h"
+#include "../Console.h"
+
+//std includes
+#include <fstream>
+#include <iostream>
 
 namespace Logi
 {
@@ -192,6 +197,26 @@ void InstructionSet::handleFileIO()
             //
         }
         break;
+        //
+        // TEST
+        //
+        case 14:
+        {
+            //write bytes to std::cout
+            std::cout << Console::RED;
+
+            std::string str_test{};
+            char *str = (char*)&((*vm->ram)(vm->registers.R($TOP)));
+            while(*str != '\0')
+            {
+                str_test += *str;
+
+                str--;
+            }
+            std::cout << str_test << std::endl;
+
+            std::cout << Console::RESET;
+        }
     }
 }
 
