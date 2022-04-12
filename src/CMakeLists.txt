@@ -21,6 +21,7 @@ add_library(Assembler_obj Assembler.cpp)
 add_library(ValidateASM_obj ValidateASM.cpp)
 add_library(SymbolRepository_obj SymbolRepository.cpp)
 add_library(BytecodeFromASM_obj BytecodeFromASM.cpp)
+add_library(Console_obj Console.cpp)
 
 add_executable(main main.cpp)
 #
@@ -68,5 +69,6 @@ target_link_libraries(main SymbolRepository_obj)
 target_link_libraries(main BytecodeFromASM_obj)
 target_link_libraries(main Transform_obj)
 target_link_libraries(main InstructionSet_obj)
+target_link_libraries(main Console_obj)
 
 target_include_directories(main PUBLIC types)

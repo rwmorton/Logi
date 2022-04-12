@@ -169,10 +169,11 @@ void Assembler::loadGlobalVariable(const Line& line)
     g.size = g.len * g.type;
 
     //set offset
-    //
-    // TODO
-    //
-    g.offset = 0;
+    g.offset = -g.size;
+    g.address = (S8)g.offset;
+
+    cout << "g.offset = " << (int)g.offset << endl;
+    cout << "g.address = " << (int)g.address << endl;
 
     symbolRepository.getSymbolTable().addGlobalVariable(g);
 }

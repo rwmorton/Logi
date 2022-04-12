@@ -1,6 +1,7 @@
 //Logi includes
 #include "Debugger.h"
 #include "VirtualMachine.h"
+#include "Console.h"
 
 //std includes
 #include <iostream>
@@ -248,13 +249,37 @@ void Debugger::dump(const U8 start,const U8 stop) const
         out << "\nMEMORY DUMP [" << start << "," << stop << "]\n";
         out << std::setw(30) << std::setfill('-') << '\n';
 
+        //get positions for console color
+        Bytecode& exe = vm.executable;
+        U8 bytecodeEnd = exe.bytecodeSize-1; //use bytecodeSize because bytecodeEndAddress includes the header
+        U8 heapEnd = bytecodeEnd + (exe.heapSize * 1024); //offset by size of heap in bytes
+        U8 stackEnd = heapEnd + (exe.stackSize * 1024); //offset by size of stack in bytes
+
+        //print for reference
+        out << Console::YELLOW << "$IP = " << vm.registers.R($IP) << '\n';
+        out << Console::YELLOW << "$SP = " << vm.registers.R($SP) << '\n';
+        out << Console::RED << "$TOP = " << vm.registers.R($TOP) << '\n';
+        out << Console::RESET << '\n';
+
         for(U8 i=start; i<=stop; i++)
         {
+            //differentiate between bytecode, heap and stack sections
+            if(i <= bytecodeEnd) out << Console::CYAN;
+            else if(i <= heapEnd) out << Console::GREEN;
+            else if(i <= stackEnd ) out << Console::MAGENTA;
+
+            //print $IP, $SP and $TOP
+            if(i == vm.registers.R($SP) || i == vm.registers.R($IP)) out << Console::YELLOW;
+            if(i == vm.registers.R($TOP)) out << Console::RED;
+
             stream->U1((*vm.ram)(i));
             if(i < stop) out << ' ';
         }
         out << '\n';
     } //else, checkRange will print appropriate message.
+
+    //reset console color
+    stream->get() << Console::RESET;
 }
 
 //

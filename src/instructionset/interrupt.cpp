@@ -1,20 +1,37 @@
 //Logi includes
 #include "../InstructionSet.h"
-
-//// TEMP
-#include <iostream>
-using namespace std;
+#include "../VirtualMachine.h"
 
 namespace Logi
 {
 
 //
 // Accepts an integer argument (the interrupt vector) which
-// is an inde into one of the virtual machines iterrupt service
+// is an index into one of the virtual machines iterrupt service
 // routines. A switch statement is used to redirect the virtual
 // machines execution path to the appropriate service routine.
 //
-void InstructionSet::handleInterrupt(U1 byte) const
+// each interrupt vector value (INT 0, INT 4 etc.) corresponds to
+// a specific interrupt handler (handleFileIO etc.). Each handler,
+// in turn, will call a different function depending on the value
+// of the $R1 register. Thus each interrupt handler is associated
+// with several possible routines.
+//
+// INTERRUPT    FAMILY OF FUNCTIONS
+// -----------------------------------------------
+// 0            File I/O
+// 1            File management
+// 2            Process management
+// 3            Breakpoints
+// 4            Time and date calls
+// 5            Handling command-line arguments
+// 6            Memory diagnostics
+// 7            Dynamic memory allocation
+// 8            Math functions
+// 9            Interfacing with native code
+// 10           Interprocess communication
+//
+void InstructionSet::handleInterrupt(U1 byte)
 {
     if(!interruptOn) return; //interrupts are disabled
 
@@ -22,8 +39,7 @@ void InstructionSet::handleInterrupt(U1 byte) const
     {
         case 0:
         {
-            //handle vector 0
-            throw std::runtime_error("unimplemented interrupt routine: vector 0");
+            handleFileIO();
         }
         break;
         case 1:
@@ -42,9 +58,6 @@ void InstructionSet::handleInterrupt(U1 byte) const
         {
             //handle vector 3
             throw std::runtime_error("unimplemented interrupt routine: vector 3");
-            //
-            // DEBUG = TRUE
-            //
         }
         break;
         case 4:
@@ -90,6 +103,95 @@ void InstructionSet::handleInterrupt(U1 byte) const
         }
         break;
         default: throw std::runtime_error("interrupt vector not handled.");
+    }
+}
+
+//
+// INTERRUPT    FUNCTION ($R1)  DESCRIPTION
+// -------------------------------------------------------------
+// 0            0               Opens a file
+// 0            1               Closes a file
+// 0            2               Flushes a file's buffer
+// 0            3               Flushes the buffer to std::cin
+// 0            4               Flushes the buffer to std::cout
+// 0            5               Flushes the buffer to std::cerr
+// 0            6               Moves the file position marker to the first byte in a file
+// 0            7               Returns the current location of the file position marker
+// 0            8               Sets the location of the file position marker
+// 0            9               Tests for EOF
+// 0            10              Tests for an I/O error
+// 0            11              Reads bytes from a file
+// 0            12              Writes bytes to a file
+// 0            13              Reads bytes from std::cin
+// 0            14              Writes bytes to std::cout
+// 0            15              Writes bytes to std::cerr
+// 0            16              Prints a character to std::cout
+// 0            17              Prints a wide character to std::cout
+// 0            18              Prints a string to std::cout
+// 0            19              Prints a wide string to std::cout
+// 0            20              Prints an integer to to std::cout
+// 0            21              Prints a floating-point value to std::cout
+// 0            22              Reads a string from std::cin
+// 0            23              Reads a wide string from std::cin
+// 0            24              Reads an integer from std::cin
+// 0            25              Reads a floating-point value from std::cin
+//
+void InstructionSet::handleFileIO()
+{
+    int retval;
+
+    switch((U1)vm->registers.R($R1))
+    {
+        case 0:
+        {
+            cout << "opening file for writing..." << endl;
+
+            const std::string& filename = "test.ASM";
+            //const std::string& filename = (const char*)&(vm->registers.R($R4));
+
+            file.open(filename,std::ios::in);
+
+            if(!file.is_open())
+            {
+                // error
+                vm->registers.R($R4) = 0;
+            }
+            else
+            {
+                // all good
+                vm->registers.R($R4) = (U8)&file;
+            }
+        }
+        break;
+        case 1:
+        {
+            cout << "closing file..." << endl;
+
+            file.close();
+        }
+        break;
+        case 2:
+        {
+            cout << "flushing the file buffer..." << endl;
+
+            file.flush();
+        }
+        break;
+        case 3:
+        {
+            //
+        }
+        break;
+        case 4:
+        {
+            //
+        }
+        break;
+        case 5:
+        {
+            //
+        }
+        break;
     }
 }
 

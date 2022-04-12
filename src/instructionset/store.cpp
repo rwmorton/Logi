@@ -12,7 +12,14 @@ namespace Logi
 //
 void InstructionSet::SB() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) = (S1)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
+    cout << "R($IP) = " << vm->registers.R($IP) << endl;
+    U8 R1 = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1));
+    U8 R2 = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
+
+    cout << "R1 = " << R1 << endl;
+    cout << "R2 = " << R2 << endl;
+
+    (*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))) = (S1)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -56,7 +63,7 @@ void InstructionSet::SQ() const
 //
 void InstructionSet::SF1() const
 {
-    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: SF1() not verified.\n");
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: SF1 not verified yet.\n");
 
     Transform::floatToRegister
     (
@@ -73,7 +80,7 @@ void InstructionSet::SF1() const
 //
 void InstructionSet::SF2() const
 {
-    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: SF2() not verified.\n");
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: SF2 not verified yet.\n");
 
     Transform::doubleToRegister
     (

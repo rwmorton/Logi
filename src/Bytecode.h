@@ -48,9 +48,12 @@ BYTECODE
 
 class VirtualMachine;
 class StackFrame;
+class Debugger;
 
 class Bytecode : public LoadFile
 {
+    friend class Debugger;
+    friend class VirtualMachine;
     enum FlagID
     {
         STACK,

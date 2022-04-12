@@ -12,7 +12,7 @@ namespace Logi
 //
 void InstructionSet::CAST_IF() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
         (S8)(vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.RF((FloatRegisterCodes)$IP)+2)));
 
     vm->registers.R($IP) += 3; //set next instruction
@@ -25,7 +25,7 @@ void InstructionSet::CAST_IF() const
 //
 void InstructionSet::CAST_ID() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
         (S8)(vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.RD((DoubleRegisterCodes)$IP)+2)));
 
     vm->registers.R($IP) += 3; //set next instruction
@@ -39,7 +39,7 @@ void InstructionSet::CAST_ID() const
 void InstructionSet::CAST_FI() const
 {
     vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.RF((FloatRegisterCodes)$IP)+1))
-        = (F4)vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2));
+        = (F4)vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
 
     vm->registers.R($IP) += 3; //set next instruction
 }
@@ -65,7 +65,7 @@ void InstructionSet::CAST_FD() const
 void InstructionSet::CAST_DI() const
 {
     vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.RD((DoubleRegisterCodes)$IP)+1))
-        = (F8)((S8)vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)));
+        = (F8)((S8)vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
 
     vm->registers.R($IP) += 3; //set next instruction
 }

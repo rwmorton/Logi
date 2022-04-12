@@ -97,8 +97,12 @@ void InstructionSet::LAD() const
 //
 void InstructionSet::LAI() const
 {
-    U8 R2 = (*vm->ram)(vm->registers.R($IP)+2);
-    U8 QWORD = (S8)((*vm->ram)(vm->registers.R($IP)+3));
+    U8 R2 = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
+    U8 QWORD = (S8)Transform::bytecodeToQWord(&(*vm->ram)(vm->registers.R($IP)+3));
+
+    cout << "R2 = " << R2 << endl;
+    cout << "QWORD = " << QWORD << endl;
+    cout << "R2 + QWORD = " << (S8)(R2 + QWORD) << endl;
 
     vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)(R2 + QWORD);
 
@@ -156,7 +160,7 @@ void InstructionSet::LQ() const
 //
 void InstructionSet::LF1() const
 {
-    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: LF1 NOT TESTED YET.\n");
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: LF1 verified yet.\n");
 
     vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F4)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
     vm->registers.R($IP) += 3; //set next instruction
@@ -169,7 +173,7 @@ void InstructionSet::LF1() const
 //
 void InstructionSet::LF2() const
 {
-    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: LF2 NOT TESTED YET.\n");
+    Stream::getInstance()->string("WARNING: INSTRUCTION_SET: LF2 not verified.\n");
 
     vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
     vm->registers.R($IP) += 3; //set next instruction

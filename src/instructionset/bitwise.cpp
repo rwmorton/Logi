@@ -12,8 +12,8 @@ namespace Logi
 //
 void InstructionSet::AND() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)) & vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) & vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
     vm->registers.R($IP) += 4; //set next instruction
 }
 
@@ -24,8 +24,8 @@ void InstructionSet::AND() const
 //
 void InstructionSet::OR() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)) | vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) | vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
     vm->registers.R($IP) += 4; //set next instruction
 }
 
@@ -36,8 +36,8 @@ void InstructionSet::OR() const
 //
 void InstructionSet::XOR() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)) ^ vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) ^ vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
     vm->registers.R($IP) += 4; //set next instruction
 }
 
@@ -48,7 +48,7 @@ void InstructionSet::XOR() const
 //
 void InstructionSet::NOT() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) = ~vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = ~vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -60,7 +60,7 @@ void InstructionSet::NOT() const
 //
 void InstructionSet::BT() const
 {
-    U8 bit = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+    U8 bit = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
 
     if(bit > 63) throw std::runtime_error("INSTRUCTION_SET: bit index is out of range.");
     
@@ -69,9 +69,9 @@ void InstructionSet::BT() const
     {
         mask = mask*2;
     }
-    mask = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)) & mask;
+    mask = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) & mask;
 
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) = mask > 0 ? 0x1 : 0x0;
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = mask > 0 ? 0x1 : 0x0;
     vm->registers.R($IP) += 4; //set next instruction
 }
 
@@ -82,7 +82,7 @@ void InstructionSet::BT() const
 //
 void InstructionSet::BS() const
 {
-    U8 bit = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2));
+    U8 bit = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
 
     if(bit > 63) throw std::runtime_error("INSTRUCTION_SET: bit index is out of range.");
     
@@ -92,7 +92,7 @@ void InstructionSet::BS() const
         mask = mask*2;
     }
 
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) | mask;
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) | mask;
     vm->registers.R($IP) += 3; //set next instruction
 }
 

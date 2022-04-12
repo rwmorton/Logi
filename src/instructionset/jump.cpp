@@ -14,7 +14,7 @@ namespace Logi
 //
 void InstructionSet::JMP() const
 {
-    vm->registers.R($IP) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1));
+    vm->registers.R($IP) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1));
 }
 
 //
@@ -24,9 +24,9 @@ void InstructionSet::JMP() const
 //
 void InstructionSet::JE() const
 {
-    if(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) == vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
+    if(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) == vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)))
     {
-        vm->registers.R($IP) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+        vm->registers.R($IP) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
     }
 }
 
@@ -37,9 +37,9 @@ void InstructionSet::JE() const
 //
 void InstructionSet::JNE() const
 {
-    if(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) != vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)))
+    if(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) != vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)))
     {
-        vm->registers.R($IP) = vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+        vm->registers.R($IP) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
     }
 }
 
@@ -50,8 +50,8 @@ void InstructionSet::JNE() const
 //
 void InstructionSet::SLT() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)) < vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3)) ? 1 : 0;
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) < vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3)) ? 1 : 0;
 
     vm->registers.R($IP) += 4; //set next instruction
 }
@@ -64,9 +64,9 @@ void InstructionSet::SLT() const
 // the byte operand is known as an interrupt vector.
 // interrupt routines are indexed by a vector number.
 //
-void InstructionSet::INT() const
+void InstructionSet::INT()
 {
-    handleInterrupt((U1)vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)));
+    handleInterrupt((*vm->ram)(vm->registers.R($IP)+1));
     vm->registers.R($IP) += 2; //set next instruction
 }
 

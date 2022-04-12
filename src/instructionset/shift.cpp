@@ -20,9 +20,9 @@ namespace Logi
 //
 void InstructionSet::SRA() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2))) >>
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))) >>
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3)));
 
     vm->registers.R($IP) += 4; //set next instruction
 }
@@ -42,9 +42,9 @@ void InstructionSet::SRA() const
 //
 void InstructionSet::SRL() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)) >>
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) >>
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
 
     vm->registers.R($IP) += 4; //set next instruction
 }
@@ -63,9 +63,9 @@ void InstructionSet::SRL() const
 //
 void InstructionSet::SL() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2)) <<
-        vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) <<
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
 
     vm->registers.R($IP) += 4; //set next instruction
 }

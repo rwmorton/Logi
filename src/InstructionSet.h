@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <ostream>
+#include <fstream>
 
 namespace Logi
 {
@@ -161,7 +162,7 @@ class InstructionSet
         void JE() const;
         void JNE() const;
         void SLT() const;
-        void INT() const;
+        void INT();
         void DI();
         void EI();
         void HALT() const;
@@ -202,7 +203,9 @@ class InstructionSet
         void DSLT() const;
     private:
         //handle interrupts
-        void handleInterrupt(U1 byte) const;
+        void handleInterrupt(U1 byte);
+        void handleFileIO();
+        std::fstream file;
         bool interruptOn;
         //compare floats to zero
         static const bool isZero(const F4 A,const F4 B);
@@ -210,7 +213,7 @@ class InstructionSet
         static const bool isZero(const F8 A,const F8 B);
         static const F8 F8_EPSILON;
         //
-        VirtualMachine* vm; //test
+        VirtualMachine* vm;
         static const std::vector<std::string> _InstructionSetStrings;
         static const OpCode FIRST_OPCODE;
 };

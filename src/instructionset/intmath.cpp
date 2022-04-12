@@ -26,9 +26,9 @@ void InstructionSet::ADD() const
 //
 void InstructionSet::SUB() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2))) -
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))) -
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3)));
 
     vm->registers.R($IP) += 4; //set next instruction
 }
@@ -40,9 +40,9 @@ void InstructionSet::SUB() const
 //
 void InstructionSet::MULT() const
 {
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2))) *
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))) *
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3)));
 
     vm->registers.R($IP) += 4; //set next instruction
 }
@@ -54,11 +54,11 @@ void InstructionSet::MULT() const
 //
 void InstructionSet::DIV() const
 {
-    if(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3)) == 0) throw std::runtime_error("INSTRUCTION_SET: division by zero.");
+    if(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3)) == 0) throw std::runtime_error("INSTRUCTION_SET: division by zero.");
 
-    vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+1)) =
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+2))) /
-        (S8)(vm->registers.R1_24((*vm->ram)(vm->registers.R($IP)+3)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) =
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))) /
+        (S8)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3)));
 
     vm->registers.R($IP) += 4; //set next instruction
 }

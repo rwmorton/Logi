@@ -18,6 +18,10 @@ void Debugger::instruction(const U8 address) const
 
     std::ostream& out = stream->get();
 
+    //first dump ram
+    dump(0,vm.executable.totalSize-1);
+    out << '\n';
+
     switch((*vm.ram)(currentByte))
     {
         case LBI: //LBI $R1, BBB
@@ -228,7 +232,9 @@ void Debugger::instruction(const U8 address) const
         break;
         case JMP:
         {
-            //
+            std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
+            U1 R1 = (*vm.ram)(currentByte+1);
+            out << "$IP= " << inst << ", " << vm.registers.R_str((RegisterCodes)R1) << "= " << vm.registers.R((RegisterCodes)R1) << '\n';
         }
         break;
         case JE:
