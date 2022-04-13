@@ -192,6 +192,7 @@ void Assembler::load(const int argc,const char* argv[])
         }
 
         //now write the listing lines
+        largestLine += 10; //give a little extra space
         i = mergedListingLines.begin();
         while(i != mergedListingLines.end())
         {
@@ -199,6 +200,9 @@ void Assembler::load(const int argc,const char* argv[])
 
             ++i;
         }
+
+        //now write the symbol table and string tables
+        listingFile << symbolRepository << '\n';
 
         //finally close the listing file
         listingFile.close();

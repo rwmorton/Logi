@@ -241,7 +241,7 @@ void BytecodeFromASM::load(const Line& line)
     }
     
     //save the listing line
-    listingLines.push_back(currentListingLine);
+    if(skip) listingLines.push_back(currentListingLine);
 }
 
 //
@@ -463,7 +463,7 @@ BytecodeFromASM& BytecodeFromASM::Q()
     else if(skip && listingFile)
     {
         //create listing
-        std::string lstStr {std::to_string(qword)};
+        std::string lstStr {std::to_string(token_it->val.S8_val)};
         lstStr += ' ';
         currentListingLine.add(lstStr);
 
@@ -565,11 +565,11 @@ BytecodeFromASM& BytecodeFromASM::F2()
 //
 BytecodeFromASM& BytecodeFromASM::C()
 {
+    U1 qword_bytes[8];
+    Transform::qwordToBytecode(token_it->val.S8_val,&qword_bytes[0]);
+
     if(!skip)
-    {
-        U1 qword_bytes[8];
-        Transform::qwordToBytecode(token_it->val.S8_val,&qword_bytes[0]);
-        
+    {        
         for(int i=0; i<8; i++)
         {
             bytecode.push_back(qword_bytes[i]);
@@ -579,7 +579,8 @@ BytecodeFromASM& BytecodeFromASM::C()
     else if(skip && listingFile)
     {
         //create listing
-        std::string lstStr {"BYTECODE_FROM_ASM::C(): NOT IMPLEMENTED YET!\n"};
+        std::string lstStr {std::to_string((U8)qword_bytes)};
+        lstStr += "NOT IMPL. C()";
         currentListingLine.add(lstStr);
 
         //save bytes

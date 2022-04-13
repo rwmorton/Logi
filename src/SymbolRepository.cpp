@@ -8,62 +8,96 @@
 namespace Logi
 {
 
+//set width for formatting stream output
+const int W {8};
+
 std::ostream& operator<<(std::ostream& out,const GlobalVariable& gv)
 {
-    out << gv.line << '\t' << gv.text << '\t';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << gv.line;
+    out << std::setw(W) << gv.text;
 
+    out << std::setw(W);
     switch(gv.type)
     {
-        case BYTE: out << "BYTE\t"; break;
-        case WORD: out << "WORD\t"; break;
-        case DWORD: out << "DWORD\t"; break;
-        case QWORD: out << "QWORD\t"; break;
+        case BYTE: out << "BYTE"; break;
+        case WORD: out << "WORD"; break;
+        case DWORD: out << "DWORD"; break;
+        case QWORD: out << "QWORD"; break;
         default:
         {
             throw std::runtime_error("SYMBOL_REPOSITORY: not a valid global variable type.");
         }
     }
 
-    out << gv.len << '\t' << gv.size << '\t' << gv.offset;
+    out << std::setw(W) << gv.len;
+    out << std::setw(W) << gv.size;
+    out << std::setw(W) << gv.offset;
 
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out,const StackFrame& sf)
 {
-    out << sf.line << '\t' << sf.text << '\t' << sf.fpOffset;
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << sf.line;
+    out << std::setw(W) << sf.text;
+    out << std::setw(W) << sf.fpOffset;
 
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out,const Label& l)
 {
-    out << l.text << '\t' << l.line << '\t' << l.address;
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << l.text;
+    out << std::setw(W) << l.line;
+    out << std::setw(W) << l.address;
 
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out,const Procedure& p)
 {
-    const int W = 24;
     out << "PROCEDURE:\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
-    out << "line\ttext\taddress\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
-    out << p.line << '\t' << p.text << '\t' << p.address << '\n';
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << "line";
+    out << std::setw(W) << "text";
+    out << std::setw(W) << "address" << '\n';
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << p.line;
+    out << std::setw(W) << p.text;
+    out << std::setw(W) << p.address << '\n';
 
     //output return
-    out << "\nRETURN:\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
-    out << "line\ttext\taddress\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
+    out << std::right << "\nRETURN:\n";
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << "line";
+    out << std::setw(W) << "text";
+    out << std::setw(W) << "address" << '\n';
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << p.line;
+    out << std::setw(W) << p.text;
+    out << std::setw(W) << p.address << '\n';
     if(p.retVal == ProcedureReturn::VOID) out << "VOID\n";
     else out << p.ret << '\n';
+
     //output arguments
-    out << "\nARGUMENTS:\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
-    out << "line\ttext\taddress\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
+    out << std::right << "\nARGUMENTS:\n";
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << "line";
+    out << std::setw(W) << "text";
+    out << std::setw(W) << "address" << '\n';
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << p.line;
+    out << std::setw(W) << p.text;
+    out << std::setw(W) << p.address << '\n';
     std::vector<StackFrame>::const_iterator i = p.args.begin();
     while(i != p.args.end())
     {
@@ -71,10 +105,17 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
         ++i;
     }
     //output locals
-    out << "\nLOCALS:\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
-    out << "line\ttext\taddress\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
+    out << std::right << "\nLOCALS:\n";
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << "line";
+    out << std::setw(W) << "text";
+    out << std::setw(W) << "address" << '\n';
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << p.line;
+    out << std::setw(W) << p.text;
+    out << std::setw(W) << p.address << '\n';
     i = p.locals.begin();
     while(i != p.locals.end())
     {
@@ -82,18 +123,23 @@ std::ostream& operator<<(std::ostream& out,const Procedure& p)
         ++i;
     }
     //output labels
-    out << "\nLABELS:\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
-    out << "line\ttext\taddress\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
+    out << std::right << "\nLABELS:\n";
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << "line";
+    out << std::setw(W) << "text";
+    out << std::setw(W) << "address" << '\n';
+    out << std::right << std::setw(W*3) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << p.line;
+    out << std::setw(W) << p.text;
+    out << std::setw(W) << p.address << '\n';
     std::vector<Label>::const_iterator j = p.labels.begin();
     while(j != p.labels.end())
     {
         out << *j << '\n';
         ++j;
     }
-
-    out << std::setw(W) << std::setfill('-') << '\n';
 
     return out;
 }
@@ -184,12 +230,17 @@ void SymbolTable::write(std::ofstream& out) const
 
 std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
 {
-    const int W = 48;
     //output global variables
-    out << "\nGLOBAL VARIABLES:\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
-    out << "line\ttext\ttype\tlen\tsize\toffset\n";
-    out << std::setw(W) << std::setfill('-') << '\n';
+    out << std::right << "\nGLOBAL VARIABLES:\n";
+    out << std::setw(W*6) << std::setfill('-') << '\n';
+    out << std::left << std::setfill(' ');
+    out << std::setw(W) << "line";
+    out << std::setw(W) << "text";
+    out << std::setw(W) << "type";
+    out << std::setw(W) << "len";
+    out << std::setw(W) << "size";
+    out << std::setw(W) << "offset" << '\n';
+    out << std::right << std::setw(W*6) << std::setfill('-') << '\n';
 
     std::vector<GlobalVariable>::const_iterator iv = st.globalVariables.begin();
     while(iv != st.globalVariables.end())
@@ -199,7 +250,7 @@ std::ostream& operator<<(std::ostream& out,const SymbolTable& st)
     }
     //output procedures
     out << "\nPROCEDURES:\n";
-    out << std::setw(12) << std::setfill('-') << '\n';
+    out << std::right << std::setw(12) << std::setfill('-') << '\n';
     
     std::vector<Procedure>::const_iterator ip = st.procedures.begin();
     while(ip != st.procedures.end())
@@ -303,11 +354,11 @@ std::ostream& operator<<(std::ostream& out,const SymbolRepository& sr)
 {
     // output the symbol table contents.
     out << "\nSYMBOL TABLE:\n";
-    out << std::setw(14) << std::setfill('-') << '\n';
+    out << std::right << std::setw(14) << std::setfill('-') << '\n';
     out << sr.symbolTable;
     // output the string table contents.
     out << "\nSTRING TABLE:\n";
-    out << std::setw(14) << std::setfill('-') << '\n';
+    out << std::right << std::setw(14) << std::setfill('-') << '\n';
     std::vector<std::string>::const_iterator i = sr.stringTable.begin();
     while(i != sr.stringTable.end())
     {

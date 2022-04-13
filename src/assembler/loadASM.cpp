@@ -423,7 +423,7 @@ void Assembler::loadProcedureLocalVariable(Procedure& proc,const Line& line)
         ListingLine ll;
         ll.line = line.pos;
         ll.str = lstStr;
-        //listingLines.push_back(ll);
+        listingLines.push_back(ll);
     }
 
     StackFrame local;
