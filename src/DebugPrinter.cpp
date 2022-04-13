@@ -75,25 +75,25 @@ void DebugPrinter::RD_end()
 
 void DebugPrinter::B()
 {
-    U1 byte = (U1)(*vm.ram)(currentByte);
+    S1 byte = (S1)(*vm.ram)(currentByte);
     out << "byte= " << static_cast<int>(byte) << '\n';
 }
 
 void DebugPrinter::W()
 {
-    U2 word = Transform::bytecodeToWord(&(*vm.ram)(currentByte));
+    S2 word = (S2)Transform::bytecodeToWord(&(*vm.ram)(currentByte));
     out << "word= " << word << '\n';
 }
 
 void DebugPrinter::D()
 {
-    U4 dword = Transform::bytecodeToDWord(&(*vm.ram)(currentByte));
+    S4 dword = (S4)Transform::bytecodeToDWord(&(*vm.ram)(currentByte));
     out << "dword= " << dword << '\n';
 }
 
 void DebugPrinter::Q()
 {
-    U8 qword = Transform::bytecodeToQWord(&(*vm.ram)(currentByte));
+    S8 qword = (S8)Transform::bytecodeToQWord(&(*vm.ram)(currentByte));
     out << "qword= " << qword << '\n';
 }
 

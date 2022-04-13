@@ -15,6 +15,9 @@ namespace Logi
 void Assembler::buildSymbolRepository()
 {
     std::vector<Line>::const_iterator line = tokenizedLines.begin();
+
+    //init global variable address tracker
+    globalVariableOffset = 0;
     
     //initialize bytecode loader (skip loading bytecode)
     bytecodeLoader.init(&symbolRepository,true,true);
@@ -48,7 +51,7 @@ void Assembler::resolveAddresses()
     while(i != bytecodeLoader.getAddressesToResolve().end())
     {
         //find address of this identifier
-        U8 addr = symbolRepository.getAddress(i->first);
+        S8 addr = static_cast<S8>(symbolRepository.getAddress(i->first));
 
         //get the addressable itself (an identifier)
         const int index = symbolRepository.indexInStringTable(i->first);
@@ -56,7 +59,8 @@ void Assembler::resolveAddresses()
 
         addressable->address = addr; //set to correct address
 
-        cout << "resolving address of identifier (" << i->first << ") to the correct address (" << addr << ") at byte (" << i->second << ")" << endl;
+        cout << "resolving address of identifier (" << i->first;
+        cout << ") to the correct address (" << addr << ") at byte (" << i->second << ")" << endl;
 
         ++i;
     }
@@ -176,10 +180,14 @@ void Assembler::loadGlobalVariable(const Line& line)
     g.size = g.len * g.type;
 
     //set offset
-    g.offset = -g.size;
-    g.address = (S8)g.offset;
+    globalVariableOffset -= g.size;
+    g.offset = globalVariableOffset;
+
+    //keep track of this for address resolution
+    g.address = static_cast<S8>(globalVariableOffset);
 
     symbolRepository.getSymbolTable().addGlobalVariable(g);
+    symbolRepository.addLabelAddr(gvStr,g.address);
 
     //write to listing file
     if(createListing)
@@ -315,7 +323,7 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
                 {
                     //then we assign it as the address
                     //of the procedure.
-                    proc.address = bytecodeLoader.getCurrentByte();
+                    proc.address = static_cast<S8>(bytecodeLoader.getCurrentByte());
                     firstInst = false;
 
                     //save to the symbol map
@@ -442,7 +450,7 @@ void Assembler::loadProcedureLabel(Procedure& proc,const Line& line)
     label.text = symbolRepository.addIdentifier(labelStr); //save identifier to string table
 
     //label address is the instruction immediately after this line
-    label.address = bytecodeLoader.getCurrentByte();
+    label.address = static_cast<S8>(bytecodeLoader.getCurrentByte());
 
     //add to the symbol map
     symbolRepository.addLabelAddr(line.tokens.at(1).str,label.address);

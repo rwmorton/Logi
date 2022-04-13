@@ -321,8 +321,6 @@ BytecodeFromASM& BytecodeFromASM::A()
         const int index = symbolRepository->getIdentifier(token_it->str);
         U8 addr = symbolRepository->getSymbolTable().getAddressable(index)->address;
 
-        cout << "found identifier (" << token_it->str << ") with address (" << addr << ")" << endl;
-
         U1 bytes[8];
         Transform::qwordToBytecode(addr,&bytes[0]);
         for(int i=0; i<8; i++)

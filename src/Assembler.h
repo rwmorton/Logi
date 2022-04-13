@@ -199,6 +199,7 @@ class Assembler : public LoadFile
         std::vector<Line> tokenizedLines;               //vector containing all the tokens per line
         SymbolRepository symbolRepository;              //the symbol repository
         BytecodeFromASM bytecodeLoader;                 //interface for loading instructions on a per line basis
+        S8 globalVariableOffset;                        //keep track of global variable offsets
         //static flags
         static const Flag DEBUG_FLAG;
         static const Flag ALLOW_ERRORS_FLAG;

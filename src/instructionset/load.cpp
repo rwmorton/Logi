@@ -97,15 +97,11 @@ void InstructionSet::LAD() const
 //
 void InstructionSet::LAI() const
 {
-    U8 R2 = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2));
-    U8 QWORD = (S8)Transform::bytecodeToQWord(&(*vm->ram)(vm->registers.R($IP)+3));
-
-    cout << "R2 = " << R2 << endl;
-    cout << "QWORD = " << QWORD << endl;
-    cout << "R2 + QWORD = " << (S8)(R2 + QWORD) << endl;
-
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)(R2 + QWORD);
-
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)
+    (
+        vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)) +
+        (S8)Transform::bytecodeToQWord(&(*vm->ram)(vm->registers.R($IP)+3))
+    );
     vm->registers.R($IP) += 11; //set next instruction
 }
 

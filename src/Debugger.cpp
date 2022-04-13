@@ -255,7 +255,7 @@ void Debugger::dump(const U8 start,const U8 stop) const
         str += "]:";
 
         out << '\n' << str << '\n';
-        out << std::setw(str.length()+1) << std::setfill('-') << '\n';
+        out << std::right << std::setw(str.length()+1) << std::setfill('-') << '\n';
 
         //get positions for console color
         Bytecode& exe = vm.executable;
@@ -310,7 +310,7 @@ void Debugger::search(const U8 start,const U8 stop,const std::string& str) const
         std::ostream& out = stream->get();
         out << std::dec;
         out << "\nSEARCHING FOR STRING [" << str << "] IN RANGE [" << start << "," << stop << "]:\n";
-        out << std::setw(70) << std::setfill('-') << '\n';
+        out << std::right << std::setw(70) << std::setfill('-') << '\n';
         
         bool match = false;
         U8 address{};
@@ -351,7 +351,7 @@ void Debugger::symbol(const std::string& str) const
     std::ostream& out = stream->get();
     out << std::dec;
     out << "\nSEARCHING FOR SYMBOL [" << str << "]:\n";
-    out << std::setw(30) << std::setfill('-') << '\n';
+    out << std::right << std::setw(30) << std::setfill('-') << '\n';
     //
     throw std::runtime_error("DEBUGGER: symbol() unimplemented."); //need more data to do this.
 }
@@ -365,7 +365,7 @@ void Debugger::basicRegisters() const
 {
     std::ostream& out = stream->get();
     out << std::dec << "\nBASIC REGISTERS:\n";
-    out << std::setw(30) << std::setfill('-') << '\n';
+    out << std::right << std::setw(17) << std::setfill('-') << '\n';
     for(int i=$IP; i<=$TOP; i++)
     {
         out << std::dec << vm.registers.R_str((RegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.R((RegisterCodes)i) << '\n';
@@ -377,7 +377,7 @@ void Debugger::intRegisters() const
 {
     std::ostream& out = stream->get();
     out << std::dec << "\nINTEGER REGISTERS:\n";
-    out << std::setw(30) << std::setfill('-') << '\n';
+    out << std::right << std::setw(19) << std::setfill('-') << '\n';
     for(int i=$R1; i<=$R24; i++)
     {
         out << std::dec << vm.registers.R_str((RegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.R((RegisterCodes)i) << '\n';
@@ -389,7 +389,7 @@ void Debugger::floatRegisters() const
 {
     std::ostream& out = stream->get();
     out << std::dec << "\nFLOAT REGISTERS:\n";
-    out << std::setw(30) << std::setfill('-') << '\n';
+    out << std::right << std::setw(17) << std::setfill('-') << '\n';
     for(int i=$F1; i<=$F10; i++)
     {
         out << std::dec << vm.registers.RF_str((FloatRegisterCodes)i) << ":\t" << std::showbase << std::hex << vm.registers.RF((FloatRegisterCodes)i) << '\n';
@@ -401,7 +401,7 @@ void Debugger::doubleRegisters() const
 {
     std::ostream& out = stream->get();
     out << std::dec << "\nDOUBLE REGISTERS:\n";
-    out << std::setw(30) << std::setfill('-') << '\n';
+    out << std::right << std::setw(18) << std::setfill('-') << '\n';
 
     for(int i=$D1; i<=$D10; i++)
     {

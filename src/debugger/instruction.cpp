@@ -21,8 +21,7 @@ void Debugger::instruction(const U8 address)
 
     //first dump ram
     dump(0,vm.executable.totalSize-1);
-    out << "\nLAST INSTRUCTION:\n";
-    out << std::setw(18) << std::setfill('-') << '\n';
+    out << "\nLAST INSTRUCTION: ";
 
     //instruction string
     std::string inst = (*vm.iset)((OpCode)((*vm.ram)(currentByte)));
