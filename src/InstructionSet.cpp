@@ -24,7 +24,7 @@ const F8 InstructionSet::F8_EPSILON {DBL_EPSILON};
 
 const OpCode InstructionSet::FIRST_OPCODE {OpCode::LBI};
 
-InstructionSet::InstructionSet(VirtualMachine* vm) : vm{vm} {}
+InstructionSet::InstructionSet(VirtualMachine* vm) : vm{vm}, interruptOn{true} {}
 
 void InstructionSet::setVM(VirtualMachine* vm)
 {

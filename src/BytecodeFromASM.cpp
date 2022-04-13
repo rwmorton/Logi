@@ -263,14 +263,12 @@ BytecodeFromASM& BytecodeFromASM::I()
     }
     else if(skip && listingFile)
     {
-        std::string lstStr = {std::to_string(currentLine) + ") "};
-        lstStr += '[';
-        lstStr += std::to_string(currentByte);
-        lstStr += "] ";
-        lstStr += token_it->str;
+        std::string lstStr {token_it->str};
         lstStr += ' ';
 
         //save listing
+        currentListingLine.instruction = true;
+        currentListingLine.byte = currentByte;
         currentListingLine.str = lstStr; //will always start the line here
         currentListingLine.add(currentByte);
     }

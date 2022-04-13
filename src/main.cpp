@@ -22,6 +22,30 @@ int main(const int argc,const char *argv[])
         Logi::run_all_tests();
     #endif
 
+    std::string str {"this is a test string that is the virtual machine is printing to std::cout"};
+    const char *str_p = str.c_str();
+    cout << "BYTECODE:" << endl;
+    cout << endl;
+    cout << ".GB string " << str.length() + 1<< std::endl;
+    cout << "\n# allocate space for string\n";
+    cout << "LQI $R3 " << str.length() + 1<< std::endl;
+    cout << "SUB $SP $SP $R3\n";
+    cout << "\n# push bytes from string\n";
+    for(int i=0; i<str.length(); i++)
+    {
+        cout << "LBI $R1 " << (int)*str_p << '\n';
+        cout << "PUSHB $R1\n";
+        cout << std::endl;
+        str_p++;
+    }
+    str_p = nullptr;
+
+    // add end of string
+    cout << "LBI $R1 " << (int)0 << '\n';
+    cout << "PUSHB $R1\n";
+
+    cout << endl;
+
     Logi::VirtualMachine vm;
 
     bool runAssembler = true;

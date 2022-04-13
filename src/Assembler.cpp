@@ -191,13 +191,22 @@ void Assembler::load(const int argc,const char* argv[])
             ++i;
         }
 
-        //now write the listing lines
+        //construct the listing header
         largestLine += 10; //give a little extra space
+        std::string lstHeaderLine {"LINE) [ADDR]"};
+        std::string lstHeaderASM {"ASSEMBLY"};
+        std::string lstHeaderBC {"BYTECODE"};
+
+        std::setfill(' ');
+        listingFile << std::left << std::setw(16) << lstHeaderLine;
+        listingFile << std::left << std::setw(largestLine) << lstHeaderASM;
+        listingFile << std::left << lstHeaderBC << '\n';
+
+        //now write the listing lines
         i = mergedListingLines.begin();
         while(i != mergedListingLines.end())
         {
             i->write(listingFile,largestLine);
-
             ++i;
         }
 

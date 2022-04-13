@@ -192,8 +192,7 @@ void Assembler::loadGlobalVariable(const Line& line)
     //write to listing file
     if(createListing)
     {
-        std::string lstStr {std::to_string(g.line)};
-        lstStr += ") ";
+        std::string lstStr{};
 
         switch(id)
         {
@@ -208,6 +207,7 @@ void Assembler::loadGlobalVariable(const Line& line)
 
         if(g.len > 1)
         {
+            lstStr += ' ';
             lstStr += std::to_string(g.len);
         }
 
@@ -235,8 +235,7 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
     //create listing file
     if(createListing)
     {
-        std::string lstStr {std::to_string(proc.line)};
-        lstStr += ") .PB ";
+        std::string lstStr {".PB "};
         lstStr += procStr;
 
         //save the listing line
@@ -286,8 +285,7 @@ void Assembler::loadProcedure(std::vector<Line>::const_iterator& line_it)
                 if(createListing)
                 {
                     //save the listing line
-                    std::string lstStr {std::to_string(line_it->pos)};
-                    lstStr += ") .PE";
+                    std::string lstStr {".PE"};
                     ListingLine ll;
                     ll.line = line_it->pos;
                     ll.str = lstStr;
@@ -380,8 +378,7 @@ void Assembler::loadProcedureReturn(Procedure& proc,const Line& line)
     //create listing
     if(createListing)
     {
-        std::string lstStr {std::to_string(line.pos)};
-        lstStr += ") .PR ";
+        std::string lstStr {".PR "};
         
         //save the listing line
         ListingLine ll;
@@ -401,8 +398,7 @@ void Assembler::loadProcedureArgument(Procedure& proc,const Line& line)
     //create listing
     if(createListing)
     {
-        std::string lstStr {std::to_string(line.pos)};
-        lstStr += ") .PA ";
+        std::string lstStr {".PA "};
         
         //save the listing line
         ListingLine ll;
@@ -424,8 +420,7 @@ void Assembler::loadProcedureLocalVariable(Procedure& proc,const Line& line)
     //create listing
     if(createListing)
     {
-        std::string lstStr {std::to_string(line.pos)};
-        lstStr += ") .PV ";
+        std::string lstStr {".PV "};
         
         //save the listing line
         ListingLine ll;
@@ -462,8 +457,7 @@ void Assembler::loadProcedureLabel(Procedure& proc,const Line& line)
     //create listing
     if(createListing)
     {
-        std::string lstStr {std::to_string(line.pos)};
-        lstStr += ") .PL ";
+        std::string lstStr {".PL "};
         lstStr += labelStr;
         
         //save the listing line

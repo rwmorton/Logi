@@ -17,6 +17,10 @@ struct ListingLine
     U4 line;
     std::string str;
     std::vector<U8> addrVec;
+    bool instruction;
+    U8 byte; //if an instruction, which byte it begins at
+    //default constructor
+    ListingLine() : instruction{false} {}
     //clear
     void clear()
     {
@@ -29,21 +33,28 @@ struct ListingLine
     //write listing line
     void write(std::ofstream& out,const int width)
     {
-        out.write(str.c_str(),str.length());
+        int lineWidth = 16;
+        int remWidth = width - lineWidth;
 
-        //format nicely
-        out << std::setw(width - str.length()) << std::setfill(' ') << '\t';
-
+        std::setfill(' ');
+        std::string lineStr {std::to_string(line) + ')'};
+        if(instruction)
+        {
+            lineStr += '[';
+            lineStr += std::to_string(byte);
+            lineStr += ']';
+        }
+        out << std::left << std::setw(lineWidth) << lineStr;
+        out << std::left << std::setw(width) << str;
+        //construct address string
         std::vector<U8>::const_iterator i = addrVec.begin();
         while(i != addrVec.end())
         {
             std::string addrStr {'[' + std::to_string(*i) + ']'};
-            out.write(addrStr.c_str(),addrStr.length());
+            out << addrStr;
             ++i;
         }
-
-        //all done
-        out.put('\n');
+        out << '\n';
     }
     //operator overloads for sorting by line number
     const bool operator<(const ListingLine &ll)

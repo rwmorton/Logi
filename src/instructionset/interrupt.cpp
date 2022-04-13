@@ -143,7 +143,8 @@ void InstructionSet::handleInterrupt(U1 byte)
 //
 void InstructionSet::handleFileIO()
 {
-    int retval;
+    //set console color
+    std::cout << Console::GREEN;
 
     switch((U1)vm->registers.R($R1))
     {
@@ -197,27 +198,38 @@ void InstructionSet::handleFileIO()
             //
         }
         break;
-        //
-        // TEST
-        //
         case 14:
         {
-            //write bytes to std::cout
-            std::cout << Console::RED;
-
-            std::string str_test{};
-            char *str = (char*)&((*vm->ram)(vm->registers.R($TOP)));
-            while(*str != '\0')
+            //
+        }
+        break;
+        case 16:
+        {
+            std::cout << (char)vm->registers.R($R2);
+        }
+        break;
+        case 17:
+        {
+            //
+        }
+        break;
+        case 18:
+        {
+            const char* c_ptr = (const char *)&(*vm->ram)(vm->registers.R($TOP));
+            while(*c_ptr != '\0')
             {
-                str_test += *str;
-
-                str--;
+                std::cout << *c_ptr;
+                c_ptr--;
             }
-            std::cout << str_test << std::endl;
-
-            std::cout << Console::RESET;
+        }
+        break;
+        case 20:
+        {
+            std::cout << (S8)vm->registers.R($R2);
         }
     }
+
+    std::cout << Console::RESET;
 }
 
 } //namespace Logi
