@@ -28,6 +28,10 @@ void InstructionSet::JE() const
     {
         vm->registers.R($IP) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
     }
+    else
+    {
+        vm->registers.R($IP) += 4; //set next instruction
+    }
 }
 
 //
@@ -40,6 +44,10 @@ void InstructionSet::JNE() const
     if(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) != vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)))
     {
         vm->registers.R($IP) = vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+3));
+    }
+    else
+    {
+        vm->registers.R($IP) += 4; //set next instruction
     }
 }
 

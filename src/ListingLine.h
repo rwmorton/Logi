@@ -37,7 +37,7 @@ struct ListingLine
         int remWidth = width - lineWidth;
 
         std::setfill(' ');
-        std::string lineStr {std::to_string(line) + ')'};
+        std::string lineStr {std::to_string(line+1) + ')'};
         if(instruction)
         {
             lineStr += '[';

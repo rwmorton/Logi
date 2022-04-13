@@ -225,7 +225,7 @@ void InstructionSet::handleFileIO()
         break;
         case 20:
         {
-            std::cout << (S8)vm->registers.R($R2);
+            std::cout << std::dec << (S8)vm->registers.R($R2);
         }
     }
 
