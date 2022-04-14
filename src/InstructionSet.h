@@ -204,7 +204,9 @@ class InstructionSet
     private:
         //handle interrupts
         void handleInterrupt(U1 byte);
-        void handleFileIO();
+        void handleFileIO();            // #0
+        void handleNativeCall();        // #9
+        //interrupt variables
         std::fstream file;
         bool interruptOn;
         //compare floats to zero

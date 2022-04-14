@@ -123,7 +123,7 @@ void InstructionSet::LB() const
 //
 void InstructionSet::LW() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S2)(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S2)Transform::bytecodeToWord(&(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -134,7 +134,7 @@ void InstructionSet::LW() const
 //
 void InstructionSet::LD() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S4)(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S4)Transform::bytecodeToDWord(&(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -145,7 +145,7 @@ void InstructionSet::LD() const
 //
 void InstructionSet::LQ() const
 {
-    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
+    vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (S8)Transform::bytecodeToQWord(&(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -156,7 +156,7 @@ void InstructionSet::LQ() const
 //
 void InstructionSet::LF1() const
 {
-    vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F4)(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
+    vm->registers.RF((FloatRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F4)Transform::bytecodeToFloat(&(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
@@ -167,7 +167,7 @@ void InstructionSet::LF1() const
 //
 void InstructionSet::LF2() const
 {
-    vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F8)(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2)));
+    vm->registers.RD((DoubleRegisterCodes)(*vm->ram)(vm->registers.R($IP)+1)) = (F8)Transform::bytecodeToDouble(&(*vm->ram)(vm->registers.R((RegisterCodes)(*vm->ram)(vm->registers.R($IP)+2))));
     vm->registers.R($IP) += 3; //set next instruction
 }
 
