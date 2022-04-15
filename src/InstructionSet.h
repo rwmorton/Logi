@@ -204,10 +204,14 @@ class InstructionSet
     private:
         //handle interrupts
         void handleInterrupt(U1 byte);
-        void handleFileIO();            // #0
-        void handleNativeCall();        // #9
+        void handleFileIO();                // #0
+        void handleTimeDate();              // #4
+        void handleCommandLine();           // #5
+        void handleMemoryDiagnostics();     // #6
+        void handleNativeCall();            // #9
         //interrupt variables
-        std::fstream file;
+        std::fstream file;              // #0   file I/O
+        std::vector<U1> fileBuffer;     // #0   file buffer
         bool interruptOn;
         //compare floats to zero
         static const bool isZero(const F4 A,const F4 B);

@@ -68,19 +68,19 @@ void InstructionSet::handleInterrupt(U1 byte)
         case 4:
         {
             //handle vector 4
-            throw std::runtime_error("unimplemented interrupt routine: vector 4");
+            handleTimeDate();
         }
         break;
         case 5:
         {
             //handle vector 5
-            throw std::runtime_error("unimplemented interrupt routine: vector 5");
+            handleCommandLine();
         }
         break;
         case 6:
         {
             //handle vector 6
-            throw std::runtime_error("unimplemented interrupt routine: vector 6");
+            handleMemoryDiagnostics();
         }
         break;
         case 7:

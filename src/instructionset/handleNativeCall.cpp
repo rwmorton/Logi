@@ -31,17 +31,20 @@ void InstructionSet::handleNativeCall()
     {
         case 0:
         {
-            //load shared library
+            // load shared library
+            throw std::runtime_error("INSTRUCTION_SET: interrupt 9 function 0 not implemented yet.");
         }
         break;
         case 1:
         {
-            //invoke gateway method
+            // invoke gateway method
+            throw std::runtime_error("INSTRUCTION_SET: interrupt 9 function 1 not implemented yet.");
         }
         break;
         case 2:
         {
-            //free shared library
+            // free shared library
+            throw std::runtime_error("INSTRUCTION_SET: interrupt 9 function 2 not implemented yet.");
         }
         break;
         default:

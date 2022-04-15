@@ -13,9 +13,13 @@
     LBI $R1 13
     INT 0
 
-    # hello world!
+    LBI $R1 0
+    INT 6
+    LBI $R1 18
+    MOV $R2 $R5 # total bytes
+    INT 0
 
-    INT 3 # put debug back on to see mem dump
+    # INT 3 # put debug back on to see mem dump
     NOP
 
     HALT

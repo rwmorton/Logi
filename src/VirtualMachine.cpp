@@ -35,13 +35,19 @@ void VirtualMachine::init(const int argc,const char* argv[])
     stream->string("VM: Initializing virtual machine...\n");
     stream->string("VM: Loading bytecode executable...\n");
 
-    //load the bytecode
+    // load the bytecode
     executable.load(argc,argv);
     stream->string("VM: Bytecode executable loaded.\n");
 
-    //validate the bytecode
+    // validate the bytecode
     validateBytecode();
     stream->string("VM: bytecode passed validation!\n");
+
+    // now save command line arguments
+    for(int i=0; i<argc; i++)
+    {
+        commandLine.push_back(argv[i]);
+    }
 }
 
 void VirtualMachine::run()
@@ -57,10 +63,6 @@ void VirtualMachine::run()
 
     while((*ram)(registers.R($IP)) != OpCode::HALT)
     {
-        //std::ostream& out = stream->get();
-        //out << "\n\nR($IP) = " << static_cast<int>(registers.R($IP)) << "\n";
-        //out << "RAM[R($IP)) = " << static_cast<int>((*ram)(registers.R($IP))) << "\n\n";
-
         //is debugger on?
         if(debugOn)
         {
@@ -100,8 +102,8 @@ void VirtualMachine::run()
             case POPW: iset->POPW(); break;
             case POPD: iset->POPD(); break;
             case POPQ: iset->POPQ(); break;
-            case POPF1: iset->POPF1(); break; //UNIMPL.
-            case POPF2: iset->POPF2(); break; //UNIMPL.
+            case POPF1: iset->POPF1(); break;
+            case POPF2: iset->POPF2(); break;
             case MOV: iset->MOV(); break;
             case MOVF: iset->MOVF(); break;
             case MOVD: iset->MOVD(); break;
@@ -157,7 +159,6 @@ void VirtualMachine::run()
 void VirtualMachine::shutdown()
 {
     stream->string("VM: shutting down...\n");
-    exit(0); //TEMP
 }
 
 std::ostream& operator<<(std::ostream& out,const VirtualMachine& vm)

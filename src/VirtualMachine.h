@@ -91,6 +91,7 @@ class VirtualMachine
         Logi::RAM* ram;
         InstructionSet* iset;
         Validator* validate;
+        std::vector<std::string> commandLine;
         Stream* stream;
 };
 

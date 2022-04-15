@@ -63,6 +63,9 @@ target_link_libraries(main store_obj)
 target_link_libraries(main interrupt_obj)
 target_link_libraries(main handleFileIO_obj)
 target_link_libraries(main handleNativeCall_obj)
+target_link_libraries(main handleTimeDate_obj)
+target_link_libraries(main handleCommandLine_obj)
+target_link_libraries(main handleMemoryDiagnostics_obj)
 # debugger
 target_link_libraries(main instruction_obj)
 # assembler
